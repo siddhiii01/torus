@@ -1,0 +1,23 @@
+# Python environment and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Generated reports. They contain real file names from customer data.
+reports/
+
+# Never commit documents or OCR output
+data/
+samples/
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.zip
+*.eml
+*.xls
+*.xlsx
+*.csv
+!requirements.txt
