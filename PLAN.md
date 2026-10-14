@@ -135,8 +135,10 @@ Rule of thumb: text-layer extraction needs CPU only; detect and recognize models
 ### Phase 1: Understand our data  `<- we are here`
 - [x] Inventory script (`scripts/inventory.py`): type, size, pages, text-layer presence. Metadata only.
 - [x] Triage: classify each PDF as digital, scanned or mixed. See Findings below.
-- [ ] Pick a **gold set** (about 30-50 pages across vendors and quality levels) and write reference values by hand for key fields and sample text regions.
-- [ ] Record findings here.
+- [x] Dedupe and propose gold-set candidates (`scripts/gold_candidates.py`).
+- [ ] Decide the labelling scope, then write reference values by hand for key fields and sample text regions.
+- [ ] Collect samples for the other domains (KYC, cheques, forms, handwriting).
+- [x] Record findings here (section 8a).
 
 ### Phase 2: Baseline benchmark
 - [ ] Build a benchmark harness: run engine X on the gold set, score character accuracy and field accuracy.
@@ -187,6 +189,13 @@ Rule of thumb: text-layer extraction needs CPU only; detect and recognize models
 - Caveat: "digital" only means a text layer exists (at least 25 characters per page). Its quality is not yet checked. An old OCR layer on a scan would count as digital.
 
 Implication: roughly four of five pages need no OCR at all, which supports the router design (text layer first). The remaining 19% are the pages where engine quality matters.
+
+### Goal 2: dedupe and gold-set candidates (2026-10-14)
+- Script: `scripts/gold_candidates.py`. Outputs `reports/duplicates.csv` and `reports/gold_candidates.csv` (names and hashes only, git-ignored).
+- 119 PDFs and images, **96 unique by content**, 23 duplicate copies. Unique mix: 77 digital, 14 scanned, 1 mixed, 4 images.
+- Proposed gold set: **40 files, about 105 pages** across 19 folders (21 digital, 14 scanned, 1 mixed, 4 images). Every unique hard case (scan, mixed, image) is included, and digital files fill the rest round-robin across vendors.
+- 105 pages is more than the 30-50 pages planned for hand-labelling. Options: label only the key fields on page 1 of each file (fast), or trim the long multi-page files.
+- **Coverage gap:** the whole sample set is procurement paperwork (invoices, GRVs, cargo documents). It has no KYC documents, cheques, forms or handwriting. Priority 2 and 3 domains cannot be benchmarked until we get those samples. The engine must not be declared ready on this data alone.
 
 ## 9. Decision log
 
