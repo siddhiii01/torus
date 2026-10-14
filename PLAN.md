@@ -136,7 +136,9 @@ Rule of thumb: text-layer extraction needs CPU only; detect and recognize models
 - [x] Inventory script (`scripts/inventory.py`): type, size, pages, text-layer presence. Metadata only.
 - [x] Triage: classify each PDF as digital, scanned or mixed. See Findings below.
 - [x] Dedupe and propose gold-set candidates (`scripts/gold_candidates.py`).
-- [ ] Decide the labelling scope, then write reference values by hand for key fields and sample text regions.
+- [x] Labelling scope decided: **option A**, one set of key fields per file (doc type, vendor, number, date, currency, total, notes).
+- [x] Labelling tool built: `scripts/label.py` (resumable, writes git-ignored `reports/labels.csv`).
+- [ ] **Hand-label the 40 gold files** (needs a human, about 1-2 hours). Run: `.venv\Scripts\python scripts\label.py E:\final-recon-sets`
 - [ ] Collect samples for the other domains (KYC, cheques, forms, handwriting).
 - [x] Record findings here (section 8a).
 
