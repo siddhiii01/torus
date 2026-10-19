@@ -138,7 +138,7 @@ Rule of thumb: text-layer extraction needs CPU only; detect and recognize models
 - [x] Dedupe and propose gold-set candidates (`scripts/gold_candidates.py`).
 - [x] Labelling scope decided: **option A**, one set of key fields per file (doc type, vendor, number, date, currency, total, notes).
 - [x] Labelling tool built: `scripts/label.py` (resumable, writes git-ignored `reports/labels.csv`).
-- [ ] **Hand-label the 40 gold files** (needs a human, about 1-2 hours). Run: `.venv\Scripts\python scripts\label.py E:\final-recon-sets`
+- [x] **Label the 40 gold files** (done 2026-10-19 by Claude at the owner's request, saved to git-ignored `reports/labels.csv`). A human spot-check of about 10 files is still advisable. `scripts/label.py` stays available for adding labels later.
 - [ ] Collect samples for the other domains (KYC, cheques, forms, handwriting).
 - [x] Record findings here (section 8a).
 
@@ -199,10 +199,26 @@ Implication: roughly four of five pages need no OCR at all, which supports the r
 - 105 pages is more than the 30-50 pages planned for hand-labelling. Options: label only the key fields on page 1 of each file (fast), or trim the long multi-page files.
 - **Coverage gap:** the whole sample set is procurement paperwork (invoices, GRVs, cargo documents). It has no KYC documents, cheques, forms or handwriting. Priority 2 and 3 domains cannot be benchmarked until we get those samples. The engine must not be declared ready on this data alone.
 
+### Goal 3: gold-set labels (2026-10-19)
+- Documents were read by Claude (text layers read locally; scans and photos rendered to images and viewed). **This means their content passed through the model provider.** The owner authorized it for this one-off labelling of procurement paperwork. It is not a precedent for KYC or banking documents.
+- Labelling rules: PO vendor = supplier. Customs declaration vendor = declarant (importer/exporter field). Delivery advice and invoice vendor = issuer on the letterhead. Date is ISO (YYYY-MM-DD). Amounts have no thousands separators. `-` means the field is absent.
+- Mix of the 40 files: 10 invoices, 6 customs declarations, 6 delivery advices, 5 transport chits (photographed handwritten invoices), 5 purchase orders, 4 photos with no text fields, and one each of shipping advice, ownership-transfer letter, blank page and a non-business document.
+- Surprises that matter for the engine:
+  - **Most documents are not invoices.** An "invoice extractor" would miss over half of this set. Document-type detection is a core need.
+  - **Handwriting and photos:** 5 transport chits are phone photos of handwritten invoices. Hardest class here.
+  - **One "scanned copy" PDF is completely blank.** The quality gate must detect empty pages and flag them, not return empty text as success.
+  - **Scrambled text layers:** several digital PDFs return text in a jumbled order (side-by-side tables, text overlays), so a text layer is not automatically usable. The engine needs layout-aware reading order even for digital PDFs.
+  - **Mixed number formats:** `59.700,00` (European) vs `59,700.00`. Normalization must handle both.
+  - **Bundles:** a single PDF may hold several documents (delivery advice + customs form + HS code form + invoice). Page-level classification and splitting are needed.
+  - **Some totals live on a later page** (TP-Link total is on page 2 of 7), so page-1-only reading is not enough.
+  - Two files are synthetic test documents and one is a project plan, not a customer document.
+- Label caveats: a few values were inferred (Lenovo AE4915167790 total from line items, Mitsumi invoice total from the item table, one handwritten reference with an unclear first digit). They are marked in the notes column.
+
 ## 9. Decision log
 
 | Date | Decision | Reason |
 |---|---|---|
+| 2026-10-19 | Claude labelled the gold set instead of the owner | Owner request. One-off exception to "content never leaves our machines". Not for KYC. |
 | 2026-10-13 | Run fully local, no external OCR services | Cost, free testing, PII |
 | 2026-10-13 | No Chinese-origin models | Company constraint |
 | 2026-10-13 | Router design: text layer first, OCR only when needed | Digital PDFs need no OCR |
@@ -222,4 +238,5 @@ Implication: roughly four of five pages need no OCR at all, which supports the r
 | Date | Session summary |
 |---|---|
 | 2026-10-14 | Goal 1 done: git initialized, venv and PyMuPDF 1.28.2 installed, inventory script written and run on the sample folder. Findings in 8a. |
+| 2026-10-19 | Goal 3 done: all 40 gold files labelled by Claude, findings in 8a. Next: Goal 4, install and smoke-test OCR engines (owner installs, Claude guides). |
 | 2026-10-13 | Discussed OCR fundamentals. Reviewed constraints (local, no Chinese models, real PII). Found sample set at `E:\final-recon-sets` (about 200 files, 115 PDFs). Created this plan. |
