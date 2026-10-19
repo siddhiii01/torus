@@ -265,6 +265,24 @@ Findings:
 - A scoring bug was found and fixed during the run (matcher accepted at most 2 decimals; one document prints 995224.546875). Lesson: inspect every miss before trusting the number.
 - **Caveats:** (1) Presence anywhere in a document is lenient. A short value like a total of 150 could match by chance. (2) The test is order-independent, so it does **not** measure reading order, and scrambled text layers still score 100%. (3) 40 files, 6 handwritten fields: small sample, wide uncertainty. (4) Only English text, procurement documents only. KYC, cheques and non-English are untested. (5) Labels were made by Claude and not yet spot-checked by a human.
 
+### Goal 6a: docTR tuning on the 5 handwritten chits (2026-10-19)
+Script: `scripts/tune_doctr.py`. 20 labelled fields in total. Laptop CPU.
+
+| Config | Fields found | Sec/page | Still missing |
+|---|---|---|---|
+| Baseline (200 dpi, fast_base + crnn_vgg16_bn) | 14/20 | 2.7 | dates in 4 files, totals in 2 |
+| 300 dpi render | 14/20 | 2.6 | same as baseline |
+| Contrast (CLAHE) | 15/20 | 2.5 | dates in 4, total in 1 |
+| Tilt correction | 16/20 | 4.6 | dates in 3, total in 1 |
+| Detector db_resnet50 | 14/20 | 3.4 | worse on #26 |
+| Recognizer **parseq** | **17/20** | 4.9 | dates in 3 (#11, #15, #26) |
+| Recognizer master | 15/20 | 26.7 | too slow, not better |
+
+- parseq is the best single change (+3 fields), at about 2x the time. Tilt correction and contrast each help a little. Resolution and the heavier detector do not help.
+- **These differences are 1 to 3 fields out of 20.** That is within what chance could produce on 5 files. Treat as hints, not proof. Handwritten dates are still the main failure in every config.
+- parseq lost one field that the baseline had (date on #26), so it is not a pure win.
+- Not yet tested: combinations (tilt + parseq), regression on the scanned and printed documents, speed on GPU.
+
 ## 9. Decision log
 
 | Date | Decision | Reason |
