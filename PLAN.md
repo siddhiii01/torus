@@ -142,6 +142,10 @@ Rule of thumb: text-layer extraction needs CPU only; detect and recognize models
 - [ ] Collect samples for the other domains (KYC, cheques, forms, handwriting).
 - [x] Record findings here (section 8a).
 
+### Phase 1b: Engine setup and smoke test (done 2026-10-19)
+- [x] Installed CPU PyTorch 2.14.1, docTR 1.1.0, pytesseract 0.3.13 (Tesseract 5.3.3 was already on the laptop, English only). Versions pinned in `requirements.txt`.
+- [x] Smoke test (`scripts/smoke_test.py`): see Findings, Goal 4.
+
 ### Phase 2: Baseline benchmark
 - [ ] Build a benchmark harness: run engine X on the gold set, score character accuracy and field accuracy.
 - [ ] Run PyMuPDF, Tesseract, docTR, Docling, Surya. Compare on accuracy, speed and VRAM.
@@ -213,6 +217,26 @@ Implication: roughly four of five pages need no OCR at all, which supports the r
   - **Some totals live on a later page** (TP-Link total is on page 2 of 7), so page-1-only reading is not enough.
   - Two files are synthetic test documents and one is a project plan, not a customer document.
 - Label caveats: a few values were inferred (Lenovo AE4915167790 total from line items, Mitsumi invoice total from the item table, one handwritten reference with an unclear first digit). They are marked in the notes column.
+
+### Goal 4: engine smoke test, page 1 of three gold files, laptop CPU (2026-10-19)
+| File | Engine | Sec | Words | Conf | Label doc number found |
+|---|---|---|---|---|---|
+| #3 digital invoice | text layer | 0.0 | 401 | n/a | yes |
+| #3 digital invoice | Tesseract | 3.7 | 416 | 0.85 | yes |
+| #3 digital invoice | docTR | 20.3 | 432 | 0.89 | yes |
+| #34 clean scan | text layer | 0.0 | 0 | n/a | no (no text layer) |
+| #34 clean scan | Tesseract | 1.7 | 322 | 0.83 | yes |
+| #34 clean scan | docTR | 10.9 | 318 | 0.91 | yes |
+| #6 handwritten photo | text layer | 0.0 | 0 | n/a | no (no text layer) |
+| #6 handwritten photo | Tesseract | 1.6 | 79 | 0.55 | **no** |
+| #6 handwritten photo | docTR | 2.3 | 98 | 0.88 | yes (see caveat) |
+
+- All three engines run end to end. docTR default models: detection `fast_base` and recognition `crnn_vgg16_bn`, 123 MB in total, one-time download (load took 70 s including the download).
+- The text layer is instant and exact where it exists, and absent for scans and photos, which confirms the router design.
+- Tesseract was fast on clean scans but weak on the handwritten photo (confidence 0.55). docTR coped better there.
+- docTR on CPU took 2 to 20 s per page. The first page includes warm-up, so these are not final timings. A GPU should cut this a lot.
+- **Caveats:** "found" is a substring match of the labelled number in the whole output, so a short number like 6111 could match by chance. Confidence values come from different engines and are not comparable. Three files is not a benchmark. Goal 5 needs real scoring (field-level and character-level).
+- Disk: D: has 3.3 GB free after installs.
 
 ## 9. Decision log
 

@@ -1,1 +1,10 @@
+# CPU-only PyTorch (laptop). On the GPU PC, install the CUDA build of torch instead.
+--extra-index-url https://download.pytorch.org/whl/cpu
+numpy==2.5.2
+opencv-python==5.0.0.93
+pillow==12.3.0
 pymupdf==1.28.2
+pytesseract==0.3.13
+python-doctr==1.1.0
+torch==2.14.1+cpu
+torchvision==0.29.1+cpu
