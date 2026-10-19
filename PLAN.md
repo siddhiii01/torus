@@ -147,8 +147,9 @@ Rule of thumb: text-layer extraction needs CPU only; detect and recognize models
 - [x] Smoke test (`scripts/smoke_test.py`): see Findings, Goal 4.
 
 ### Phase 2: Baseline benchmark
-- [ ] Build a benchmark harness: run engine X on the gold set, score character accuracy and field accuracy.
-- [ ] Run PyMuPDF, Tesseract, docTR, Docling, Surya. Compare on accuracy, speed and VRAM.
+- [x] Benchmark harness: `scripts/run_ocr.py` (runs engines, caches output) and `scripts/score.py` (field presence scoring). Field-level only so far. Character-level accuracy is not measured yet.
+- [x] First run: text layer, Tesseract, docTR on all 105 pages of the 40 gold files (results in Findings, Goal 5).
+- [ ] Still to run: Docling, Surya (license check first), and a vision-language model on the 16 GB PC. Compare on accuracy, speed and VRAM.
 - [ ] Optional: run Document AI once on the gold set (small cost) as the reference to beat.
 - [ ] Decide the primary engine from the numbers.
 
@@ -238,10 +239,37 @@ Implication: roughly four of five pages need no OCR at all, which supports the r
 - **Caveats:** "found" is a substring match of the labelled number in the whole output, so a short number like 6111 could match by chance. Confidence values come from different engines and are not comparable. Three files is not a benchmark. Goal 5 needs real scoring (field-level and character-level).
 - Disk: D: has 3.3 GB free after installs.
 
+### Goal 5: first benchmark, 40 gold files, all 105 pages, laptop CPU (2026-10-19)
+Metric: does the labelled value appear anywhere in the engine's output (values normalized: dates, number formats, amounts). This measures **text recall for the downstream LLM**, not whether the right value was picked. "Router" = text layer when a page has at least 25 characters, otherwise docTR.
+
+| Field | Text layer | Tesseract | docTR | Router |
+|---|---|---|---|---|
+| doc_number | 61% | 82% | 100% | 100% |
+| doc_date | 59% | 84% | 89% | 89% |
+| total_amount | 59% | 75% | 94% | 94% |
+| vendor | 62% | 91% | 100% | 100% |
+| **All fields** | 60% | 83% | **96%** (130/136) | **96%** |
+
+| Document group | Text layer | Tesseract | docTR | Router |
+|---|---|---|---|---|
+| Digital PDF | 100% | 97% | 100% | 100% |
+| Scanned PDF | 9% | 91% | 100% | 100% |
+| Handwritten photo (transport chits) | 0% | 15% | **70%** | 70% |
+| Plain photo | 0% | 50% | 100% | 100% |
+
+Speed (laptop CPU): Tesseract 1.3 s/page, docTR 5.6 s/page. The router skips OCR on digital pages, so it is much faster than docTR alone at the same accuracy.
+
+Findings:
+- **docTR is the leading primary OCR engine.** Clear lead over Tesseract on scans and handwriting. Router matches docTR's accuracy at lower cost.
+- **All remaining misses are handwriting:** the 4 handwritten transport chits miss dates (all four) and totals (two). Handwritten dates and amounts are the engine's weak spot, and the first target for a vision-language fallback.
+- A scoring bug was found and fixed during the run (matcher accepted at most 2 decimals; one document prints 995224.546875). Lesson: inspect every miss before trusting the number.
+- **Caveats:** (1) Presence anywhere in a document is lenient. A short value like a total of 150 could match by chance. (2) The test is order-independent, so it does **not** measure reading order, and scrambled text layers still score 100%. (3) 40 files, 6 handwritten fields: small sample, wide uncertainty. (4) Only English text, procurement documents only. KYC, cheques and non-English are untested. (5) Labels were made by Claude and not yet spot-checked by a human.
+
 ## 9. Decision log
 
 | Date | Decision | Reason |
 |---|---|---|
+| 2026-10-19 | docTR is the leading primary OCR engine, used behind a text-layer-first router | Benchmark: 96% field recall vs Tesseract 83%. Provisional until Docling, Surya and a VLM are compared. |
 | 2026-10-19 | Claude labelled the gold set instead of the owner | Owner request. One-off exception to "content never leaves our machines". Not for KYC. |
 | 2026-10-13 | Run fully local, no external OCR services | Cost, free testing, PII |
 | 2026-10-13 | No Chinese-origin models | Company constraint |
@@ -262,5 +290,6 @@ Implication: roughly four of five pages need no OCR at all, which supports the r
 | Date | Session summary |
 |---|---|
 | 2026-10-14 | Goal 1 done: git initialized, venv and PyMuPDF 1.28.2 installed, inventory script written and run on the sample folder. Findings in 8a. |
+| 2026-10-19 | Goal 5 done: first benchmark. Router 96% field recall, weak spot is handwriting (70%). Findings in 8a. |
 | 2026-10-19 | Goal 3 done: all 40 gold files labelled by Claude, findings in 8a. Next: Goal 4, install and smoke-test OCR engines (owner installs, Claude guides). |
 | 2026-10-13 | Discussed OCR fundamentals. Reviewed constraints (local, no Chinese models, real PII). Found sample set at `E:\final-recon-sets` (about 200 files, 115 PDFs). Created this plan. |
