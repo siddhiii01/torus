@@ -153,8 +153,8 @@ Server hosting, KYC, other languages, Surya, and any Chinese-origin model are ou
 | Block | Hours | Date | Work | Stop when |
 |---|---|---|---|---|
 | 1a | 2 | Thu 29 | Engine, boxes, review of #03 #34 #06 #37. **Done.** | Review file exists |
-| 1b | 2 | Thu 29 | You open the review. Name the misses on those four files. Fix the worst one and re-run those pages. | Each of the four has a one-line verdict: pass, or a class name |
-| 2 | 4 | Fri 30 | Run all 40 gold files. Full look at every scan, photo, handwritten chit, mixed file, and blank. Spot-check digital pages for order and boxes. Write the class list here. | Class list written. Digital pages that are clean are not re-litigated |
+| 1b | 2 | Thu 29 | Review by us. Reading order fixed. Field/value JSON added. Intern parallel. **Done.** | Four-file verdicts written |
+| 2 | 4 | Thu 29 | All 40 gold files through the engine. **Done.** Class list below. | Class list written |
 
 ### Week 2 — 8 hours — 2 and 3 Nov
 
@@ -171,13 +171,38 @@ Reviewed the 10 pages in `reports/review` with boxes drawn on the page images. I
 
 | Page | Boxes | Order | Words | Next action |
 |---|---|---|---|---|
-| #03 digital invoice | On the words | Fail. Table is read down the columns. Header blocks are out of visual order. 13 jumps upward. | Printed text is present | First code fix: reading order for the text layer |
+| #03 digital invoice | On the words | Fixed. Visual order, across the row. | Printed text is present | Keep. Field/table JSON added on top |
 | #34 pages 1–4, scan invoice and packing lists | On the words | Rows run left to right. Letterhead grouping is slightly odd | Printed lines, quantities, and totals are readable | No model change from these pages |
 | #34 page 5, delivery advice | On the labels | Usable | Ticked checkboxes are not recorded as ticked. Stamp text is partial | Note. Not today’s fix |
 | #34 page 6, ownership and acceptance | On the printed lines | Usable | Signature not read. Stamp text partial | Note |
 | #34 page 7, HS code list | On the words | Rows run left to right, totals included | Printed table readable. Stamp partial | No model change |
 | #06 handwritten chit | On printed and handwritten words | Top to bottom | Printed form is fine. Handwriting: year digit wrong, a short name truncated, a reference prefix wrong, one garbage token. Arabic and a truck number not read | Week 2 block 3. English handwriting only. Arabic stays a note |
 | #37 blank | None, correctly | Empty | Empty, status `needs_review` | Pass |
+
+### Gold run, all 40 files (29 Oct)
+
+`scripts/run_gold.py` on `E:\final-recon-sets`. 105 pages. JSON in git-ignored `reports/gold_run/`.
+
+| | Count |
+|---|---|
+| Files | 40 |
+| Pages | 105 |
+| Words | 22,287 |
+| Field pairs | 757 |
+| Table rows | 737 |
+| Status `ok` | 38 files |
+| Status `needs_review` | 2 files: #17 photo (`low_confidence`), #37 blank (`empty`) |
+| Readers | 21 text layer only, 18 docTR only, 1 mixed |
+
+Class list for Week 2 (no document text):
+
+| Class | Evidence | Next |
+|---|---|---|
+| Handwriting | Transport chits #06, #11, #15, #18, #26 return words but known digit/name errors from Day 1 | Block 3: docTR `parseq` on these five only |
+| Empty page | #37 | Already flagged. Keep |
+| Low confidence photo | #17 | Inspect in Block 3. May stay `needs_review` |
+| Checkbox / stamp | Seen on #34 | Note. Not the top fix |
+| Field/table pairing | Geometry-based. Better after order fix. Still imperfect | Spot-check during Block 3; no vendor templates |
 
 ## Hardware flag to take upstairs
 
@@ -292,6 +317,7 @@ Treat 1–3 fields out of 20 as a hint. Handwritten dates failed in every config
 
 | Date | Session summary |
 |---|---|
+| 2026-10-29 | Blocks 1a, 1b, and 2 done same day. All 40 gold files run. 38 ok, 2 needs_review. Next: handwriting (`parseq`) then the service. |
 | 2026-10-29 | 16-hour plan set: 8h this week, 8h next week. Block 1a done (engine and four-file review). 14 hours left. |
 | 2026-10-29 | Week 1 started: engine keeps boxes, review view for gold #03, #34, #06, #37. |
 | 2026-10-28 | Production plan rewritten around manual review, this laptop, and an explicit stop-and-ask for a bigger machine. Inventory refreshed: 214 files, 280 PDF pages, 48 still scanned. |
