@@ -1,90 +1,77 @@
-# How to review one OCR page
+# Intern review task
 
-You are checking whether our engine read the page the way a person would. You are not fixing the engine. Send notes. We decide what to change.
+Deadline: **30 October 2026, end of day.**
 
-The file to open is:
+You are checking whether the engine read each page the way a person would. You are not changing the engine. Send one note. We decide what to fix.
 
-`D:\OCR-Engine\reports\review\index.html`
+## Setup
 
-Double-click it. It opens in a browser. Do not copy this folder into git, email, or a chat outside the company. The pages are real customer documents.
+Clone this repository and stay on `main`. Do not create a branch. Do not install Python, PyTorch, or the OCR models. You will not run the engine.
 
-## What is on the screen
+```
+git clone https://github.com/siddhiii01/local-ocr-engine.git
+cd local-ocr-engine
+git checkout main
+git pull origin main
+```
 
-Each block is one page. The heading looks like this:
+After the pull, this file is `REVIEW_FOR_INTERN.md` in the project root. Read it, then do the review below.
 
-`#03 invoice · page 1 · textlayer · ok`
+You will also be given a separate folder named `review`. It is not in git. It contains real customer documents. Do not commit it, do not upload it, and do not send it to anyone except the person who gave it to you.
 
-- The number (`#03`) is the file.
-- `page 1` is which page inside that file.
-- `textlayer` or `doctr` is which reader ran. You do not judge the reader. You judge the result.
-- `ok` means the engine is willing to return the page. `needs_review` means the engine is not sure. A blank page should say `needs_review`.
+## What to open
 
-Under the heading:
+Inside the `review` folder, double-click `index.html`. It opens in a browser.
 
-- Left: the page photo. Red boxes are the words the engine found.
-- Right: those same words, in the order the engine read them. Line 1 in the list is what the engine thinks comes first.
-
-There are 10 pages. Do all 10. Order:
+There are 10 pages. Do all 10, in this order:
 
 1. `#03` page 1
-2. `#34` pages 1, 2, 3, 4, 5, 6, 7
+2. `#34` pages 1, 2, 3, 4, 5, 6, and 7
 3. `#06` page 1
 4. `#37` page 1
 
-## Three checks, in this order
+Each page has a heading like `#03 invoice · page 1 · textlayer · ok`.
 
-Do them on every page. Spend about five to ten minutes on a full page, less on a short one.
+- `#03` is the file. `page 1` is which page inside that file.
+- `textlayer` or `doctr` is which reader ran. Do not judge the reader. Judge the result.
+- `ok` means the engine is willing to return the page. `needs_review` means it is not sure. A blank page should say `needs_review`.
 
-### Check A. Boxes
+Under the heading there are three parts:
 
-Look only at the picture.
+- Left: the page, with a box around each word the engine found.
+- Middle: those words in the order the engine read them.
+- Right: a **Fields** table (`Field` and `Value`) and any **Tables**.
 
-- A box should sit on a word, not on empty paper and not halfway between two lines.
-- A word you can read should have a box. A logo or a signature with no letters can be unboxed.
-- A stamp with letters: note it if the letters have no box.
+## What to check
 
-Write `boxes pass` or `boxes miss`, plus where. Example: `boxes miss, bottom table, boxes sit on the line above the words`.
+On every page, do these four checks. About five to ten minutes for a full page.
 
-### Check B. Order
+**Boxes.** Look only at the picture. A box should sit on a word, not on empty paper and not halfway between two lines. A word you can read should have a box. A logo or a signature with no letters can be unboxed. Write `boxes pass` or `boxes miss`, and name the place if it is a miss.
 
-Cover the picture. Read the list on the right from the top. Then look back at the picture.
+**Order.** Read the middle list from the top, then look at the picture. The list should follow the page the way you would read it: top to bottom, and on a row, left to right across the whole row before the next row. Fail it if a column is read all the way down before the next column, if the title comes after the address, or if the list jumps from the bottom back to the top. Write `order pass` or `order miss`, and name the place.
 
-The list should follow the page the way you would read it: top to bottom, and on a row, left to right across the whole row before the next row.
+**Words.** Pick five spots: the title, one name, one date, one long reference number, and the total. If the page has handwriting, include the handwriting. A wrong character, a missing word, two words glued together, or a word that is not on the page is a miss. Name the kind of spot and what is wrong. Do not paste a sentence from the document. Example: `word miss, handwritten date, the year digit is wrong`.
 
-Fail the page if:
+**Fields.** Look at the right-hand Field / Value table and any Tables. A field is a miss when the label and the value do not belong together, or the value is not what is printed next to that label on the page. A table is a miss when a cell is under the wrong column. Write `fields pass` or `fields miss`, and name the row. Example: `fields miss, date value is the invoice number`.
 
-- a column is read all the way down before the next column starts
-- the title shows up after the address
-- a total shows up before the lines it belongs to
-- the list jumps from the bottom back to the top
+Also, once per page if you see them:
 
-Write `order pass` or `order miss`, plus where. Example: `order miss, item table is read down each column instead of across the row`.
+- Arabic or any non-English line: write `non-English not read`. Do not correct it.
+- A ticked checkbox whose tick is not recorded: write `checkbox not recorded`.
+- Stamp letters with no box, or only some of the letters read: write `stamp partial`.
 
-### Check C. Words
+`#37` is a blank page. Pass it only if the picture is empty, the lists are empty, and the heading says `needs_review`.
 
-Pick five spots, not the whole page: the title, one name, one date, one long reference number, and the total. If the page has handwriting, the five spots must include the handwriting.
+## What to report
 
-Compare each spot to the list.
-
-- Wrong character, missing word, two words glued together, or a word that is not on the page: that is a miss.
-- Say what kind of spot it was, and what is wrong. Do not paste the whole page.
-- Example: `word miss, handwritten date, the year digit is wrong`.
-- Example: `word miss, total, the amount is missing`.
-- A printed word that matches: do not write it out.
-
-Arabic or any non-English line: write `non-English not read` once. Do not try to correct it. English is the scope.
-
-A tick inside a checkbox: write `checkbox not recorded` if you can see a tick and the list only has the label, not which box is ticked.
-
-## How to write the note
-
-One block per page. Send the whole thing back in one message. Use this shape. Replace the examples.
+Send one message by **30 October 2026, end of day**, to the person who assigned this. Use this shape for all 10 pages. `pass` means you looked and it matches. If you are unsure, write `unsure` and one sentence. Do not guess a pass.
 
 ```
 #03 page 1
 boxes: pass
 order: miss, item table read down the columns
-words: pass on title, date, total. miss on one description, last word dropped
+words: pass
+fields: miss, date value is the invoice number
 checkbox: none
 stamp: none
 
@@ -92,29 +79,23 @@ stamp: none
 boxes: pass
 order: pass
 words: pass
+fields: pass
 checkbox: none
-stamp: partial, ring of the stamp has some letters and misses others
+stamp: partial
 
 #37 page 1
 boxes: pass
 order: pass
 words: pass
-blank: picture is empty, list is empty, heading says needs_review
+fields: pass
+blank: picture empty, lists empty, heading says needs_review
 ```
 
-Rules for the note:
-
-- `pass` means you looked, and it matches.
-- A miss names the place (header, table, total, date, stamp, checkbox) and the kind of error (shifted box, wrong order, wrong character, missing, extra garbage word).
-- Do not paste a sentence from the document.
-- Do not say “looks fine” with no check name. We need the three words: boxes, order, words.
-- If you are unsure, write `unsure` and one sentence about what you could not decide. Do not guess a pass.
+Do not paste sentences or numbers from the documents. Name the place and the kind of error.
 
 ## What you do not do
 
 - Do not edit the HTML, the images, or any code.
-- Do not run a new OCR.
-- Do not send the pages or your notes to anyone except the person who gave you this file.
-- Do not skip `#34` pages 2 to 7 because page 1 looked fine. Each page is its own document.
-
-When all 10 blocks are written, send them. That is the whole task.
+- Do not run OCR.
+- Do not open a pull request.
+- Do not skip `#34` pages 2 to 7 because page 1 looked fine.
