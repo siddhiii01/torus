@@ -1,225 +1,223 @@
-# OCR Engine: Plan & Progress Tracker
+# OCR Engine: Production Plan
 
-Owner: Celeris Ventures (AI team) · Started: 2026-10-13
-This is the living document for the project. Update it at the end of every working session.
+Owner: Celeris Ventures (AI team) · Started: 2026-10-13 · This revision: 2026-10-28
 
----
-
-## 1. Why we are building this
-
-We use Google Document AI for OCR. Two problems:
-
-1. **Cost.** Per-page pricing hurts at scale.
-2. **Testing.** We cannot test freely because every run costs money.
-
-Goal: an OCR engine that runs **locally on our own servers**, so cost is fixed (hardware) and testing is unlimited.
-
-Customer documents contain PII (Aadhaar, PAN, passports, bank documents). Running locally also means **no document ever leaves our infrastructure**.
+This is the living document. The production plan below replaces the earlier phase list as the way we work. Benchmark findings stay in section 8a so we do not lose them.
 
 ---
 
-## 2. Expected end result
+## Starting line
 
-A self-hosted service that takes **any document** (PDF or image) and returns **structured, reliable text with positions and confidence**, ready for the downstream LLM extraction step.
+**Today, on this laptop, before any new model.**
 
-### 2.1 What it must do
-- Accept: PDF (digital and scanned), JPG/PNG/TIFF, multi-page files.
-- Return, per page: full text, lines and words with **bounding boxes**, **confidence scores**, reading order, and detected tables.
-- Handle **documents we have never seen** without a human looking at them (see 2.3).
-- Be a drop-in replacement for Document AI at the call site: same kind of request and a compatible response shape, so the main project can switch with a config change.
-- Support new languages and new document domains by **adding a plugin or model**, not rewriting the system.
+The machine is a 12th-gen Intel i5-12450H (8 cores / 12 threads), 16 GB RAM, NVIDIA GeForce RTX 2050 with 4 GB VRAM, plus Intel UHD graphics. Python 3.12.10 and the project venv are installed. D: has about 2.9 GB free. C: has about 27 GB free. E: has about 14 GB free.
 
-### 2.2 What it must not do
-- Send any document, text or image to an external service.
-- Use Chinese-origin models (company constraint). This includes PaddleOCR, Qwen-family models, MinerU, DeepSeek-OCR, and fine-tunes built on them. Check the base model of anything fine-tuned.
-- Log document content. Logs hold metadata only (page count, timings, engine used, confidence stats).
+The repo is a benchmark harness, not an engine. `scripts/` can inventory a folder, pick a gold set, cache words from the PDF text layer, Tesseract, and docTR, and score whether a labelled field appears somewhere in that text. Bounding boxes are read and then thrown away. There is no service, no shared output schema, and no review screen.
 
-### 2.3 Unknown documents: the central design problem
-We will process documents nobody on the team sees. The engine therefore cannot rely on per-document tuning. It must:
+What we already know from the 40-file gold set (section 8a): docTR behind a text-layer-first path finds 96% of labelled fields somewhere in the text. That number does not mean the page was read correctly. It ignores reading order, so a scrambled text layer still scores perfectly. Handwritten transport chits are the weak class (about 70%). One scanned PDF is blank. Some digital PDFs return text in a jumbled order. A single PDF can hold several documents.
 
-1. **Route automatically.** Detect digital vs scanned, orientation, language and quality per page, and pick the engine.
-2. **Measure its own confidence.** Every page gets a quality score (OCR confidence, text sanity checks, language-model plausibility).
-3. **Escalate when unsure.** Low-confidence pages go to a stronger fallback (vision-language model). If still unsure, the result is flagged `needs_review` instead of silently returning garbage.
-4. **Stay honest.** The response always says which engine ran and how sure it is. Downstream code can decide what to do with low-confidence output.
-5. **Improve from feedback.** Collect flagged pages (with consent and under the PII policy) to grow the test set.
+The sample folder `E:\final-recon-sets` was re-counted on 2026-10-28:
 
-### 2.4 Success criteria (to be given numbers after the benchmark)
-| Metric | Target |
+| | Count |
 |---|---|
-| Character accuracy vs reference on printed docs | TBD (benchmark vs Document AI) |
-| Field-level accuracy after LLM step (vendor, amounts, dates, IDs) | TBD |
-| Silent failures (bad output returned with high confidence) | as close to zero as possible |
-| Throughput | TBD per GPU |
-| Cost per page | far below Document AI |
+| Files | 214, across 29 case folders |
+| PDFs | 125 (105 fully digital, 19 fully scanned, 1 mixed) |
+| PDF pages | 280 (232 with a text layer, 48 scanned or image-only) |
+| Images | 4 jpg |
+| Other | 33 zip, 22 eml, 23 md, 5 xlsx, 1 xls, 1 csv |
 
----
+Most PDFs are short: 64 have 1 page, 27 have 2, the longest has 12. Since the 14 October inventory the folder grew by digital pages. The scanned-page count is still 48, so the existing gold set still covers the hard cases. Zips, email, markdown, and spreadsheets are out of scope. The engine reads PDFs and images.
 
-## 3. Document domains
+The old 96% figure stays as a hint about which reader to start with. It is not the acceptance test.
 
-| Priority | Domain | Notes |
-|---|---|---|
-| 1 | Invoices, receipts, bills | Vendor, amounts, dates. Mostly digital PDFs, some scans and photos. Sample set exists. |
-| 2 | KYC / identity (Aadhaar, PAN, passports) | Photos and scans. Needs rotation handling, passport MRZ. High PII sensitivity. |
-| 3 | Banking and insurance (cheques, forms, claims) | Handwriting, stamps, checkboxes, tables. |
-| Later | More domains and languages | Engine must stay extensible. |
+## Ending line
 
----
+A local OCR engine that can take Document AI’s place for **English procurement documents of the kinds in this folder**: digital PDFs, scans, phone photos, handwriting, poor scans, multi-page files, and blank pages.
 
-## 4. Planned architecture
+A file goes in. For every page the engine returns:
 
-```
-Input file
-  -> Intake: type sniffing, page split, size limits
-  -> Per-page analysis: digital text layer? scanned? orientation, language, quality
-  -> Router
-       |- digital page    -> direct text-layer extraction (PyMuPDF), exact and ~free
-       |- scanned page    -> preprocess (deskew, denoise) -> detect text -> recognize text
-       |- hard / low conf -> vision-language model fallback (GPU)
-  -> Layout and tables (reading order, table structure)
-  -> Quality gate (confidence, sanity checks) -> ok | escalate | needs_review
-  -> Normalized output (JSON): text, words, boxes, confidence, tables, provenance
-  -> Downstream LLM extraction (separate step, not part of this engine)
-```
+- the words on that page, in reading order
+- lines and words with bounding boxes and confidence
+- which reader ran
+- a status of `ok` or `needs_review`
 
-Design principles:
-- **Pluggable engines** behind one interface. Swapping a model must not touch the rest.
-- **Stateless service** (FastAPI), so it scales horizontally when volume grows.
-- **Evidence over opinion.** Every engine choice is backed by a benchmark on our data.
-- **Privacy by default.** Local only, no content in logs, test data stays on our machines.
+No coordinates are hardcoded for these vendors. A new procurement PDF of the same kinds must go through the same code with no new rules.
 
----
+**Done, for this document family,** means all of the following:
 
-## 5. Candidate components (allowed under our constraints)
+1. A fixed review set (the current 40 gold files, about 105 pages, plus any new scan or photo that shows up later) has been checked by eye: page image on one side, engine output on the other.
+2. On a passing page, the text a person can read on the page is in the output, in an order a person can follow, with boxes on the right words. Blank pages are flagged, not returned as a successful empty read.
+3. Pages that still fail stay on a short list with the failure class (handwriting, unreadable scan, scrambled order, no text at all). They are not silently shipped.
+4. A procurement PDF that was not in the review set runs on the same path and survives the same kind of check.
+5. Only then do we wrap it as a service and talk about switching production off Document AI for this family.
 
-| Role | Candidates | Origin | Status |
+Other families (KYC, cheques, forms, other languages) are a later ending line. They use the same engine. They do not change this one.
+
+The engine reads the page. It does not fill an invoice form. Vendor, amount, and date extraction stays downstream, on top of this output.
+
+## How we build it
+
+Work is a loop, not a model bake-off against Document AI. There will be no Document AI score to chase. We open a real file, compare, name the reason, and change the engine.
+
+### 1. Engine contract, on this laptop
+
+One pipeline, one JSON schema:
+
+`file -> pages -> reader -> words, boxes, confidence, reading order, status`
+
+Readers plug in behind that schema. The first two readers are the ones already installed:
+
+- **Text layer** (PyMuPDF), only when the page actually has usable embedded text. A scrambled layer is a failure, not a success. Usable means the words come back in an order that follows the page, not merely that 25 characters exist.
+- **docTR** (Mindee, France; now maintained in Germany; Apache 2.0) for scans, photos, and any page whose text layer is missing or scrambled. Keep the boxes. Default models first: `fast_base` + `crnn_vgg16_bn`. Run it on the GPU when it fits.
+
+Tesseract stays installed as a second reader we can call on a page docTR reads badly. It is not the main path. It was weaker on handwriting (15% field recall there).
+
+This step also adds a local review view: the page image, and the words and boxes the engine produced. That view is the test. It writes no document text to git or to logs. Logs stay metadata: page count, reader name, timings, confidence summary, status.
+
+### 2. Review the pages we have
+
+Run that pipeline on the gold set. Review by class, not by staring at all 280 pages on day one:
+
+| Class | Why it is in the first review |
+|---|---|
+| Digital PDF with a clean text layer | Must be exact and cheap |
+| Digital PDF with scrambled order | Known failure. Text layer is not automatically trusted |
+| Clean scan | docTR already looks strong here. Confirm full-page reading and boxes, not just one field |
+| Handwritten photo (transport chits) | Known weak class |
+| Plain photo, blank page, mixed PDF, multi-page bundle | Each has already bitten us once |
+
+For each miss, record the class and the cause. Causes we already expect: reading order, missed handwriting, a blank page treated as success, a box on the wrong line, a word split or merged. Fix one class, re-run those pages, review again.
+
+### 3. Change the reader only when a class is still failing
+
+Order on this 4 GB GPU. Stop at the first reader that fixes the class. Do not download the next one speculatively.
+
+| Order | Reader | Origin | When |
 |---|---|---|---|
-| Digital PDF text | PyMuPDF | Artifex | planned |
-| Classical OCR baseline | Tesseract | Google | to benchmark |
-| Detect + recognize | docTR | Mindee (France) | to benchmark, likely main |
-| Layout / tables | Docling, Granite-Docling | IBM | to benchmark |
-| Detect + recognize + layout | Surya | Datalab (US) | to benchmark, **license check needed** |
-| Handwriting | TrOCR, Florence-2 | Microsoft | later |
-| Fallback VLM | Gemma 3, Mistral Small vision, Llama 3.2 Vision | Google / Mistral / Meta | later, **license check needed** |
+| 1 | PDF text layer, layout-aware | PyMuPDF | Digital pages |
+| 2 | docTR default | France / Germany, Apache 2.0 | Scans and photos |
+| 3 | docTR `parseq`, then tilt or contrast if a review page shows it | same | A class docTR default still misses. Earlier tuning moved 14/20 to 17/20 handwritten fields. That is a hint, re-check on the full page |
+| 4 | Tesseract `eng` | Google / US, already on the machine | Second opinion on a page docTR mangles |
+| 5 | TrOCR or Florence-2 | Microsoft, US | Handwriting still failing, and the model loads in 4 GB |
+| 6 | Docling | IBM, US | Tables and layout still wrong, and it fits in 16 GB RAM |
+| 7 | Surya OCR 2 (650M) | Datalab, US | Only after a license check. Code is Apache 2.0. Weights are a modified OpenRAIL-M: free under a $5M revenue and funding line, and not for a product that competes with Datalab. Do not download until that is confirmed |
 
-Rejected: PaddleOCR, Qwen-VL, MinerU, DeepSeek-OCR, olmOCR and Nanonets-OCR (Qwen-based). Reason: no Chinese-origin models.
+Indian-origin models are allowed. For English page OCR on this laptop, none of the readers above is Indian. When a later language needs one, we add it the same way: it has to load here, and it has to fix a class we can see.
+
+### 4. Flag, then stop
+
+The flag is a written note in this file and in the session, with the failure class, what was tried, and what the machine did. It is the list to take to seniors. We do not keep stacking models past the point this laptop can run.
+
+**Flag now, before any new download:** D: has about 2.9 GB free. New weights go on C: (or E:), not on D:.
+
+**Flag and stop when any of these happens:**
+
+- The next allowed model does not load in 4 GB VRAM or 16 GB RAM.
+- A page takes so long that reviewing the gold set is impractical.
+- Handwriting or poor scans still fail after every reader in the table above that actually loaded.
+- A page produces no usable text from every allowed reader. That page, and only that page, may try a Chinese-origin model (PaddleOCR, Qwen-family, MinerU, DeepSeek-OCR, and anything whose base model is one of those, including olmOCR while it is Qwen-based). One such page is already a reason to ask for a bigger machine rather than to adopt that model as the default.
+
+The bigger machine is for a larger fallback reader and for speed. The server comes after a reader is chosen, so we host something we have already seen work. Hosting does not fix a reader we have not reviewed.
+
+### 5. Service, after the review set passes
+
+FastAPI on this machine first, so the call shape is real. Metadata-only logs. Then the same image on the server the seniors provide. Production switches off Document AI for this document family only after step 2’s ending-line checks pass on an unseen procurement file.
+
+## What we will not do
+
+- Hardcode a vendor’s layout, coordinates, or field positions.
+- Treat “the labelled invoice number appeared somewhere” as proof the page was read.
+- Send a document, image, or OCR text to an external API.
+- Put document content in git, in logs, or in this plan beyond the failure classes already recorded.
+- Start with KYC, cheques, or other languages.
+- Use a Chinese-origin model as a normal reader.
+
+## 16-hour plan (week 1 and week 2)
+
+Budget is **16 hours total**. Week 1 and week 2 get **8 hours each**, in two **4-hour** blocks. Same shape both weeks: run, look, fix, write the result down. No block is “explore”.
+
+Clock already spent on 29 Oct: about 2 hours. The pipeline keeps boxes, and `reports/review/index.html` exists for gold #03, #34, #06, and #37. The blank page returns `needs_review`. Those 2 hours are Block 1a. **14 hours remain.**
+
+**Done at hour 16** means all of this is true:
+
+1. All 40 gold files have been through `ocr/engine.py`.
+2. Every failed page is on a class list in this file (reading order, handwriting, empty, bad boxes, or no text). No document text in the list.
+3. The top class has been fixed and those pages re-checked, or it is a hardware flag because the next reader does not fit in 4 GB.
+4. A local service on this machine accepts a PDF or image and returns the same JSON: words, boxes, confidence, reader, `ok` or `needs_review`. Logs are metadata only.
+5. One procurement PDF that is not in the gold set has been run through that service and checked by eye.
+
+Server hosting, KYC, other languages, Surya, and any Chinese-origin model are outside these 16 hours. A page that still has no usable text at hour 16 is the flag for seniors, not a reason to start a new model track inside this budget.
+
+### Week 1 — 8 hours — 29 and 30 Oct
+
+| Block | Hours | Date | Work | Stop when |
+|---|---|---|---|---|
+| 1a | 2 | Thu 29 | Engine, boxes, review of #03 #34 #06 #37. **Done.** | Review file exists |
+| 1b | 2 | Thu 29 | You open the review. Name the misses on those four files. Fix the worst one and re-run those pages. | Each of the four has a one-line verdict: pass, or a class name |
+| 2 | 4 | Fri 30 | Run all 40 gold files. Full look at every scan, photo, handwritten chit, mixed file, and blank. Spot-check digital pages for order and boxes. Write the class list here. | Class list written. Digital pages that are clean are not re-litigated |
+
+### Week 2 — 8 hours — 2 and 3 Nov
+
+| Block | Hours | Date | Work | Stop when |
+|---|---|---|---|---|
+| 3 | 4 | Mon 2 | One change aimed at the top class only. If it is handwriting: docTR `parseq` on the failed chits. If it is order: layout-aware text layer. Re-run only the failed pages. Keep the change only when the page looks better. | Failed pages re-checked, or a hardware flag if the model will not load |
+| 4 | 4 | Tue 3 | Hours 1–2: local HTTP service, same JSON, metadata log. Hour 3: one unseen procurement file through the service, checked by eye. Hour 4: write the hour-16 result in this file. Passes and the remaining flags. Then stop. | Ending checklist above is filled in |
+
+Weights stay in `~\.cache` on C:. docTR stays on the CPU build that is already installed. A download that does not fit on C:, or a model that does not load in 4 GB, ends that block early and becomes the flag.
+
+### Day 1 check (29 Oct, our pass, no document text)
+
+Reviewed the 10 pages in `reports/review` with boxes drawn on the page images. Intern instructions are in `REVIEW_FOR_INTERN.md`. Their notes are a second pass. The fix does not wait on them.
+
+| Page | Boxes | Order | Words | Next action |
+|---|---|---|---|---|
+| #03 digital invoice | On the words | Fail. Table is read down the columns. Header blocks are out of visual order. 13 jumps upward. | Printed text is present | First code fix: reading order for the text layer |
+| #34 pages 1–4, scan invoice and packing lists | On the words | Rows run left to right. Letterhead grouping is slightly odd | Printed lines, quantities, and totals are readable | No model change from these pages |
+| #34 page 5, delivery advice | On the labels | Usable | Ticked checkboxes are not recorded as ticked. Stamp text is partial | Note. Not today’s fix |
+| #34 page 6, ownership and acceptance | On the printed lines | Usable | Signature not read. Stamp text partial | Note |
+| #34 page 7, HS code list | On the words | Rows run left to right, totals included | Printed table readable. Stamp partial | No model change |
+| #06 handwritten chit | On printed and handwritten words | Top to bottom | Printed form is fine. Handwriting: year digit wrong, a short name truncated, a reference prefix wrong, one garbage token. Arabic and a truck number not read | Week 2 block 3. English handwriting only. Arabic stays a note |
+| #37 blank | None, correctly | Empty | Empty, status `needs_review` | Pass |
+
+## Hardware flag to take upstairs
+
+This laptop can build and review the engine. It cannot host a 7B–12B vision model, and D: cannot hold more weights.
+
+Ask when we hit the stop conditions above. The ask is a GPU machine with enough VRAM for a larger fallback reader (the 16 GB machine already mentioned in the old plan is the right class), plus disk for weights. The server is the step after that reader earns a place in the pipeline.
 
 ---
 
-## 6. Hardware
+## 8a. Findings (history)
 
-| Machine | GPU | Use |
-|---|---|---|
-| Dev laptop | RTX 2050, 4 GB VRAM | Build and test the classical pipeline (small models or CPU) |
-| PC | 16 GB VRAM | Vision-language model experiments (quantized 7-12B) and heavier benchmarks |
-| Production server | GPU available (spec TBD) | Size after benchmarks give throughput numbers |
-
-Rule of thumb: text-layer extraction needs CPU only; detect and recognize models are small; vision-language models are the real GPU consumers.
-
----
-
-## 7. Data
-
-- **Sample set:** `E:\final-recon-sets` (about 200 files: vendor invoices, GRVs, cargo documents, emails). Procurement reconciliation scenarios.
-- **Ground truth:** none yet. Document AI outputs are not saved. We must create reference values ourselves (see Phase 1).
-- **PII policy:** real customer data stays on company machines. It is never uploaded to external services, never committed to a repository and never pasted into logs. Samples are read from `E:\` and are not copied into this project folder without a decision.
-
----
-
-## 8. Roadmap (step by step)
-
-### Phase 0: Foundation  (done)
-- [x] Define goal, constraints and end result (this document)
-- [x] Set up the project: Python 3.12 venv, git (`main`), `.gitignore` that blocks documents and reports
-- [ ] Decide the dependency and license review process
-
-### Phase 1: Understand our data  `<- we are here`
-- [x] Inventory script (`scripts/inventory.py`): type, size, pages, text-layer presence. Metadata only.
-- [x] Triage: classify each PDF as digital, scanned or mixed. See Findings below.
-- [x] Dedupe and propose gold-set candidates (`scripts/gold_candidates.py`).
-- [x] Labelling scope decided: **option A**, one set of key fields per file (doc type, vendor, number, date, currency, total, notes).
-- [x] Labelling tool built: `scripts/label.py` (resumable, writes git-ignored `reports/labels.csv`).
-- [x] **Label the 40 gold files** (done 2026-10-19 by Claude at the owner's request, saved to git-ignored `reports/labels.csv`). A human spot-check of about 10 files is still advisable. `scripts/label.py` stays available for adding labels later.
-- [ ] Collect samples for the other domains (KYC, cheques, forms, handwriting).
-- [x] Record findings here (section 8a).
-
-### Phase 1b: Engine setup and smoke test (done 2026-10-19)
-- [x] Installed CPU PyTorch 2.14.1, docTR 1.1.0, pytesseract 0.3.13 (Tesseract 5.3.3 was already on the laptop, English only). Versions pinned in `requirements.txt`.
-- [x] Smoke test (`scripts/smoke_test.py`): see Findings, Goal 4.
-
-### Phase 2: Baseline benchmark
-- [x] Benchmark harness: `scripts/run_ocr.py` (runs engines, caches output) and `scripts/score.py` (field presence scoring). Field-level only so far. Character-level accuracy is not measured yet.
-- [x] First run: text layer, Tesseract, docTR on all 105 pages of the 40 gold files (results in Findings, Goal 5).
-- [ ] Still to run: Docling, Surya (license check first), and a vision-language model on the 16 GB PC. Compare on accuracy, speed and VRAM.
-- [ ] Optional: run Document AI once on the gold set (small cost) as the reference to beat.
-- [ ] Decide the primary engine from the numbers.
-
-### Phase 3: Core engine
-- [ ] Engine interface and plugin registry
-- [ ] Page analysis and router
-- [ ] Preprocessing (deskew, rotation, denoise)
-- [ ] Normalized output schema (Document AI-compatible adapter)
-- [ ] Quality gate and confidence scoring
-
-### Phase 4: Hard cases and robustness
-- [ ] Vision-language fallback on the 16 GB PC
-- [ ] Tables, handwriting, stamps, low-quality photos
-- [ ] Stress test with deliberately bad inputs (blur, rotation, shadows, folded paper)
-- [ ] Failure modes: corrupt PDFs, huge files, password-protected files
-
-### Phase 5: Service
-- [ ] FastAPI service, async queue for large jobs
-- [ ] Docker image, GPU deployment
-- [ ] Metadata-only logging and metrics
-- [ ] Load test, capacity sizing
-
-### Phase 6: New domains and languages
-- [ ] KYC documents (Aadhaar, PAN, passport MRZ)
-- [ ] Banking and insurance forms
-- [ ] Additional languages as requirements appear
-
-### Phase 7: Cutover
-- [ ] Shadow mode: run next to Document AI in the main project, compare results
-- [ ] Switch over per document type when accuracy is proven
-- [ ] Keep Document AI as an optional fallback during the transition
-
----
-
-## 8a. Findings
+These notes are from 14–19 October 2026. The production plan above is the operating plan. The 96% score is field presence, not page-reading quality.
 
 ### Goal 1: inventory of `E:\final-recon-sets` (2026-10-14)
+
 - 202 files: 115 PDF, 31 zip, 23 md, 22 eml, 5 xlsx, 4 jpg, 1 xls, 1 csv. No unreadable files.
 - 253 PDF pages: **205 digital (81%)**, **48 scanned or image-only (19%)**.
 - By file: 95 fully digital, 19 fully scanned, 1 mixed.
 - Most PDFs are short: 59 have 1 page, 26 have 2 pages, the longest has 12.
 - Scanned PDFs appear in 10 of the 16 case folders, so scans are spread across vendors and not one outlier.
-- Several files appear to be duplicates (identical size and page count in different folders). Dedupe before building the gold set.
-- Caveat: "digital" only means a text layer exists (at least 25 characters per page). Its quality is not yet checked. An old OCR layer on a scan would count as digital.
+- Several files appear to be duplicates. Dedupe before building the gold set.
+- "Digital" only means a text layer exists (at least 25 characters per page). An old OCR layer on a scan would count as digital.
 
-Implication: roughly four of five pages need no OCR at all, which supports the router design (text layer first). The remaining 19% are the pages where engine quality matters.
+Refreshed 2026-10-28: 214 files, 125 PDFs, 280 pages, 232 digital, 48 scanned. Scanned count unchanged. 29 case folders. See the starting line.
 
 ### Goal 2: dedupe and gold-set candidates (2026-10-14)
+
 - Script: `scripts/gold_candidates.py`. Outputs `reports/duplicates.csv` and `reports/gold_candidates.csv` (names and hashes only, git-ignored).
 - 119 PDFs and images, **96 unique by content**, 23 duplicate copies. Unique mix: 77 digital, 14 scanned, 1 mixed, 4 images.
-- Proposed gold set: **40 files, about 105 pages** across 19 folders (21 digital, 14 scanned, 1 mixed, 4 images). Every unique hard case (scan, mixed, image) is included, and digital files fill the rest round-robin across vendors.
-- 105 pages is more than the 30-50 pages planned for hand-labelling. Options: label only the key fields on page 1 of each file (fast), or trim the long multi-page files.
-- **Coverage gap:** the whole sample set is procurement paperwork (invoices, GRVs, cargo documents). It has no KYC documents, cheques, forms or handwriting. Priority 2 and 3 domains cannot be benchmarked until we get those samples. The engine must not be declared ready on this data alone.
+- Proposed gold set: **40 files, about 105 pages** across 19 folders (21 digital, 14 scanned, 1 mixed, 4 images). Every unique hard case is included.
+- The sample set is procurement paperwork. KYC, cheques, and forms are not in it. The engine is not finished for those families on this data.
 
 ### Goal 3: gold-set labels (2026-10-19)
-- Documents were read by Claude (text layers read locally; scans and photos rendered to images and viewed). **This means their content passed through the model provider.** The owner authorized it for this one-off labelling of procurement paperwork. It is not a precedent for KYC or banking documents.
-- Labelling rules: PO vendor = supplier. Customs declaration vendor = declarant (importer/exporter field). Delivery advice and invoice vendor = issuer on the letterhead. Date is ISO (YYYY-MM-DD). Amounts have no thousands separators. `-` means the field is absent.
-- Mix of the 40 files: 10 invoices, 6 customs declarations, 6 delivery advices, 5 transport chits (photographed handwritten invoices), 5 purchase orders, 4 photos with no text fields, and one each of shipping advice, ownership-transfer letter, blank page and a non-business document.
-- Surprises that matter for the engine:
-  - **Most documents are not invoices.** An "invoice extractor" would miss over half of this set. Document-type detection is a core need.
-  - **Handwriting and photos:** 5 transport chits are phone photos of handwritten invoices. Hardest class here.
-  - **One "scanned copy" PDF is completely blank.** The quality gate must detect empty pages and flag them, not return empty text as success.
-  - **Scrambled text layers:** several digital PDFs return text in a jumbled order (side-by-side tables, text overlays), so a text layer is not automatically usable. The engine needs layout-aware reading order even for digital PDFs.
-  - **Mixed number formats:** `59.700,00` (European) vs `59,700.00`. Normalization must handle both.
-  - **Bundles:** a single PDF may hold several documents (delivery advice + customs form + HS code form + invoice). Page-level classification and splitting are needed.
-  - **Some totals live on a later page** (TP-Link total is on page 2 of 7), so page-1-only reading is not enough.
-  - Two files are synthetic test documents and one is a project plan, not a customer document.
-- Label caveats: a few values were inferred (Lenovo AE4915167790 total from line items, Mitsumi invoice total from the item table, one handwritten reference with an unclear first digit). They are marked in the notes column.
 
-### Goal 4: engine smoke test, page 1 of three gold files, laptop CPU (2026-10-19)
+- Documents were read by Claude. **Content passed through the model provider.** The owner authorized it for this one-off labelling of procurement paperwork. It is not a precedent for KYC or banking documents. Further review is local, by eye.
+- Mix of the 40 files: 10 invoices, 6 customs declarations, 6 delivery advices, 5 transport chits (photographed handwritten invoices), 5 purchase orders, 4 photos with no text fields, and one each of shipping advice, ownership-transfer letter, blank page, and a non-business document.
+- Most documents are not invoices. Handwritten chits are the hardest class. One scanned PDF is blank. Several digital text layers are scrambled. Number formats mix `59.700,00` and `59,700.00`. A single PDF may bundle several documents. Some totals sit on a later page.
+
+### Goal 4: smoke test, page 1 of three gold files, laptop CPU (2026-10-19)
+
 | File | Engine | Sec | Words | Conf | Label doc number found |
 |---|---|---|---|---|---|
 | #3 digital invoice | text layer | 0.0 | 401 | n/a | yes |
@@ -232,15 +230,11 @@ Implication: roughly four of five pages need no OCR at all, which supports the r
 | #6 handwritten photo | Tesseract | 1.6 | 79 | 0.55 | **no** |
 | #6 handwritten photo | docTR | 2.3 | 98 | 0.88 | yes (see caveat) |
 
-- All three engines run end to end. docTR default models: detection `fast_base` and recognition `crnn_vgg16_bn`, 123 MB in total, one-time download (load took 70 s including the download).
-- The text layer is instant and exact where it exists, and absent for scans and photos, which confirms the router design.
-- Tesseract was fast on clean scans but weak on the handwritten photo (confidence 0.55). docTR coped better there.
-- docTR on CPU took 2 to 20 s per page. The first page includes warm-up, so these are not final timings. A GPU should cut this a lot.
-- **Caveats:** "found" is a substring match of the labelled number in the whole output, so a short number like 6111 could match by chance. Confidence values come from different engines and are not comparable. Three files is not a benchmark. Goal 5 needs real scoring (field-level and character-level).
-- Disk: D: has 3.3 GB free after installs.
+docTR default models: detection `fast_base`, recognition `crnn_vgg16_bn`, 123 MB. "Found" is a substring match. Three files is not a page-reading test.
 
-### Goal 5: first benchmark, 40 gold files, all 105 pages, laptop CPU (2026-10-19)
-Metric: does the labelled value appear anywhere in the engine's output (values normalized: dates, number formats, amounts). This measures **text recall for the downstream LLM**, not whether the right value was picked. "Router" = text layer when a page has at least 25 characters, otherwise docTR.
+### Goal 5: field-presence run, 40 gold files, 105 pages, laptop CPU (2026-10-19)
+
+Metric: does the labelled value appear anywhere in the output. Router = text layer when a page has at least 25 characters, otherwise docTR.
 
 | Field | Text layer | Tesseract | docTR | Router |
 |---|---|---|---|---|
@@ -254,19 +248,12 @@ Metric: does the labelled value appear anywhere in the engine's output (values n
 |---|---|---|---|---|
 | Digital PDF | 100% | 97% | 100% | 100% |
 | Scanned PDF | 9% | 91% | 100% | 100% |
-| Handwritten photo (transport chits) | 0% | 15% | **70%** | 70% |
+| Handwritten photo | 0% | 15% | **70%** | 70% |
 | Plain photo | 0% | 50% | 100% | 100% |
 
-Speed (laptop CPU): Tesseract 1.3 s/page, docTR 5.6 s/page. The router skips OCR on digital pages, so it is much faster than docTR alone at the same accuracy.
-
-Findings:
-- **docTR is the leading primary OCR engine.** Clear lead over Tesseract on scans and handwriting. Router matches docTR's accuracy at lower cost.
-- **All remaining misses are handwriting:** the 4 handwritten transport chits miss dates (all four) and totals (two). Handwritten dates and amounts are the engine's weak spot, and the first target for a vision-language fallback.
-- A scoring bug was found and fixed during the run (matcher accepted at most 2 decimals; one document prints 995224.546875). Lesson: inspect every miss before trusting the number.
-- **Caveats:** (1) Presence anywhere in a document is lenient. A short value like a total of 150 could match by chance. (2) The test is order-independent, so it does **not** measure reading order, and scrambled text layers still score 100%. (3) 40 files, 6 handwritten fields: small sample, wide uncertainty. (4) Only English text, procurement documents only. KYC, cheques and non-English are untested. (5) Labels were made by Claude and not yet spot-checked by a human.
+Speed on CPU: Tesseract 1.3 s/page, docTR 5.6 s/page. Every remaining router miss was handwriting (dates, and some totals). The test does not measure reading order. Labels were not spot-checked by a person.
 
 ### Goal 6a: docTR tuning on the 5 handwritten chits (2026-10-19)
-Script: `scripts/tune_doctr.py`. 20 labelled fields in total. Laptop CPU.
 
 | Config | Fields found | Sec/page | Still missing |
 |---|---|---|---|
@@ -275,39 +262,39 @@ Script: `scripts/tune_doctr.py`. 20 labelled fields in total. Laptop CPU.
 | Contrast (CLAHE) | 15/20 | 2.5 | dates in 4, total in 1 |
 | Tilt correction | 16/20 | 4.6 | dates in 3, total in 1 |
 | Detector db_resnet50 | 14/20 | 3.4 | worse on #26 |
-| Recognizer **parseq** | **17/20** | 4.9 | dates in 3 (#11, #15, #26) |
+| Recognizer parseq | 17/20 | 4.9 | dates in 3 (#11, #15, #26) |
 | Recognizer master | 15/20 | 26.7 | too slow, not better |
 
-- parseq is the best single change (+3 fields), at about 2x the time. Tilt correction and contrast each help a little. Resolution and the heavier detector do not help.
-- **These differences are 1 to 3 fields out of 20.** That is within what chance could produce on 5 files. Treat as hints, not proof. Handwritten dates are still the main failure in every config.
-- parseq lost one field that the baseline had (date on #26), so it is not a pure win.
-- Not yet tested: combinations (tilt + parseq), regression on the scanned and printed documents, speed on GPU.
+Treat 1–3 fields out of 20 as a hint. Handwritten dates failed in every config. Combinations and a full-page re-review are not done.
 
 ## 9. Decision log
 
 | Date | Decision | Reason |
 |---|---|---|
-| 2026-10-19 | docTR is the leading primary OCR engine, used behind a text-layer-first router | Benchmark: 96% field recall vs Tesseract 83%. Provisional until Docling, Surya and a VLM are compared. |
-| 2026-10-19 | Claude labelled the gold set instead of the owner | Owner request. One-off exception to "content never leaves our machines". Not for KYC. |
-| 2026-10-13 | Run fully local, no external OCR services | Cost, free testing, PII |
-| 2026-10-13 | No Chinese-origin models | Company constraint |
-| 2026-10-13 | Router design: text layer first, OCR only when needed | Digital PDFs need no OCR |
-| 2026-10-13 | LLM extraction stays a separate step on top of the engine | User decision. Engine produces text, positions and confidence. |
+| 2026-10-28 | Success is a manual page-vs-output review, not a Document AI score | No Document AI dump will be provided. The page is the reference. |
+| 2026-10-28 | No per-vendor geometry | These files are the first set, not the only layouts the engine will see. |
+| 2026-10-28 | Chinese-origin models are a last resort on a page that no allowed reader can read | Allowed readers are US, Indian, French, and other non-Chinese models. A page that needs a Chinese model is a hardware flag. |
+| 2026-10-28 | Build and review on this laptop. Stop and ask for a bigger GPU when the next reader does not fit or a class still fails | RTX 2050 4 GB, 16 GB RAM. Server hosting comes after the reader is chosen. |
+| 2026-10-28 | Scope now is English procurement PDFs and images in `E:\final-recon-sets` | Other document families later, same engine. |
+| 2026-10-19 | docTR is the first OCR reader, behind the text layer | 96% field presence vs Tesseract 83%. Provisional until page-level review. |
+| 2026-10-19 | Claude labelled the gold set | Owner request. One-off. Not for KYC. |
+| 2026-10-13 | Run fully local, no external OCR services | Cost, free testing, PII. |
+| 2026-10-13 | Text layer first, OCR only when the layer is missing or unusable | Most pages in this folder are digital. |
+| 2026-10-13 | Field extraction stays downstream | The engine returns text, positions, and confidence. |
 
 ## 10. Open questions
 
-- Which Document AI processor is used today (generic OCR, Invoice Parser, other)? Needed to know which fields the engine must reproduce.
-- Which languages first, and which later?
-- Production server GPU spec and expected pages per day.
-- Accuracy targets: what does "good enough" mean for the business?
-- Licenses: confirm commercial-use terms for Surya and each candidate vision-language model before depending on them.
-- Is there a retention rule for storing customer documents used as test data?
+- Surya OCR 2 weights: is Celeris under the $5M line, and is internal replacement of Document AI allowed under that license? Do not download until this is answered.
+- Retention rule for customer files used as the review set. They stay on this machine either way.
+- Production pages per day, once we size the server. Not needed to start.
 
 ## 11. Progress log
 
 | Date | Session summary |
 |---|---|
-| 2026-10-14 | Goal 1 done: git initialized, venv and PyMuPDF 1.28.2 installed, inventory script written and run on the sample folder. Findings in 8a. |
-| 2026-10-19 | Goal 5 done: first benchmark. Router 96% field recall, weak spot is handwriting (70%). Findings in 8a. |
-| 2026-10-19 | Goal 3 done: all 40 gold files labelled by Claude, findings in 8a. Next: Goal 4, install and smoke-test OCR engines (owner installs, Claude guides). |
-| 2026-10-13 | Discussed OCR fundamentals. Reviewed constraints (local, no Chinese models, real PII). Found sample set at `E:\final-recon-sets` (about 200 files, 115 PDFs). Created this plan. |
+| 2026-10-29 | 16-hour plan set: 8h this week, 8h next week. Block 1a done (engine and four-file review). 14 hours left. |
+| 2026-10-29 | Week 1 started: engine keeps boxes, review view for gold #03, #34, #06, #37. |
+| 2026-10-28 | Production plan rewritten around manual review, this laptop, and an explicit stop-and-ask for a bigger machine. Inventory refreshed: 214 files, 280 PDF pages, 48 still scanned. |
+| 2026-10-19 | Field-presence run: router 96%, handwriting 70%. Gold set labelled. Smoke test passed. |
+| 2026-10-14 | Inventory, dedupe, gold candidates. |
+| 2026-10-13 | Constraints and this plan started. Sample folder found at `E:\final-recon-sets`. |
