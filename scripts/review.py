@@ -46,7 +46,8 @@ def main(sample_root: Path, indexes: list[int]) -> None:
         for page in doc.pages:
             confs = [w.conf for w in page.words if w.conf is not None]
             conf = f"{sum(confs) / len(confs):4.2f}" if confs else " n/a"
-            print(f"#{idx:02d}   {kind:<20} {page.index:4d} {page.reader:<10} {len(page.words):6d} {conf}  {page.status:<14} {page.seconds:6.1f}  {page.reason}")
+            rows = sum(len(t) for t in page.tables)
+            print(f"#{idx:02d}   {kind:<20} {page.index:4d} {page.reader:<10} {len(page.words):6d} {conf}  {page.status:<14} {page.seconds:6.1f}  fields {len(page.fields):3d}  table-rows {rows:3d}  {page.reason}")
     page = _html(sections)
     (OUT / "index.html").write_text(page, encoding="utf-8")
     print(f"\nreview written to {OUT / 'index.html'}")
@@ -72,6 +73,20 @@ def _file_section(idx: int, kind: str, doc: DocumentRead, images: list[np.ndarra
                 lines.append([])
             lines[word.line].append(html.escape(word.text))
         ordered = "".join(f"<li>{' '.join(line)}</li>" for line in lines)
+        field_rows = "".join(
+            f"<tr><td>{html.escape(item.field)}</td><td>{html.escape(item.value)}</td></tr>"
+            for item in page.fields
+        )
+        table_html = []
+        for table in page.tables:
+            if not table:
+                continue
+            heads = "".join(f"<th>{html.escape(col)}</th>" for col in table[0])
+            body = "".join(
+                "<tr>" + "".join(f"<td>{html.escape(row.get(col, ''))}</td>" for col in table[0]) + "</tr>"
+                for row in table
+            )
+            table_html.append(f"<table><tr>{heads}</tr>{body}</table>")
         blocks.append(f"""
         <article>
           <h2>#{idx:02d} {html.escape(kind)} · page {page.index + 1} · {page.reader} · {page.status} {html.escape(page.reason)}</h2>
@@ -81,6 +96,12 @@ def _file_section(idx: int, kind: str, doc: DocumentRead, images: list[np.ndarra
               <svg viewBox="0 0 {w} {h}">{''.join(rects)}</svg>
             </div>
             <ol>{ordered}</ol>
+            <div class="fields">
+              <h3>Fields</h3>
+              <table><tr><th>Field</th><th>Value</th></tr>{field_rows}</table>
+              <h3>Tables</h3>
+              {''.join(table_html)}
+            </div>
           </div>
         </article>""")
     return "\n".join(blocks)
@@ -102,13 +123,16 @@ def _html(sections: list[str]) -> str:
   .stage img {{ display: block; width: 640px; height: auto; }}
   .stage svg {{ position: absolute; left: 0; top: 0; width: 640px; height: 100%; }}
   rect {{ fill: transparent; stroke: #4c8dff; stroke-width: 2; }}
-  ol {{ margin: 0; padding-left: 20px; max-height: 85vh; overflow: auto; min-width: 280px; }}
+  ol {{ margin: 0; padding-left: 20px; max-height: 85vh; overflow: auto; min-width: 240px; }}
   li {{ margin-bottom: 4px; }}
+  .fields {{ max-height: 85vh; overflow: auto; min-width: 320px; }}
+  .fields table {{ border-collapse: collapse; margin-bottom: 16px; }}
+  .fields td, .fields th {{ border: 1px solid #444; padding: 4px 8px; text-align: left; vertical-align: top; }}
 </style>
 </head>
 <body>
 <h1>Week 1 review</h1>
-<p>Boxes are the engine output. The list is the reading order. This file stays in reports/ and is not committed.</p>
+<p>Boxes are the words. The middle list is the reading order. The right side is field = value, plus any table. This file stays in reports/ and is not committed.</p>
 {body}
 </body>
 </html>

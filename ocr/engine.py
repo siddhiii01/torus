@@ -40,6 +40,12 @@ class Word:
 
 
 @dataclass
+class Field:
+    field: str
+    value: str
+
+
+@dataclass
 class PageRead:
     index: int
     width: int
@@ -49,6 +55,8 @@ class PageRead:
     reason: str
     seconds: float
     words: list[Word] = field(default_factory=list)
+    fields: list[Field] = field(default_factory=list)
+    tables: list[list[dict[str, str]]] = field(default_factory=list)
 
     def to_json(self) -> dict:
         return asdict(self)
@@ -90,19 +98,34 @@ def _read_page(img: np.ndarray, pdf_page, index: int) -> PageRead:
     if pdf_page is not None:
         embedded = pdf_page.get_text("text").strip()
         if len(embedded) >= MIN_CHARS:
-            words = _text_layer_words(pdf_page)
-            return PageRead(index, width, height, "textlayer", "ok", "", time.perf_counter() - t0, words)
+            words = _finish(_text_layer_words(pdf_page))
+            return _page(index, width, height, "textlayer", "ok", "", time.perf_counter() - t0, words)
     try:
         words, conf = _doctr_words(img)
     except Exception as exc:
-        return PageRead(index, width, height, "doctr", "needs_review", type(exc).__name__, time.perf_counter() - t0)
+        return _page(index, width, height, "doctr", "needs_review", type(exc).__name__, time.perf_counter() - t0, [])
+    words = _finish(words)
     reason = ""
     status = "ok"
     if not words:
         status, reason = "needs_review", "empty"
     elif conf < LOW_CONF:
         status, reason = "needs_review", "low_confidence"
-    return PageRead(index, width, height, "doctr", status, reason, time.perf_counter() - t0, words)
+    return _page(index, width, height, "doctr", status, reason, time.perf_counter() - t0, words)
+
+
+def _finish(words: list[Word]) -> list[Word]:
+    from ocr.fields import reading_order
+    return reading_order(words)
+
+
+def _page(index, width, height, reader, status, reason, seconds, words) -> PageRead:
+    from ocr.fields import extract
+    pairs, tables = extract(words)
+    return PageRead(
+        index, width, height, reader, status, reason, seconds, words,
+        [Field(name, value) for name, value in pairs], tables,
+    )
 
 
 def _text_layer_words(pdf_page) -> list[Word]:
