@@ -1,0 +1,20 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": false,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Hard 5-page Document AI OCR; SKU/qty/price reading-order scrambled. Gold lineItems = first-page recoverable rows only; header totals from page-5 footer (422458.44). Score lineItems as partial/subset.",
+  "bucket": "hard",
+  "lineItemsGoldScope": "page1_subset",
+  "uploadId": "6a9a6a47704d6d9dd1242dd2",
+  "originalFile": "po6.pdf",
+  "pages": 6
+}

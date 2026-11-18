@@ -1,0 +1,18 @@
+{
+  "productId": "flowgenix",
+  "has_rag": false,
+  "systemPrompt": null,
+  "schema": null,
+  "fewShotExamples": [],
+  "rag": null,
+  "defaults": {
+    "model": "celeris-local-primary",
+    "temperature": 0.1
+  },
+  "_notes": [
+    "MVP pilot scope: the structured field-extraction scene only, routed via Flowgenix's existing LLMService seam (dev/test only).",
+    "systemPrompt/schema/fewShot are null on purpose — Flowgenix assembles its own complete prompt and runs its own Ajv validation (PROJECT_LOG.md §5.3, §5.7).",
+    "has_rag is false, evidence-backed: no retrieval anywhere in the Flowgenix backend (PROJECT_LOG.md §5.6).",
+    "This profile exists so identity resolution, content-free logging, and the cloud-cost-avoided metric work."
+  ]
+}

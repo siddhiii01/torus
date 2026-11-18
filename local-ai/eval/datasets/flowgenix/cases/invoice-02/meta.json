@@ -1,0 +1,10 @@
+{
+  "docType": "Invoice",
+  "source": "fictional-eval-pin",
+  "prompt_source": "synthetic_assembly",
+  "adversarial": false,
+  "derived_from": "fictional",
+  "contains_real_data": false,
+  "notes": "Messy OCR: labels split from values, item descriptions separated from qty/price columns (Document AI-style reading order). No SKU on the document.",
+  "required_fields": ["invoiceNumber", "invoiceDate", "lineItems"]
+}

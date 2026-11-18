@@ -1,0 +1,18 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": false,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Messy Document AI reading-order: SKUs split across lines, qty/price block interleaved; scrubbed commercial Red Dot/Epson OCR.",
+  "bucket": "messy",
+  "uploadId": "6a932ca3f64b1c3ec95816e0",
+  "originalFile": "po5.pdf"
+}

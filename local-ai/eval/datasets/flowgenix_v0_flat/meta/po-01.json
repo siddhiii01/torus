@@ -1,0 +1,17 @@
+{
+  "doc_type": "purchase_order",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/fg-demo.zip -> 'PO26270208 (3).pdf'",
+  "currency": "INR",
+  "adversarial": false,
+  "notes": "Flagship PO - the document family the super-admin PO prompt was written against (Consignor/Consignee layout, GST Summary + PO Summary tables, amendment ref, blank filler rows 3-6). 2 populated line items. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI surfaces a buyer letterhead block (name, address, Udyam no., GSTIN, IEC, phone, website) the earlier text-layer pass missed, repeats the buyer GSTIN 3x, splits the item table so the two Delivery-Date/HSN/UoM/Qty/Rate rows land between the description fragments, and adds signature-stamp garble ('orthbridge','Njohi','*'). issuer = the buyer running procurement (letterhead + Consignee, purchase@northbridge...), recipient = the supplier (Consignor). Rounded-off is negative (-0.24). Scrubbed: both company names + addresses + all GSTINs + IEC + Udyam no. + phone + website, buyer email, PO/order/amendment numbers, item codes, supplier-part text, brand name (a real LED maker) -> Lumitron, and the part-number strings. HSN 85414020 kept (public tariff code); amounts/quantities kept (internal arithmetic consistent).",
+  "contains_real_data": false,
+  "required_fields": [
+    "purchase_order_number",
+    "purchase_order_date",
+    "currency",
+    "line_items",
+    "issuer_name",
+    "recipient_name"
+  ]
+}

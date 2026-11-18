@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "invoiceNumber": "INV-88421",
+    "invoiceDate": "04-Jul-2026",
+    "dueDate": "19-Jul-2026",
+    "supplierName": "Orbit Stationery Traders Pvt. Ltd.",
+    "buyerName": "CleerFlow Manufacturing Pvt. Ltd.",
+    "currency": "INR",
+    "paymentTerms": "Net 15 Days",
+    "subtotal": 8050,
+    "taxAmount": 1449,
+    "totalAmount": 9499
+  },
+  "lineItems": [
+    {
+      "itemCode": "PAP-A4-500",
+      "description": "A4 Copier Paper (500 Sheets)",
+      "quantity": 10,
+      "unitPrice": 250,
+      "taxAmount": 450,
+      "lineTotal": 2500
+    },
+    {
+      "itemCode": "TNR-BLK-01",
+      "description": "Black Toner Cartridge",
+      "quantity": 3,
+      "unitPrice": 1850,
+      "taxAmount": 999,
+      "lineTotal": 5550
+    }
+  ]
+}

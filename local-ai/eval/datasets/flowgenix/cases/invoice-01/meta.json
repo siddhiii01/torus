@@ -1,0 +1,10 @@
+{
+  "docType": "Invoice",
+  "source": "fictional-eval-pin",
+  "prompt_source": "synthetic_assembly",
+  "adversarial": false,
+  "derived_from": "fictional",
+  "contains_real_data": false,
+  "notes": "Clean two-line invoice with explicit lineItems columns. Seed case.",
+  "required_fields": ["invoiceNumber", "invoiceDate", "lineItems"]
+}

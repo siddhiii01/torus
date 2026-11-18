@@ -1,0 +1,18 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": false,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Clean short US form; 3 line items; no item codes; shipping separate from tax.",
+  "bucket": "clean",
+  "uploadId": "6a9a663498b1d339262dad66",
+  "originalFile": "PO_Nexus_Health.pdf"
+}

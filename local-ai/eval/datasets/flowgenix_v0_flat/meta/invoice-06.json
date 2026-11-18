@@ -1,0 +1,17 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/fg-demo.zip -> Invoice_PKS-2026-0044.pdf",
+  "currency": "USD",
+  "adversarial": false,
+  "notes": "Long US services invoice: 9 line items, 2-page source. NEGATIVE line 'Deposit Received (50%) ($10,000.00)' -> discount_amount = -10000 (a deposit, not a true discount - null also defensible). Sales tax given as a percentage line. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI wraps each description across several lines, interleaves the qty/unit/rate/total between wrapped fragments, renders 'EIN' as Greek 'EIN', 'PROJECT' as 'PROJE\\nCT', and the masked account as bullet chars - a model must stitch rows back together. Also the largest output in the set: stresses maxOutputTokens (params.json). Scrubbed: studio + client names, addresses, EIN, contact name, client id, PO number, bank name + ABA + SWIFT, wire ref. 555 phone + masked account kept.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items",
+    "purchase_order_number"
+  ]
+}

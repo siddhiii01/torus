@@ -1,0 +1,53 @@
+# Model bake-off for the Celeris Local AI Server — Flowgenix structured
+# field-extraction scene.
+#
+#   powershell -File scripts\run-eval.ps1 -View
+#   # or: npx --prefix eval promptfoo eval -c eval/promptfoo/promptfooconfig.yaml
+#   # Pin is eval/package.json (promptfoo 0.120.27). Avoid @latest: 0.122+ needs Node >=22.22.
+#
+# Talks straight to Ollama (:11434) — measures the MODEL, not the gateway plumbing
+# (that path is covered by eval/deepeval, which goes via :4100).
+# Run ONE provider at a time (16 GB VRAM). Tiers per docs/decisions/0002-*.
+#
+# Data comes from datasets/flowgenix/golden.json (node eval/datasets/flowgenix/assemble.js).
+# Each test's prompt is the agenda-assembled string (no Gemini/OpenAI adapter wrap),
+# sent as one `user` message.
+
+description: "Flowgenix structured field-extraction — local model bake-off"
+
+prompts:
+  - file://prompts/passthrough.js        # returns vars.assembled_prompt verbatim
+
+providers:
+  # --- recommended primary (8 GB-class — the deploy target). 14B tested, no better
+  #     on this suite and ~2x slower — see docs/bake-off.md. ---
+  - id: ollama:chat:qwen2.5:7b
+    label: qwen2.5-7b
+    config:
+      temperature: 0.1
+      num_predict: 8192                  # avoid finish_reason:length on long invoices (params.json)
+      timeout: 900000                    # 15 min — long Document AI OCR (default ~300s timed out po-real-07)
+
+evaluateOptions:
+  maxConcurrency: 1                      # one case at a time on single-GPU 7B (4-way pile-up caused 10–16 min fails)
+
+  # --- alternatives (uncomment one at a time; confirm the tag on ollama.com/library) ---
+  # - id: ollama:chat:qwen2.5:14b        # 16 GB-class; tested 2026-09-02, = 7B on this suite, slower
+  #   label: qwen2.5-14b
+  #   config: { temperature: 0.1, num_predict: 8192 }
+  # - id: ollama:chat:qwen3:8b
+  #   label: qwen3-8b
+  #   config: { temperature: 0.1, num_predict: 8192 }
+  # - id: ollama:chat:llama3.1:8b
+  #   label: llama3.1-8b
+  #   config: { temperature: 0.1, num_predict: 8192 }
+
+defaultTest:
+  options:
+    transform: file://transforms/parse_json.js   # strip fences / prose -> clean JSON string
+
+# One test per golden.json entry; asserts (is-json, schema_pass, field_match,
+# latency) are attached per-test in the generator.
+tests: file://tests_from_golden.js
+
+outputPath: ./results/latest.json

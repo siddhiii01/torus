@@ -1,0 +1,17 @@
+{
+  "doc_type": "purchase_order",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/purchase_order (1).pdf",
+  "currency": "USD",
+  "adversarial": false,
+  "notes": "US PO, no GST fields at all (every gst_* and the CGST/SGST/IGST financial_* fields null). Currency printed only as '$' -> currency golden '$'. 3 line items, no HSN/UoM/delivery-date/discount columns. 'Estimated Tax: $0.00' is a real zero -> financial_total_tax 0. Matched pair: invoice-05 bills against this PO number. issuer = Northgate (buyer), recipient = Vantage Tech (VENDOR/SUPPLIER). Shipping & Handling $720 has no schema field -> unmapped. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI prints all four financial totals in a block at the very end, after the signatory. Scrubbed: buyer + vendor names/addresses/emails, signatory.",
+  "contains_real_data": false,
+  "required_fields": [
+    "purchase_order_number",
+    "purchase_order_date",
+    "currency",
+    "line_items",
+    "issuer_name",
+    "recipient_name"
+  ]
+}

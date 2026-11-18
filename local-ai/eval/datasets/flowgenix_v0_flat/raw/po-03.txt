@@ -1,0 +1,56 @@
+PURCHASE ORDER
+PO NO: PO/2026-27/0733 | Date: August 11, 2026
+Buyer Information
+Crestline Technologies Private Limited
+Plot No. 58, MIDC Electronic Zone, Mahape, Navi Mumbai - 400710, Maharashtra, India.
+GSTIN: 27AAKCC7213H1Z8
+|
+Vendor Information
+Shree Ganesh Industrial Spares & Hardware
+Shop No. 19, Steel Market, Kalamboli, Navi Mumbai - 410218, Maharashtra, India.
+GSTIN: 27AAKFG4490L1ZU
+Order Details
+S.No
+Item Description
+HSN
+Qty
+Rate
+Total (INR)
+1
+Hex Head High Tensile Bolts (M12 x 50mm)
+7318
+5,000
+4.50
+22,500.00
+2
+Spring Steel Washers (12mm)
+7318
+5,000
+1.20
+6,000.00
+3
+Industrial Cut-Off Wheels (4-inch)
+6804
+200
+35.00
+7,000.00
+4
+Heavy-Duty Nitrile Gloves
+4015
+50
+60
+120.00
+6,000.00
+Financial Summary
+Authorized Signatory: Anil Verma | Manager - Purchase & Supply Chain
+This is a computer-generated document. Subject to Mumbai Jurisdiction.
+Subtotal
+41,500.00
+CGST @ 9%
+3,735.00
+SGST @ 9%
+3,735.00
+Freight Charges
+1,500.00
+Grand Total
+50,470.00

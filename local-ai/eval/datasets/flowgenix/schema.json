@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://celeris.local/flowgenix/extraction-v1.schema.json",
+  "title": "Flowgenix v1 dynamic-envelope extraction output",
+  "description": "Scoring schema for the fictional-eval-pin pack. Envelope { fields, lineItems }. NO_DATA sentinel allowed. additionalProperties true so extra model keys are not a schema fail.",
+  "anyOf": [
+    { "$ref": "#/$defs/extractionEnvelope" },
+    { "$ref": "#/$defs/noDataEnvelope" }
+  ],
+  "$defs": {
+    "noDataEnvelope": {
+      "type": "object",
+      "required": ["error"],
+      "properties": {
+        "error": { "const": "NO_DATA" },
+        "fields": { "type": "object" },
+        "message": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+    "scalar": { "type": ["string", "number", "null"] },
+    "lineItem": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "extractionEnvelope": {
+      "type": "object",
+      "required": ["fields", "lineItems"],
+      "properties": {
+        "fields": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/scalar" }
+        },
+        "lineItems": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/lineItem" }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "error": { "type": "string" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

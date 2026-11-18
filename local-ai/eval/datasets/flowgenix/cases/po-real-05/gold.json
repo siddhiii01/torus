@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "NSPL/PO/CONST/2026/099",
+    "poDate": "02/09/2026",
+    "supplierName": "Deccan Alloy Steels & Structures Ltd.",
+    "buyerName": "Northspan Infrastructure Projects Ltd.",
+    "currency": "INR",
+    "paymentTerms": "20% Advance, 80% on Weightment Delivery",
+    "deliveryDate": "12-09-2026",
+    "subtotal": 4384800,
+    "taxAmount": 789264,
+    "totalAmount": 5174064
+  },
+  "lineItems": [
+    {
+      "itemCode": "STL-TMT-16",
+      "description": "Fe550D TMT Rebars 16mm Diameter (Primary Steel)",
+      "quantity": 45,
+      "unitPrice": 58500,
+      "lineAmount": 2632500,
+      "uom": "MTR"
+    },
+    {
+      "itemCode": "STL-TMT-25",
+      "description": "Fe550D TMT Rebars 25mm Diameter (Primary Steel)",
+      "quantity": 30,
+      "unitPrice": 59000,
+      "lineAmount": 1752300,
+      "uom": "MTR"
+    }
+  ]
+}

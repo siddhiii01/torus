@@ -1,0 +1,8 @@
+{
+  "case_id": "anbazhakan",
+  "customer_name": "Basker Anbazhakan",
+  "source_pdf": "S0000010547942.pdf",
+  "page_count_expected": 19,
+  "gold_status": "frozen_v0",
+  "notes": "Gold v0 frozen (diagnostic set only; not a publishable accuracy number)."
+}

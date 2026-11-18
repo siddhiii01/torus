@@ -1,0 +1,12 @@
+{
+  "temperature": 0.1,
+  "jsonMode": true,
+  "messagesRoleLayout": "single 'user' message; no 'system' and no 'assistant' message",
+  "responseFormat": { "type": "json_object" },
+  "adapterWrap": "none",
+  "notes": "Promptfoo sends agenda fullPrompt only. Do not prepend Gemini or OpenAI adapter JSON prefixes. Date scoring: printed == ISO; ambiguous slash dates accept day-first OR month-first. Latency hang guard 20min; Ollama timeout 15min; maxConcurrency 1.",
+  "bakeOffLatencyAssertMs": 1200000,
+  "ollamaRequestTimeoutMs": 900000,
+  "maxConcurrency": 1,
+  "productionHardCapTimeoutMs": 115000
+}

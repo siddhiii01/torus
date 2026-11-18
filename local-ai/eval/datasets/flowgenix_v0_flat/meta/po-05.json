@@ -1,0 +1,10 @@
+{
+  "doc_type": "purchase_order",
+  "source": "synthetic",
+  "derived_from": "Downloads/fg-docs/purchase_order.pdf + Purchase_Order_PO_2026_999.pdf (each real Document AI OCR, then concatenated)",
+  "currency": "USD",
+  "adversarial": true,
+  "notes": "ADVERSARIAL - two near-duplicate POs concatenated into one upload (a real Flowgenix multi-doc failure mode). PO-2026-001 then PO-2026-999, same vendor, same 2 line items, same total; page-2 label differs ('PO. No:' vs 'PO Number:'). The super-admin PO prompt has no multi-document affordance. Acceptable: (a) first PO only (purchase_order_number 'PO-2026-001', 2 lines) - preferred, encoded in expected.json; (b) first header + all 4 line rows - partial credit; (c) NO_DATA. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Scrubbed: vendor name/address; a person's name -> 'Building C Receiving'. PO numbers kept (generic).",
+  "contains_real_data": false,
+  "required_fields": []
+}

@@ -1,0 +1,128 @@
+You are Flowgenix's structured extraction engine.
+Respond with a single valid JSON object that follows the instructions provided.
+Use double quotes for all keys and string values; ensure the JSON is syntactically valid.
+Do not include markdown, code fences, natural language commentary, or explanations outside the JSON.
+If you are unable to extract structured data, respond with {"error":"NO_DATA","fields":{},"message":"Unable to extract structured data"}.
+IMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.
+
+Extract a purchase order into structured JSON.
+
+Header: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.
+
+Line table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.
+
+Rules:
+- Return values only. Use null when a field is not on the document.
+- Do not invent line rows. Skip blank table rows.
+- Do not flatten line columns onto the header.
+- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.
+
+TARGET FIELDS (return exactly this JSON shape — use null for missing values).
+Each line below is: outputKey (its human label) [aka: header variants that may appear in the document].
+Match by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.
+- Return "fields" containing exactly these keys, nothing else:
+    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]
+    poDate (label: Purchase Order Date) <date>
+    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]
+    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]
+    currency (label: Currency) [aka: Currency Code]
+    paymentTerms (label: Payment Terms) [aka: Terms]
+    deliveryDate (label: Delivery Date) <date>
+    subtotal (label: Subtotal) <number>
+    taxAmount (label: Tax Amount) <number>
+    totalAmount (label: Total Amount) <number>
+- Return "lineItems" as an array of row objects, each containing exactly these keys, nothing else:
+    itemCode (label: Item Code) [aka: SKU, Part Number]
+    description (label: Description) [aka: Item Description, Product Name]
+    quantity (label: Quantity) <number>
+    unitPrice (label: Unit Price) <currency>
+    lineAmount (label: Line Amount) <currency>
+    uom (label: Unit of Measure) [aka: UOM, Unit]
+  Example row shape: { "itemCode": null, "description": null, "quantity": null, "unitPrice": null, "lineAmount": null, "uom": null }
+- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.
+- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).
+
+PO NUMBER EXTRACTION RULES:
+- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.
+- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).
+- Never use supplier name, buyer name, address, contact name, or company name as PO number.
+- If no valid numeric-like PO identifier is present, return poNumber as null.
+
+Remember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.
+
+DOCUMENT CONTENT:
+sand dune
+distribution
+Shipping address:
+Sand Dune FZE
++971 4 000 1111
+Purchase Order #P99018
+Purchase Representative:
+Naveed Ali Farhan
+Account:
+InkJetFZCO
+CODE
+Sand Dune Distribution FZE,
+Jebel Ali Free Zone,
+LB02130, PO Box 262159,
+Dubai, United Arab Emirates.
+[InkJet FZCO] InkJet Middle East FZCO
++971 4 000 2222
+Your Order Reference:
+MANUAL
+Order Date:
+17/06/2026 15:11:11
+Currency:
+USD
+DESCRIPTION
+TAXES
+QTY
+UNIT
+PRICE
+AMOUNT
+IJ-C11CL40407 InkJet EcoTank L6390 Wi-Fi A4 Duplex All-in-One Ink
+Printer
+IJ-C11CL43406 InkJet EcoTank L6370 Wi-Fi A4 Duplex All-in-One Ink
+IJ-C11CJ88404DA
+IJ-C11CK38403DA
+Printer
+InkJet EcoTank L6490 A4 Ink Tank Printer
+InkJet L18050 A3+ Photo Ink Tank Printer
+IJ-C11CL41412 InkJet EcoTank L4360 A4 Wi-Fi Duplex All-in-One Ink
+IJ-C11CH96403DA
+Tank Printer
+InkJet EcoTank ITS L14150 Printer
+IJ-C11CJ65409 InkJet EcoTank L5290 A4 Wi-Fi All-in-One Ink Tank
+Printer
+IJ-C11CK94402 InkJet EcoTank L8100 Photo Printer
+IJ-C11CL61403 InkJet EcoTank L3310 A4 All-in-One Ink Tank Printer
+40.00 299.000000 11,960.00 USD
+Units
+40.00 268.000000 10,720.00 USD
+Units
+50.00 305.000000 15,250.00 USD
+Units
+50.00 452.100000 22,605.00 USD
+Units
+50.00 213.000000 10,650.00 USD
+Units
+100.00 380.000000 38,000.00 USD
+Units
+100.00 207.000000 20,700.00 USD
+Units
+100.00 358.620000 35,862.00 USD
+Units
+500.00 126.000000 63,000.00 USD
+Units
+Total
+228,747.00 USD
++971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example
+This is a system generated document and does not need to be signed and stamped
+Page: 1/1
+Audit History
+History of approvals appended after the invoice.
+KTA Job Id
+User
+Task
+Comments
+Date Time

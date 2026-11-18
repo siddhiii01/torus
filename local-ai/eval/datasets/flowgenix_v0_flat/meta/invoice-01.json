@@ -1,0 +1,16 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/TAX INVOICE.pdf (super-admin demo doc)",
+  "currency": "INR",
+  "adversarial": false,
+  "notes": "Clean intra-state Indian tax invoice, 3 line items, single 'GST (18%)' line (not split CGST/SGST). OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI interleaves the item table: the three qty/unit-price/line-total triples print BEFORE the three descriptions - a model must re-associate rows by order. Scrubbed: seller/buyer names, addresses, both GSTINs, invoice number -> realistic same-format/length fakes; document structure untouched.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items"
+  ]
+}

@@ -1,0 +1,26 @@
+# Blocks a merge that changes a product profile (or, later, RAG wiring) if that
+# product's DeepEval regression gate falls below threshold.
+# Skeleton — enable once eval/datasets/flowgenix/ has reviewed golden cases and a
+# staging middleware endpoint exists.
+
+name: regression
+on:
+  pull_request:
+    paths:
+      - "profiles/**"
+      - "middleware/**"
+      - "eval/deepeval/**"
+
+jobs:
+  flowgenix-regression:
+    runs-on: ubuntu-latest
+    if: false   # flip to true when GOLDEN is populated and CELERIS_BASE_URL points at staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install deepeval requests
+      - env:
+          CELERIS_BASE_URL: ${{ secrets.CELERIS_STAGING_URL }}
+          CELERIS_KEY_FLOWGENIX: ${{ secrets.CELERIS_KEY_FLOWGENIX }}
+        run: deepeval test run eval/deepeval/test_flowgenix.py

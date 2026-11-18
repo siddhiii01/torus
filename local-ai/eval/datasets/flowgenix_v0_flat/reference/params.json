@@ -1,0 +1,60 @@
+{
+  "temperature": 0.1,
+  "maxOutputTokens": 2048,
+  "jsonMode": true,
+  "schemaEnforcedByAdapter": false,
+  "adapterRetriesOnSchemaFail": 0,
+  "stop": null,
+  "requestTimeoutMs": null,
+  "systemPrompt": null,
+
+  "messagesRoleLayout": "single 'user' message; no 'system' and no 'assistant' message",
+  "responseFormat": { "type": "json_object" },
+  "model": "local-gateway",
+  "modelLogicalNameAtServer": "celeris-local-primary",
+  "stream": false,
+  "n": 1,
+
+  "maxOutputTokens_detail": {
+    "sentToServer": false,
+    "flowgenixComputedValue": 4096,
+    "serverDefaultApplied": 2048,
+    "serverHardCap": 8192,
+    "note": "openaiAdapter never puts max_tokens in the request body, so the Celeris server's own default (2048) governs. Long multi-line invoices (e.g. cases/invoice-06, 9 line items) can exceed 2048 completion tokens -> finish_reason 'length' -> truncated JSON -> INVALID_JSON_FORMAT. For the bake-off, raise the server default toward 8192 (contract max) or have Flowgenix pass maxOutputTokens through; record which you used."
+  },
+
+  "requestTimeoutMs_detail": {
+    "flowgenixClientTimeout": null,
+    "serverDefaultTimeoutMs": 90000,
+    "serverHardCapTimeoutMs": 115000,
+    "perRequestOverrideHeader": "X-Celeris-Timeout-Ms",
+    "note": "Flowgenix's axios call sets no timeout (PROJECT_LOG.md 5.9 risk 5) -> a slow local model can block the Agenda worker up to its 30-min lock. The Celeris server MUST enforce its own timeout and return HTTP 408."
+  },
+
+  "schema_detail": {
+    "note": "callOptions for this scene do not include `schema`, so openaiAdapter's Ajv path (adapter maxRetries default 1) never runs. adapterRetriesOnSchemaFail is therefore 0 in practice. The middleware profile also sets schema:null. See schema/schema_notes.md.",
+    "adapterMaxRetriesDefaultIfSchemaWerePassed": 1
+  },
+
+  "jsonHandling": {
+    "parseAndRepairBeforeFailing": true,
+    "repairFn": "backend/utils/jsonFixer.js -> validateAndFixJSON (strip code fences, close arrays, quote keys, drop trailing commas, quote bare values)",
+    "onUnrecoverable": "error code INVALID_JSON_FORMAT, upload marked failed"
+  },
+
+  "languagePolicy": "Prompt forces detection + translation of any non-English field VALUES to English before returning JSON (aiConstants.js prefix line 6; openaiAdapter prefix line 88; invoice prompt IMPORTANT RULES). Goldens assume English output.",
+
+  "_citations": {
+    "temperature": "backend/services/adapters/openaiAdapter.js:110 (options.temperature ?? 0.1); backend/queues/agenda.js:1854-1863 sets no temperature",
+    "jsonMode": "backend/queues/agenda.js:1860 (callOptions.jsonMode = true)",
+    "responseFormat": "backend/services/adapters/openaiAdapter.js:114-116; supportsNativeJson set at backend/services/llm/LLMService.js:132 from registry capabilities.supportsJsonMode",
+    "messagesRoleLayout": "backend/services/adapters/openaiAdapter.js:103-108 (messages: [{ role: 'user', content: enhancedPrompt }]); profiles/flowgenix.json systemPrompt:null; docs/CONTRACT.md 5.1",
+    "maxOutputTokens": "backend/services/llm/LLMService.js:152-156 (computes 4096 for jsonMode); openaiAdapter.js:101-123 (never sends max_tokens); docs/CONTRACT.md 2 (server default 2048, max 8192)",
+    "schemaEnforcedByAdapter": "backend/services/adapters/openaiAdapter.js:166 (only if options.schema); backend/queues/agenda.js:1854-1863 (no schema in callOptions); profiles/flowgenix.json schema:null",
+    "adapterRetriesOnSchemaFail": "backend/services/adapters/openaiAdapter.js:10 (maxRetries = options.maxRetries ?? 1) but guarded by options.schema at :166/:179",
+    "stop": "not set anywhere on this path (grep: no `stop` in openaiAdapter payload or callOptions)",
+    "requestTimeoutMs": "backend/services/adapters/openaiAdapter.js:118 (axios.post with no timeout); backend/queues/agenda.js PROJECT_LOG 5.9",
+    "systemPrompt": "profiles/flowgenix.json systemPrompt:null; docs/CONTRACT.md 5.1 (Flowgenix: off); no system message constructed in openaiAdapter",
+    "model": "PROJECT_LOG.md 5.7 (add modelRegistry entry 'local-gateway', baseUrl = LOCAL_AI_BASE_URL, supportsJsonMode:true); docs/CONTRACT.md 2 (logical name celeris-local-primary)"
+  }
+}

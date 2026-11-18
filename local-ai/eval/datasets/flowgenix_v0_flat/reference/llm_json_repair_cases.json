@@ -1,0 +1,97 @@
+{
+  "_about": "Malformed-LLM-JSON -> clean-JSON behaviour of the Flowgenix repair layer that runs on every extraction response BEFORE field scoring: backend/utils/llmJsonParser.js (parseLlmJsonResponse) -> backend/utils/jsonFixer.js (validateAndFixJSON -> fixMalformedJSON). Cases marked repairable:true were VERIFIED by running the real module at commit 704e91bf0742c226db5ba3c85a5521b109dc2b21; 'expected' is the exact parsed object it produced. Cases marked repairable:false FAIL repair -> Flowgenix error INVALID_JSON_FORMAT -> upload marked failed (see ../error_contract.md). Use the repairable set as golden pairs for a JSON-repair unit; use the non-repairable set as 'a model that emits this breaks the pipeline'.",
+  "_sources": [
+    "backend/tests/llmJsonParser.test.js (the 2 pairs + 1 negative pinned by Flowgenix's own suite)",
+    "backend/utils/jsonFixer.js fixMalformedJSON steps 1-7 (remaining cases, each executed against the real function)"
+  ],
+  "cases": [
+    {
+      "name": "valid-passthrough",
+      "input": "{\"poNumber\":\"PO-1\",\"lineItems\":[]}",
+      "expected": { "poNumber": "PO-1", "lineItems": [] },
+      "repairable": true,
+      "repairAttempted": false,
+      "source": "backend/tests/llmJsonParser.test.js:9"
+    },
+    {
+      "name": "markdown-json-fence",
+      "input": "```json\n{\"a\":1}\n```",
+      "expected": { "a": 1 },
+      "repairable": true,
+      "repairAttempted": true,
+      "source": "backend/tests/llmJsonParser.test.js:16"
+    },
+    {
+      "name": "markdown-bare-fence",
+      "input": "```\n{\"invoice_number\":\"INV-1\"}\n```",
+      "expected": { "invoice_number": "INV-1" },
+      "repairable": true,
+      "repairAttempted": true,
+      "source": "backend/utils/jsonFixer.js:14-35 (fence strip)"
+    },
+    {
+      "name": "prose-preamble-then-json",
+      "input": "Here is the JSON:\n{\"total_amount\":\"100.00\"}",
+      "expected": { "total_amount": "100.00" },
+      "repairable": true,
+      "repairAttempted": true,
+      "source": "backend/utils/jsonFixer.js:20-27 (first { .. last })"
+    },
+    {
+      "name": "trailing-text-after-json",
+      "input": "{\"a\":1} -- end of response",
+      "expected": { "a": 1 },
+      "repairable": true,
+      "repairAttempted": true,
+      "source": "backend/utils/jsonFixer.js:20-27"
+    },
+    {
+      "name": "trailing-comma-in-object",
+      "input": "{\"a\":1,\"b\":2,}",
+      "expected": { "a": 1, "b": 2 },
+      "repairable": true,
+      "repairAttempted": true,
+      "source": "backend/utils/jsonFixer.js:62-63 (drop trailing comma)"
+    },
+    {
+      "name": "unquoted-keys",
+      "input": "{invoice_number: \"INV-1\", total: 100}",
+      "expected": { "invoice_number": "INV-1", "total": 100 },
+      "repairable": true,
+      "repairAttempted": true,
+      "source": "backend/utils/jsonFixer.js:57-59 (quote bare property names)"
+    },
+    {
+      "name": "trailing-comma-in-array-NOT-REPAIRED",
+      "input": "{\"items\":[1,2,3,]}",
+      "expected": null,
+      "repairable": false,
+      "note": "Verified: fixMalformedJSON does NOT recover a trailing comma inside an array here -> parseLlmJsonResponse success:false -> INVALID_JSON_FORMAT. A model that emits trailing commas in arrays will fail uploads.",
+      "source": "verified against backend/utils/jsonFixer.js @ 704e91b"
+    },
+    {
+      "name": "unclosed-array-NOT-REPAIRED",
+      "input": "{\"line_items\":[{\"x\":1},{\"x\":2}",
+      "expected": null,
+      "repairable": false,
+      "note": "Verified: truncated JSON (e.g. from finish_reason 'length') is NOT closed by fixIncompleteArrays in this shape -> INVALID_JSON_FORMAT. This is the concrete failure mode behind params.json maxOutputTokens_detail.",
+      "source": "verified against backend/utils/jsonFixer.js @ 704e91b"
+    },
+    {
+      "name": "not-json-NOT-REPAIRED",
+      "input": "{not json",
+      "expected": null,
+      "repairable": false,
+      "note": "parseStatus FAIL, failureMessage = 'Extraction failed: invalid JSON returned by LLM'.",
+      "source": "backend/tests/llmJsonParser.test.js:23"
+    },
+    {
+      "name": "empty-string-NOT-REPAIRED",
+      "input": "",
+      "expected": null,
+      "repairable": false,
+      "note": "Empty/whitespace completion -> 'Unexpected end of JSON input' -> INVALID_JSON_FORMAT. (A literal null/undefined completion yields message 'Empty LLM response' via llmJsonParser.js:7-19.)",
+      "source": "verified against backend/utils/llmJsonParser.js @ 704e91b"
+    }
+  ]
+}

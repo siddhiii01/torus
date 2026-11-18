@@ -1,0 +1,36 @@
+# secrets & env
+.env
+.env.*
+!.env.example
+**/.secrets/*
+!**/.secrets/*.example.json
+*.pem
+*.key
+
+# node
+node_modules/
+npm-debug.log*
+.eslintcache
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.deepeval/
+.pytest_cache/
+
+# eval / promptfoo
+eval/promptfoo/results/
+.promptfoo/
+promptfoo-errors.log
+
+# logs & runtime
+**/logs/
+*.log
+!deploy/*.log
+
+# os / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

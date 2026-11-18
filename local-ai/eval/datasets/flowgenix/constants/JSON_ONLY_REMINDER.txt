@@ -1,0 +1,1 @@
+Remember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.

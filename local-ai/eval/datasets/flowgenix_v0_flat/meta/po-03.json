@@ -1,0 +1,17 @@
+{
+  "doc_type": "purchase_order",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/Purchase_Order_PO_2026_0412.pdf",
+  "currency": "INR",
+  "adversarial": false,
+  "notes": "Simpler 'Buyer Information / Vendor Information' PO layout - no Consignor/Consignee, no GST Summary table, only a Financial Summary block. 4 line items across 3 HSN codes; CGST @ 9% + SGST @ 9% + Freight Charges. All gst_* fields null (no GST Summary table); CGST/SGST go to financial_cgst_total/financial_sgst_total; the '9%' rate has no schema home and is left unmapped. Freight Charges 1,500 mapped to financial_packing_forwarding_charges (nearest field; null also defensible). OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI prints the Financial Summary numbers AFTER the signatory line and mangles one qty ('50\\n60' for Nitrile Gloves; source 50 - golden keeps 50). Scrubbed: buyer + vendor names/addresses, both GSTINs, PO number, signatory name.",
+  "contains_real_data": false,
+  "required_fields": [
+    "purchase_order_number",
+    "purchase_order_date",
+    "currency",
+    "line_items",
+    "issuer_name",
+    "recipient_name"
+  ]
+}

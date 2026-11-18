@@ -1,0 +1,16 @@
+PURCHASE ORDER
+PO Number: PO-77102
+Order Date: 09/07/2026
+Vendor Name: Lumitron Components
+Customer Name: Northbridge Assembly
+
+Currency: USD
+Terms: Payment in advance
+
+Part Number   Product Name              Qty   Unit   Rate     Amount
+ELG-0041      Red LED, 3mm              100   PCS    0.62     62.00
+ELG-0042      Green LED, 3mm            80    PCS    0.78     62.40
+
+Net Amount: 124.40
+Sales Tax: 0.00
+Order Total: 124.40

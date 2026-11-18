@@ -1,0 +1,20 @@
+TAX INVOICE
+Inv No: INV-88421
+Bill Date: 04-Jul-2026
+Payment Due Date: 19-Jul-2026
+
+Vendor Name:
+Orbit Stationery Traders Pvt. Ltd.
+Customer Name:
+CleerFlow Manufacturing Pvt. Ltd.
+
+Currency Code: INR
+Terms: Net 15 Days
+
+SKU                 Item Description                 Qty   Rate     Tax      Line Total
+PAP-A4-500          A4 Copier Paper (500 Sheets)     10    250.00   450.00   2500.00
+TNR-BLK-01          Black Toner Cartridge            3     1850.00  999.00   5550.00
+
+Net Amount: 8050.00
+Total Tax: 1449.00
+Amount Due: 9499.00

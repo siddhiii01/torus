@@ -1,0 +1,8 @@
+{
+  "case_id": "binani",
+  "customer_name": "Sailesh Binani",
+  "source_pdf": "S0000010456335.pdf",
+  "page_count_expected": 26,
+  "gold_status": "frozen_v0",
+  "notes": "Gold v0 frozen (diagnostic set only; not a publishable accuracy number)."
+}

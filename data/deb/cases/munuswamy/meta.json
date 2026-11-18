@@ -1,0 +1,8 @@
+{
+  "case_id": "munuswamy",
+  "customer_name": "V Munuswamy",
+  "source_pdf": "S0000010999523.pdf",
+  "page_count_expected": 22,
+  "gold_status": "frozen_v0",
+  "notes": "Gold v0 frozen (diagnostic set only; not a publishable accuracy number)."
+}

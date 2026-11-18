@@ -1,0 +1,827 @@
+[
+  {
+    "name": "invoice-01",
+    "doc_type": "invoice",
+    "scene_prompt": "invoice",
+    "source": "fictional-eval-pin",
+    "prompt_source": "synthetic_assembly",
+    "adversarial": false,
+    "derived_from": "fictional",
+    "document_text": "TAX INVOICE\nInv No: INV-88421\nBill Date: 04-Jul-2026\nPayment Due Date: 19-Jul-2026\n\nVendor Name:\nOrbit Stationery Traders Pvt. Ltd.\nCustomer Name:\nCleerFlow Manufacturing Pvt. Ltd.\n\nCurrency Code: INR\nTerms: Net 15 Days\n\nSKU                 Item Description                 Qty   Rate     Tax      Line Total\nPAP-A4-500          A4 Copier Paper (500 Sheets)     10    250.00   450.00   2500.00\nTNR-BLK-01          Black Toner Cartridge            3     1850.00  999.00   5550.00\n\nNet Amount: 8050.00\nTotal Tax: 1449.00\nAmount Due: 9499.00\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a vendor invoice into structured JSON.\n\nHeader: invoice number, invoice date, due date, supplier name, buyer name, currency, payment terms, subtotal, tax amount, and grand total.\n\nLine table: return lineItems as an array of row objects (one object per billed line). Each row must contain item code, description, quantity, unit price, line tax, and line total. Do not flatten line columns onto the header (no line_1_description, no top-level itemCode).\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    invoiceNumber (label: Invoice Number) [aka: Inv No, Bill No, Tax Invoice Number]\n    invoiceDate (label: Invoice Date) <date>\n    dueDate (label: Due Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    taxAmount (label: Line Tax) [aka: Tax]\n    lineTotal (label: Line Total) [aka: Amount, Line Amount, Extended Price]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"taxAmount\": null, \"lineTotal\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\nTAX INVOICE\nInv No: INV-88421\nBill Date: 04-Jul-2026\nPayment Due Date: 19-Jul-2026\n\nVendor Name:\nOrbit Stationery Traders Pvt. Ltd.\nCustomer Name:\nCleerFlow Manufacturing Pvt. Ltd.\n\nCurrency Code: INR\nTerms: Net 15 Days\n\nSKU                 Item Description                 Qty   Rate     Tax      Line Total\nPAP-A4-500          A4 Copier Paper (500 Sheets)     10    250.00   450.00   2500.00\nTNR-BLK-01          Black Toner Cartridge            3     1850.00  999.00   5550.00\n\nNet Amount: 8050.00\nTotal Tax: 1449.00\nAmount Due: 9499.00\n",
+    "expected": {
+      "fields": {
+        "invoiceNumber": "INV-88421",
+        "invoiceDate": "04-Jul-2026",
+        "dueDate": "19-Jul-2026",
+        "supplierName": "Orbit Stationery Traders Pvt. Ltd.",
+        "buyerName": "CleerFlow Manufacturing Pvt. Ltd.",
+        "currency": "INR",
+        "paymentTerms": "Net 15 Days",
+        "subtotal": 8050,
+        "taxAmount": 1449,
+        "totalAmount": 9499
+      },
+      "lineItems": [
+        {
+          "itemCode": "PAP-A4-500",
+          "description": "A4 Copier Paper (500 Sheets)",
+          "quantity": 10,
+          "unitPrice": 250,
+          "taxAmount": 450,
+          "lineTotal": 2500
+        },
+        {
+          "itemCode": "TNR-BLK-01",
+          "description": "Black Toner Cartridge",
+          "quantity": 3,
+          "unitPrice": 1850,
+          "taxAmount": 999,
+          "lineTotal": 5550
+        }
+      ]
+    },
+    "required_fields": [
+      "invoiceNumber",
+      "invoiceDate",
+      "lineItems"
+    ]
+  },
+  {
+    "name": "invoice-02",
+    "doc_type": "invoice",
+    "scene_prompt": "invoice",
+    "source": "fictional-eval-pin",
+    "prompt_source": "synthetic_assembly",
+    "adversarial": false,
+    "derived_from": "fictional",
+    "document_text": "TAX INVOICE\nTax Invoice Number\nINV-33019\nDate\n22/03/2026\nDue Date\n05/04/2026\nVendor\nMaple Dock Packaging Ltd\nBill To\nRiverbend Foods Pvt. Ltd.\nINR\nNet 21\nItems\nDescription\nQty\nPrice\nTax\nAmount\nCorrugated carton 12x12\nStretch wrap 500m\n12\n4\n85.00\n210.00\n183.60\n151.20\n1020.00\n840.00\nSubtotal\n1860.00\nVAT\n334.80\nGrand Total\n2194.80\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a vendor invoice into structured JSON.\n\nHeader: invoice number, invoice date, due date, supplier name, buyer name, currency, payment terms, subtotal, tax amount, and grand total.\n\nLine table: return lineItems as an array of row objects (one object per billed line). Each row must contain item code, description, quantity, unit price, line tax, and line total. Do not flatten line columns onto the header (no line_1_description, no top-level itemCode).\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    invoiceNumber (label: Invoice Number) [aka: Inv No, Bill No, Tax Invoice Number]\n    invoiceDate (label: Invoice Date) <date>\n    dueDate (label: Due Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    taxAmount (label: Line Tax) [aka: Tax]\n    lineTotal (label: Line Total) [aka: Amount, Line Amount, Extended Price]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"taxAmount\": null, \"lineTotal\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\nTAX INVOICE\nTax Invoice Number\nINV-33019\nDate\n22/03/2026\nDue Date\n05/04/2026\nVendor\nMaple Dock Packaging Ltd\nBill To\nRiverbend Foods Pvt. Ltd.\nINR\nNet 21\nItems\nDescription\nQty\nPrice\nTax\nAmount\nCorrugated carton 12x12\nStretch wrap 500m\n12\n4\n85.00\n210.00\n183.60\n151.20\n1020.00\n840.00\nSubtotal\n1860.00\nVAT\n334.80\nGrand Total\n2194.80\n",
+    "expected": {
+      "fields": {
+        "invoiceNumber": "INV-33019",
+        "invoiceDate": "22/03/2026",
+        "dueDate": "05/04/2026",
+        "supplierName": "Maple Dock Packaging Ltd",
+        "buyerName": "Riverbend Foods Pvt. Ltd.",
+        "currency": "INR",
+        "paymentTerms": "Net 21",
+        "subtotal": 1860,
+        "taxAmount": 334.8,
+        "totalAmount": 2194.8
+      },
+      "lineItems": [
+        {
+          "itemCode": null,
+          "description": "Corrugated carton 12x12",
+          "quantity": 12,
+          "unitPrice": 85,
+          "taxAmount": 183.6,
+          "lineTotal": 1020
+        },
+        {
+          "itemCode": null,
+          "description": "Stretch wrap 500m",
+          "quantity": 4,
+          "unitPrice": 210,
+          "taxAmount": 151.2,
+          "lineTotal": 840
+        }
+      ]
+    },
+    "required_fields": [
+      "invoiceNumber",
+      "invoiceDate",
+      "lineItems"
+    ]
+  },
+  {
+    "name": "invoice-03",
+    "doc_type": "invoice",
+    "scene_prompt": "invoice",
+    "source": "fictional-eval-pin",
+    "prompt_source": "synthetic_assembly",
+    "adversarial": true,
+    "derived_from": "fictional",
+    "document_text": "PURCHASE ORDER\nPO Number: PO-77102\nOrder Date: 09/07/2026\nVendor Name: Lumitron Components\nCustomer Name: Northbridge Assembly\n\nCurrency: USD\nTerms: Payment in advance\n\nPart Number   Product Name              Qty   Unit   Rate     Amount\nELG-0041      Red LED, 3mm              100   PCS    0.62     62.00\nELG-0042      Green LED, 3mm            80    PCS    0.78     62.40\n\nNet Amount: 124.40\nSales Tax: 0.00\nOrder Total: 124.40\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a vendor invoice into structured JSON.\n\nHeader: invoice number, invoice date, due date, supplier name, buyer name, currency, payment terms, subtotal, tax amount, and grand total.\n\nLine table: return lineItems as an array of row objects (one object per billed line). Each row must contain item code, description, quantity, unit price, line tax, and line total. Do not flatten line columns onto the header (no line_1_description, no top-level itemCode).\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    invoiceNumber (label: Invoice Number) [aka: Inv No, Bill No, Tax Invoice Number]\n    invoiceDate (label: Invoice Date) <date>\n    dueDate (label: Due Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    taxAmount (label: Line Tax) [aka: Tax]\n    lineTotal (label: Line Total) [aka: Amount, Line Amount, Extended Price]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"taxAmount\": null, \"lineTotal\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\nPURCHASE ORDER\nPO Number: PO-77102\nOrder Date: 09/07/2026\nVendor Name: Lumitron Components\nCustomer Name: Northbridge Assembly\n\nCurrency: USD\nTerms: Payment in advance\n\nPart Number   Product Name              Qty   Unit   Rate     Amount\nELG-0041      Red LED, 3mm              100   PCS    0.62     62.00\nELG-0042      Green LED, 3mm            80    PCS    0.78     62.40\n\nNet Amount: 124.40\nSales Tax: 0.00\nOrder Total: 124.40\n",
+    "expected": {
+      "fields": {
+        "invoiceNumber": null,
+        "invoiceDate": null,
+        "dueDate": null,
+        "supplierName": "Lumitron Components",
+        "buyerName": "Northbridge Assembly",
+        "currency": "USD",
+        "paymentTerms": "Payment in advance",
+        "subtotal": 124.4,
+        "taxAmount": 0,
+        "totalAmount": 124.4
+      },
+      "lineItems": [
+        {
+          "itemCode": "ELG-0041",
+          "description": "Red LED, 3mm",
+          "quantity": 100,
+          "unitPrice": 0.62,
+          "taxAmount": null,
+          "lineTotal": 62
+        },
+        {
+          "itemCode": "ELG-0042",
+          "description": "Green LED, 3mm",
+          "quantity": 80,
+          "unitPrice": 0.78,
+          "taxAmount": null,
+          "lineTotal": 62.4
+        }
+      ]
+    },
+    "required_fields": []
+  },
+  {
+    "name": "po-01",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "fictional-eval-pin",
+    "prompt_source": "synthetic_assembly",
+    "adversarial": false,
+    "derived_from": "fictional",
+    "document_text": "PURCHASE ORDER\nPO Number: PO-2026-4418\nPO Date: 12-Aug-2026\nRequested Delivery Date: 01-Sep-2026\n\nSupplier / Vendor:\nCedarline Components Pvt. Ltd.\nBuyer / Bill To:\nHarbor Mill Textiles LLP\n\nCurrency: INR\nPayment Terms: Net 30\n\nItem Code    Description              Qty    UOM    Unit Price    Amount\nCL-8821      Cotton yarn 40s cone     20     KG     145.00        2900.00\nCL-9104      Polyester sewing thread  8      BOX    220.50        1764.00\n\nNet Amount: 4664.00\nSales Tax: 839.52\nGrand Total: 5503.52\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\nPURCHASE ORDER\nPO Number: PO-2026-4418\nPO Date: 12-Aug-2026\nRequested Delivery Date: 01-Sep-2026\n\nSupplier / Vendor:\nCedarline Components Pvt. Ltd.\nBuyer / Bill To:\nHarbor Mill Textiles LLP\n\nCurrency: INR\nPayment Terms: Net 30\n\nItem Code    Description              Qty    UOM    Unit Price    Amount\nCL-8821      Cotton yarn 40s cone     20     KG     145.00        2900.00\nCL-9104      Polyester sewing thread  8      BOX    220.50        1764.00\n\nNet Amount: 4664.00\nSales Tax: 839.52\nGrand Total: 5503.52\n",
+    "expected": {
+      "fields": {
+        "poNumber": "PO-2026-4418",
+        "poDate": "12-Aug-2026",
+        "supplierName": "Cedarline Components Pvt. Ltd.",
+        "buyerName": "Harbor Mill Textiles LLP",
+        "currency": "INR",
+        "paymentTerms": "Net 30",
+        "deliveryDate": "01-Sep-2026",
+        "subtotal": 4664,
+        "taxAmount": 839.52,
+        "totalAmount": 5503.52
+      },
+      "lineItems": [
+        {
+          "itemCode": "CL-8821",
+          "description": "Cotton yarn 40s cone",
+          "quantity": 20,
+          "unitPrice": 145,
+          "lineAmount": 2900,
+          "uom": "KG"
+        },
+        {
+          "itemCode": "CL-9104",
+          "description": "Polyester sewing thread",
+          "quantity": 8,
+          "unitPrice": 220.5,
+          "lineAmount": 1764,
+          "uom": "BOX"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ]
+  },
+  {
+    "name": "po-real-01",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a670d98b1d339262dafc5",
+    "document_text": "--- Page 1 ---\nPurchase Order (SAMPLE — FOR DEMONSTRATION ONLY Consignor [Supplier's Details] Consignee [Receiver's Details] PO Details CEDARWOOD HARDWARE SUPPLY Oakridge Modular Interiors PO No.: PO/9901/1015 Plot 33, Jalandhar Industrial Focal Point, Punjab, Plot 18, Sector 5, IMT Manesar, Gurugram, PO Date: 17/08/2026 144004 India Haryana, 122051, India PO Type: Blanket PO GSTIN.: 03AABCF5567R1ZW GSTIN: 06AAKCF3341T1ZL Order Reference: PO/9901/1015 Contact Name: Priya Nair Amendment Ref: - Mobile No.: 9000011122 Mobile No.: 9000011122 E-mail: purchase@oakridge-mi.example E-mail: purchase@oakridge-mi.example Currency: INR Dear Sir/Madam, Please supply following goods/material in accordance with agreed terms and conditions or contract purchase agreement. Please mention our Item code & Purchase Order number on your tax invoice without which invoice will not be processed. Please send the material along with a valid Test Report. [7 [froeecien [maternal wecoae [vow [omy [rneunt [oon [naw [Anount 1 Item No.: HDW/1501 | Supplier Part No.: 29-08-2026 83024190 NOS 15,000.00 42.50 4 40.80 612,000 HNG-SS-35MM Item Name: Soft Close Hinge Item Description: 35mm Cup, Stainless Steel, Soft Close 2 Item No.: HDW/1502 | Supplier Part No.: 29-08-2026 83024190 PAIR 6,000.00 185.00 2 181.30 1,087,800 SLD-TLM-450 Item Name: Telescopic Drawer Slide Item Description: 450mm, Full Extension, Soft Close ep ep ee GST Summary | Currency : INR 83024190 1,699,800 | | 152,982.00 | 3 | 152,982.00 Po] 305,964.00 PO Terms PO Summary | Currency INR Delivery Location : Manesar Assembly Unit Total Taxable Amount : 1,699,800 Payment Terms : 45 Days S-GST : 152,982.00 Freight Terms : EXW - Ex-Warehouse C-GST : 152,982.00 Transporter : Buyer's Nominated Transporter I-GST : 0.00 PO Remark: Finish sample to be approved before full batch production. Rounded off [+/-] : 0.00 Total PO Amount : 2,005,764 General Terms and Conditions 1. Acceptance: This PO is a binding contract once accepted or when work begins. No changes are valid unless agreed in writing. 2. Quality & Inspection: Goods must meet all specifications. We reserve the right to inspect and reject defective items at the Seller's expense. 3. Delivery: Delivery must be completed by the date specified. 4. Pricing: Prices are fixed as stated. No extra charges (packing, freight, etc.) are allowed unless pre-authorized. 5. Payment: Standard terms are Net 60 days following receipt of a correct invoice and acceptance of goods.\n--- Page 2 ---\n6. Warranty: Seller guarantees goods are new, defect-free, and fit for purpose for at least 12 months from delivery. 7. Compliance: Seller must follow all applicable safety, labor, and environmental laws. 8. Termination: The Buyer may cancel the order if the Seller fails to meet quality or delivery timelines.\n--- Page 3 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nPurchase Order (SAMPLE — FOR DEMONSTRATION ONLY Consignor [Supplier's Details] Consignee [Receiver's Details] PO Details CEDARWOOD HARDWARE SUPPLY Oakridge Modular Interiors PO No.: PO/9901/1015 Plot 33, Jalandhar Industrial Focal Point, Punjab, Plot 18, Sector 5, IMT Manesar, Gurugram, PO Date: 17/08/2026 144004 India Haryana, 122051, India PO Type: Blanket PO GSTIN.: 03AABCF5567R1ZW GSTIN: 06AAKCF3341T1ZL Order Reference: PO/9901/1015 Contact Name: Priya Nair Amendment Ref: - Mobile No.: 9000011122 Mobile No.: 9000011122 E-mail: purchase@oakridge-mi.example E-mail: purchase@oakridge-mi.example Currency: INR Dear Sir/Madam, Please supply following goods/material in accordance with agreed terms and conditions or contract purchase agreement. Please mention our Item code & Purchase Order number on your tax invoice without which invoice will not be processed. Please send the material along with a valid Test Report. [7 [froeecien [maternal wecoae [vow [omy [rneunt [oon [naw [Anount 1 Item No.: HDW/1501 | Supplier Part No.: 29-08-2026 83024190 NOS 15,000.00 42.50 4 40.80 612,000 HNG-SS-35MM Item Name: Soft Close Hinge Item Description: 35mm Cup, Stainless Steel, Soft Close 2 Item No.: HDW/1502 | Supplier Part No.: 29-08-2026 83024190 PAIR 6,000.00 185.00 2 181.30 1,087,800 SLD-TLM-450 Item Name: Telescopic Drawer Slide Item Description: 450mm, Full Extension, Soft Close ep ep ee GST Summary | Currency : INR 83024190 1,699,800 | | 152,982.00 | 3 | 152,982.00 Po] 305,964.00 PO Terms PO Summary | Currency INR Delivery Location : Manesar Assembly Unit Total Taxable Amount : 1,699,800 Payment Terms : 45 Days S-GST : 152,982.00 Freight Terms : EXW - Ex-Warehouse C-GST : 152,982.00 Transporter : Buyer's Nominated Transporter I-GST : 0.00 PO Remark: Finish sample to be approved before full batch production. Rounded off [+/-] : 0.00 Total PO Amount : 2,005,764 General Terms and Conditions 1. Acceptance: This PO is a binding contract once accepted or when work begins. No changes are valid unless agreed in writing. 2. Quality & Inspection: Goods must meet all specifications. We reserve the right to inspect and reject defective items at the Seller's expense. 3. Delivery: Delivery must be completed by the date specified. 4. Pricing: Prices are fixed as stated. No extra charges (packing, freight, etc.) are allowed unless pre-authorized. 5. Payment: Standard terms are Net 60 days following receipt of a correct invoice and acceptance of goods.\n--- Page 2 ---\n6. Warranty: Seller guarantees goods are new, defect-free, and fit for purpose for at least 12 months from delivery. 7. Compliance: Seller must follow all applicable safety, labor, and environmental laws. 8. Termination: The Buyer may cancel the order if the Seller fails to meet quality or delivery timelines.\n--- Page 3 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "PO/9901/1015",
+        "poDate": "17/08/2026",
+        "supplierName": "CEDARWOOD HARDWARE SUPPLY",
+        "buyerName": "Oakridge Modular Interiors",
+        "currency": "INR",
+        "paymentTerms": "45 Days",
+        "deliveryDate": null,
+        "subtotal": 1699800,
+        "taxAmount": 305964,
+        "totalAmount": 2005764
+      },
+      "lineItems": [
+        {
+          "itemCode": "HDW/1501",
+          "description": "Soft Close Hinge — 35mm Cup, Stainless Steel, Soft Close",
+          "quantity": 15000,
+          "unitPrice": 40.8,
+          "lineAmount": 612000,
+          "uom": "NOS"
+        },
+        {
+          "itemCode": "HDW/1502",
+          "description": "Telescopic Drawer Slide — 450mm, Full Extension, Soft Close",
+          "quantity": 6000,
+          "unitPrice": 181.3,
+          "lineAmount": 1087800,
+          "uom": "PAIR"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "clean",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-02",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a670698b1d339262dafb6",
+    "document_text": "--- Page 1 ---\nPurchase Order (SAMPLE — FOR DEMONSTRATION ONLY Consignor [Supplier's Details] Consignee [Receiver's Details] PO Details TIDALWAVE MARINE SUPPLY Harborline Shipyard Services PO No.: PO/9901/1014 Plot 9, Jawahar Dweep Road, Uran, Raigad, Berth No 5, Vizag Port Trust Area, PO Date: 14/08/2026 Maharashtra, 400702 India Visakhapatnam, Andhra Pradesh, 530001, India PO Type: Amendment PO GSTIN.: 27AABCF8834N1ZX GSTIN: 37AAJCF2298Q1ZB Order Reference: PO/9901/1014 Contact Name: Ramesh Iyer Amendment Ref: PO/9901/1014/02 Mobile No.: 9000022233 Mobile No.: 9000022233 E-mail: purchase@harborline-ship.example E-mail: purchase@harborline-ship.example Currency: INR Dear Sir/Madam, Please supply following goods/material in accordance with agreed terms and conditions or contract purchase agreement. Please mention our Item code & Purchase Order number on your tax invoice without which invoice will not be processed. Please send the material along with a valid Test Report. [7 [feroeeciten [aire] wacoae [vow [ony [rneun [oso [naw [Anount 1 Item No.: MRN/1401 | Supplier Part No.: 26-08-2026 73151900 MTR 450.00 2,650.00 3 2,570.50 1,156,725 ANC-CHN-32MM Item Name: Anchor Chain Item Description: 32mm Stud Link Chain, Grade U2 2 Item No.: MRN/1402 | Supplier Part No.: 26-08-2026 40169990 NOS 60.00 8,900.00 8,900.00 534,000 FND-RUB-D200 Item Name: Rubber Fender Item Description: D-Type Fender, 200mm x 2000mm Length ep ep ee GST Summary | Currency : INR PO Terms PO Summary | Currency INR Delivery Location : Vizag Berth 5 Store Total Taxable Amount : 1,690,725 Payment Terms : Net 60 Days S-GST : 0.00 Freight Terms : To-Pay C-GST : 0.00 Transporter : Coastal Freight Movers I-GST : 304,330.50 PO Remark: Amendment 02: quantity revised, delivery split into two lots. Rounded off [+/-] : 0.50 Total PO Amount : 1,995,056 General Terms and Conditions 1. Acceptance: This PO is a binding contract once accepted or when work begins. No changes are valid unless agreed in writing. 2. Quality & Inspection: Goods must meet all specifications. We reserve the right to inspect and reject defective items at the Seller's expense. 3. Delivery: Delivery must be completed by the date specified. 4. Pricing: Prices are fixed as stated. No extra charges (packing, freight, etc.) are allowed unless pre-authorized. 5. Payment: Standard terms are Net 60 days following receipt of a correct invoice and acceptance of goods.\n--- Page 2 ---\n6. Warranty: Seller guarantees goods are new, defect-free, and fit for purpose for at least 12 months from delivery. 7. Compliance: Seller must follow all applicable safety, labor, and environmental laws. 8. Termination: The Buyer may cancel the order if the Seller fails to meet quality or delivery timelines.\n--- Page 3 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nPurchase Order (SAMPLE — FOR DEMONSTRATION ONLY Consignor [Supplier's Details] Consignee [Receiver's Details] PO Details TIDALWAVE MARINE SUPPLY Harborline Shipyard Services PO No.: PO/9901/1014 Plot 9, Jawahar Dweep Road, Uran, Raigad, Berth No 5, Vizag Port Trust Area, PO Date: 14/08/2026 Maharashtra, 400702 India Visakhapatnam, Andhra Pradesh, 530001, India PO Type: Amendment PO GSTIN.: 27AABCF8834N1ZX GSTIN: 37AAJCF2298Q1ZB Order Reference: PO/9901/1014 Contact Name: Ramesh Iyer Amendment Ref: PO/9901/1014/02 Mobile No.: 9000022233 Mobile No.: 9000022233 E-mail: purchase@harborline-ship.example E-mail: purchase@harborline-ship.example Currency: INR Dear Sir/Madam, Please supply following goods/material in accordance with agreed terms and conditions or contract purchase agreement. Please mention our Item code & Purchase Order number on your tax invoice without which invoice will not be processed. Please send the material along with a valid Test Report. [7 [feroeeciten [aire] wacoae [vow [ony [rneun [oso [naw [Anount 1 Item No.: MRN/1401 | Supplier Part No.: 26-08-2026 73151900 MTR 450.00 2,650.00 3 2,570.50 1,156,725 ANC-CHN-32MM Item Name: Anchor Chain Item Description: 32mm Stud Link Chain, Grade U2 2 Item No.: MRN/1402 | Supplier Part No.: 26-08-2026 40169990 NOS 60.00 8,900.00 8,900.00 534,000 FND-RUB-D200 Item Name: Rubber Fender Item Description: D-Type Fender, 200mm x 2000mm Length ep ep ee GST Summary | Currency : INR PO Terms PO Summary | Currency INR Delivery Location : Vizag Berth 5 Store Total Taxable Amount : 1,690,725 Payment Terms : Net 60 Days S-GST : 0.00 Freight Terms : To-Pay C-GST : 0.00 Transporter : Coastal Freight Movers I-GST : 304,330.50 PO Remark: Amendment 02: quantity revised, delivery split into two lots. Rounded off [+/-] : 0.50 Total PO Amount : 1,995,056 General Terms and Conditions 1. Acceptance: This PO is a binding contract once accepted or when work begins. No changes are valid unless agreed in writing. 2. Quality & Inspection: Goods must meet all specifications. We reserve the right to inspect and reject defective items at the Seller's expense. 3. Delivery: Delivery must be completed by the date specified. 4. Pricing: Prices are fixed as stated. No extra charges (packing, freight, etc.) are allowed unless pre-authorized. 5. Payment: Standard terms are Net 60 days following receipt of a correct invoice and acceptance of goods.\n--- Page 2 ---\n6. Warranty: Seller guarantees goods are new, defect-free, and fit for purpose for at least 12 months from delivery. 7. Compliance: Seller must follow all applicable safety, labor, and environmental laws. 8. Termination: The Buyer may cancel the order if the Seller fails to meet quality or delivery timelines.\n--- Page 3 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "PO/9901/1014",
+        "poDate": "14/08/2026",
+        "supplierName": "TIDALWAVE MARINE SUPPLY",
+        "buyerName": "Harborline Shipyard Services",
+        "currency": "INR",
+        "paymentTerms": "Net 60 Days",
+        "deliveryDate": null,
+        "subtotal": 1690725,
+        "taxAmount": 304330.5,
+        "totalAmount": 1995056
+      },
+      "lineItems": [
+        {
+          "itemCode": "MRN/1401",
+          "description": "Anchor Chain — 32mm Stud Link Chain, Grade U2",
+          "quantity": 450,
+          "unitPrice": 2570.5,
+          "lineAmount": 1156725,
+          "uom": "MTR"
+        },
+        {
+          "itemCode": "MRN/1402",
+          "description": "Rubber Fender — D-Type Fender, 200mm x 2000mm Length",
+          "quantity": 60,
+          "unitPrice": 8900,
+          "lineAmount": 534000,
+          "uom": "NOS"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "hard",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-03",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a663498b1d339262dad66",
+    "document_text": "--- Page 1 ---\nMeridian Care Systems PURCHASE ORDER 55 Care Center Blvd, Boston, MA 02115 PO #: PO-9901-003 Email: purchasing@meridian-care.example Date: September 3, 2026 Delivery Date: September 18, 2026 VENDOR SHIP TO Vitalis Equipment Corp Meridian Care Systems 88 Science Park, Cambridge, MA 02142 55 Care Center Blvd, Boston, MA 02115 ITEM DESCRIPTION QTY UNIT PRICE TOTAL Patient Vital Monitors 5 $2800.00 $14000.00 Digital Ultrasound Machines 1 $18500.00 $18500.00 Sterile Surgical Kit Sets 50 $120.00 $6000.00 Subtotal: $38500.00 Tax: $3080.00 Shipping: $300.00 Total: $41880.00 Notes / Instructions: Requires temperature-controlled transport. Thank you for your business! Please send invoices to purchasing@meridian-care.example.\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nMeridian Care Systems PURCHASE ORDER 55 Care Center Blvd, Boston, MA 02115 PO #: PO-9901-003 Email: purchasing@meridian-care.example Date: September 3, 2026 Delivery Date: September 18, 2026 VENDOR SHIP TO Vitalis Equipment Corp Meridian Care Systems 88 Science Park, Cambridge, MA 02142 55 Care Center Blvd, Boston, MA 02115 ITEM DESCRIPTION QTY UNIT PRICE TOTAL Patient Vital Monitors 5 $2800.00 $14000.00 Digital Ultrasound Machines 1 $18500.00 $18500.00 Sterile Surgical Kit Sets 50 $120.00 $6000.00 Subtotal: $38500.00 Tax: $3080.00 Shipping: $300.00 Total: $41880.00 Notes / Instructions: Requires temperature-controlled transport. Thank you for your business! Please send invoices to purchasing@meridian-care.example.\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "PO-9901-003",
+        "poDate": "September 3, 2026",
+        "supplierName": "Vitalis Equipment Corp",
+        "buyerName": "Meridian Care Systems",
+        "currency": "USD",
+        "paymentTerms": null,
+        "deliveryDate": "September 18, 2026",
+        "subtotal": 38500,
+        "taxAmount": 3080,
+        "totalAmount": 41880
+      },
+      "lineItems": [
+        {
+          "itemCode": null,
+          "description": "Patient Vital Monitors",
+          "quantity": 5,
+          "unitPrice": 2800,
+          "lineAmount": 14000,
+          "uom": null
+        },
+        {
+          "itemCode": null,
+          "description": "Digital Ultrasound Machines",
+          "quantity": 1,
+          "unitPrice": 18500,
+          "lineAmount": 18500,
+          "uom": null
+        },
+        {
+          "itemCode": null,
+          "description": "Sterile Surgical Kit Sets",
+          "quantity": 50,
+          "unitPrice": 120,
+          "lineAmount": 6000,
+          "uom": null
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "clean",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-04",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a642f37824d7ded98f4d8",
+    "document_text": "--- Page 1 ---\nSummit Innovations Ltd. PURCHASE ORDER 101 Tech Park, Silicon Valley, CA 94025 PO #: PO-9901-001 Email: procurement@summit-inn.example Date: September 1, 2026 Delivery Date: September 15, 2026 VENDOR SHIP TO Orbit Supplies Co. Summit Innovations Ltd. 456 Commerce St, New York, NY 10001 101 Tech Park, Silicon Valley, CA 94025 ITEM DESCRIPTION QTY UNIT PRICE TOTAL Enterprise Laptops - High Performance 10 $1200.00 $12000.00 27-inch 4K Monitors 15 $350.00 $5250.00 Ergonomic Office Chairs 10 $250.00 $2500.00 Subtotal: $19750.00 Tax: $1580.00 Shipping: $200.00 Total: $21530.00 Notes / Instructions: | Please deliver all items to Building B, Receiving Dock 2. Thank you for your business! Please send invoices to procurement@summit-inn.example.\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nSummit Innovations Ltd. PURCHASE ORDER 101 Tech Park, Silicon Valley, CA 94025 PO #: PO-9901-001 Email: procurement@summit-inn.example Date: September 1, 2026 Delivery Date: September 15, 2026 VENDOR SHIP TO Orbit Supplies Co. Summit Innovations Ltd. 456 Commerce St, New York, NY 10001 101 Tech Park, Silicon Valley, CA 94025 ITEM DESCRIPTION QTY UNIT PRICE TOTAL Enterprise Laptops - High Performance 10 $1200.00 $12000.00 27-inch 4K Monitors 15 $350.00 $5250.00 Ergonomic Office Chairs 10 $250.00 $2500.00 Subtotal: $19750.00 Tax: $1580.00 Shipping: $200.00 Total: $21530.00 Notes / Instructions: | Please deliver all items to Building B, Receiving Dock 2. Thank you for your business! Please send invoices to procurement@summit-inn.example.\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "PO-9901-001",
+        "poDate": "September 1, 2026",
+        "supplierName": "Orbit Supplies Co.",
+        "buyerName": "Summit Innovations Ltd.",
+        "currency": "USD",
+        "paymentTerms": null,
+        "deliveryDate": "September 15, 2026",
+        "subtotal": 19750,
+        "taxAmount": 1580,
+        "totalAmount": 21530
+      },
+      "lineItems": [
+        {
+          "itemCode": null,
+          "description": "Enterprise Laptops - High Performance",
+          "quantity": 10,
+          "unitPrice": 1200,
+          "lineAmount": 12000,
+          "uom": null
+        },
+        {
+          "itemCode": null,
+          "description": "27-inch 4K Monitors",
+          "quantity": 15,
+          "unitPrice": 350,
+          "lineAmount": 5250,
+          "uom": null
+        },
+        {
+          "itemCode": null,
+          "description": "Ergonomic Office Chairs",
+          "quantity": 10,
+          "unitPrice": 250,
+          "lineAmount": 2500,
+          "uom": null
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "clean",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-05",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a6250380fe823076cef4f",
+    "document_text": "--- Page 1 ---\nLevel 12, Tower B, Cyber City, Hyderabad, Telangana 500081, India GSTIN: 36AAACF9876K1ZQ | Tel: +91 40 6677 8899 Email: contracts@northspan-infra.example PO Number: NSPL/PO/CONST/2026/099 PO Date: 02/09/2026 PO Type: Site Material Purchase Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Deccan Alloy Steels & Structures Ltd. Northspan Infrastructure - Flyover Site Project Sy No 44, Industrial Development Area, Patancheru, Telangana Site Office, Metro Corridor 3, Gachibowli, Hyderabad, Telangana 502319 500032 GSTIN: 36AAACF1122M1ZX GSTIN: 36AAACF9876K1ZQ Contact: K. V. Menon (9000033344) Delivery Location: Project Site Gate No 3 Payment Terms: 20% Advance, 80% on Weightment Delivery Freight Terms: FOR Site Hyderabad Transporter: Vendor's Vehicle Special Remark: Third party weighbridge slip mandatory with invoice copy. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) STL-TMT-16 1 Fe550D TMT Rebars 16mm Diameter 12-09-2026 72142090 MTR 45 58500.00 0.0% 2,632,500.00 (Primary Steel) STL-TMT-25 2 Fe550D TMT Rebars 25mm Diameter 12-09-2026 72142090 MTR 30 59000.00 1.0% 1,752,300.00 (Primary Steel) Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 4,384,800.00 CGST 4,384,800.00 9% 394,632.00 Total GST Tax: 789,264.00 Total Tax: 789,264.00 Grand Total (INR): 5,174,064.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Northspan Infrastructure Projects Ltd. Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nLevel 12, Tower B, Cyber City, Hyderabad, Telangana 500081, India GSTIN: 36AAACF9876K1ZQ | Tel: +91 40 6677 8899 Email: contracts@northspan-infra.example PO Number: NSPL/PO/CONST/2026/099 PO Date: 02/09/2026 PO Type: Site Material Purchase Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Deccan Alloy Steels & Structures Ltd. Northspan Infrastructure - Flyover Site Project Sy No 44, Industrial Development Area, Patancheru, Telangana Site Office, Metro Corridor 3, Gachibowli, Hyderabad, Telangana 502319 500032 GSTIN: 36AAACF1122M1ZX GSTIN: 36AAACF9876K1ZQ Contact: K. V. Menon (9000033344) Delivery Location: Project Site Gate No 3 Payment Terms: 20% Advance, 80% on Weightment Delivery Freight Terms: FOR Site Hyderabad Transporter: Vendor's Vehicle Special Remark: Third party weighbridge slip mandatory with invoice copy. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) STL-TMT-16 1 Fe550D TMT Rebars 16mm Diameter 12-09-2026 72142090 MTR 45 58500.00 0.0% 2,632,500.00 (Primary Steel) STL-TMT-25 2 Fe550D TMT Rebars 25mm Diameter 12-09-2026 72142090 MTR 30 59000.00 1.0% 1,752,300.00 (Primary Steel) Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 4,384,800.00 CGST 4,384,800.00 9% 394,632.00 Total GST Tax: 789,264.00 Total Tax: 789,264.00 Grand Total (INR): 5,174,064.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Northspan Infrastructure Projects Ltd. Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "NSPL/PO/CONST/2026/099",
+        "poDate": "02/09/2026",
+        "supplierName": "Deccan Alloy Steels & Structures Ltd.",
+        "buyerName": "Northspan Infrastructure Projects Ltd.",
+        "currency": "INR",
+        "paymentTerms": "20% Advance, 80% on Weightment Delivery",
+        "deliveryDate": "12-09-2026",
+        "subtotal": 4384800,
+        "taxAmount": 789264,
+        "totalAmount": 5174064
+      },
+      "lineItems": [
+        {
+          "itemCode": "STL-TMT-16",
+          "description": "Fe550D TMT Rebars 16mm Diameter (Primary Steel)",
+          "quantity": 45,
+          "unitPrice": 58500,
+          "lineAmount": 2632500,
+          "uom": "MTR"
+        },
+        {
+          "itemCode": "STL-TMT-25",
+          "description": "Fe550D TMT Rebars 25mm Diameter (Primary Steel)",
+          "quantity": 30,
+          "unitPrice": 59000,
+          "lineAmount": 1752300,
+          "uom": "MTR"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "messy",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-06",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a625e380fe823076cef79",
+    "document_text": "--- Page 1 ---\nPlot 88-90, GIDC Industrial Estate, Ankleshwar, Gujarat 393002, India GSTIN: 24AAACF4433P1ZK | Tel: +91 2646 223344 Email: materials@helix-pharma.example PO Number: HPC/PURI/2026/1105 PO Date: 01/09/2026 PO Type: Urgent Stock Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Summit Fine Specialty Chemicals Ltd. Helix Pharmachemicals Ltd. 104 Express Zone, Goregaon East, Mumbai, Maharashtra 400063 Plot 88-90, GIDC Industrial Estate, Ankleshwar, Gujarat 393002 GSTIN: 27AAACF9988C1Z9 GSTIN: 24AAACF4433P1ZK Contact: Dr. V. Mehta (9000044455) Delivery Location: API Warehouse Block B Payment Terms: Advance Payment (100%) Freight Terms: FOR Destination Transporter: SafeXpress Liquid Logistics Special Remark: COA (Certificate of Analysis) mandatory for raw material acceptance. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) RAW-IPA-99 -| = 0, 1 Isopropyl Alcohol (IPA) Pharma Grade 99.9% 10-09-2026 29051220 KGS 8,000 115.00 0.0% 920,000.00 CAT-PALL-05 = b 0, 2 Palladium on Carbon Catalyst 5% Dry Basis 10-09-2026 38151210 KGS 50 14500.00 3.0% 703,250.00 Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 1,623,250.00 IGST 1,623,250.00 18% 292,185.00 Total GST Tax: 292,185.00 Total Tax: 292,185.00 Rounding Adjustment: 0.00 Grand Total (INR): 1,915,435.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Helix Pharmachemicals Ltd. Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nPlot 88-90, GIDC Industrial Estate, Ankleshwar, Gujarat 393002, India GSTIN: 24AAACF4433P1ZK | Tel: +91 2646 223344 Email: materials@helix-pharma.example PO Number: HPC/PURI/2026/1105 PO Date: 01/09/2026 PO Type: Urgent Stock Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Summit Fine Specialty Chemicals Ltd. Helix Pharmachemicals Ltd. 104 Express Zone, Goregaon East, Mumbai, Maharashtra 400063 Plot 88-90, GIDC Industrial Estate, Ankleshwar, Gujarat 393002 GSTIN: 27AAACF9988C1Z9 GSTIN: 24AAACF4433P1ZK Contact: Dr. V. Mehta (9000044455) Delivery Location: API Warehouse Block B Payment Terms: Advance Payment (100%) Freight Terms: FOR Destination Transporter: SafeXpress Liquid Logistics Special Remark: COA (Certificate of Analysis) mandatory for raw material acceptance. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) RAW-IPA-99 -| = 0, 1 Isopropyl Alcohol (IPA) Pharma Grade 99.9% 10-09-2026 29051220 KGS 8,000 115.00 0.0% 920,000.00 CAT-PALL-05 = b 0, 2 Palladium on Carbon Catalyst 5% Dry Basis 10-09-2026 38151210 KGS 50 14500.00 3.0% 703,250.00 Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 1,623,250.00 IGST 1,623,250.00 18% 292,185.00 Total GST Tax: 292,185.00 Total Tax: 292,185.00 Rounding Adjustment: 0.00 Grand Total (INR): 1,915,435.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Helix Pharmachemicals Ltd. Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "HPC/PURI/2026/1105",
+        "poDate": "01/09/2026",
+        "supplierName": "Summit Fine Specialty Chemicals Ltd.",
+        "buyerName": "Helix Pharmachemicals Ltd.",
+        "currency": "INR",
+        "paymentTerms": "Advance Payment (100%)",
+        "deliveryDate": "10-09-2026",
+        "subtotal": 1623250,
+        "taxAmount": 292185,
+        "totalAmount": 1915435
+      },
+      "lineItems": [
+        {
+          "itemCode": "RAW-IPA-99",
+          "description": "Isopropyl Alcohol (IPA) Pharma Grade 99.9%",
+          "quantity": 8000,
+          "unitPrice": 115,
+          "lineAmount": 920000,
+          "uom": "KGS"
+        },
+        {
+          "itemCode": "CAT-PALL-05",
+          "description": "Palladium on Carbon Catalyst 5% Dry Basis",
+          "quantity": 50,
+          "unitPrice": 14500,
+          "lineAmount": 703250,
+          "uom": "KGS"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "messy",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-07",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a6257380fe823076cef5e",
+    "document_text": "--- Page 1 ---\n15 Garment Park, Sector 37, Gurugram, Haryana 122004, India GSTIN: 06AAAAA1234E1ZP | Tel: +91 124 4556677 Email: sourcing@lumen-fashion.example PO Number: LFT/PO/9901/0078 PO Date: 03/09/2026 PO Type: Export Order Procurement Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Spinwell Yarns & Threads Co. Lumen Fashion & Apparel Exports Focal Point Phase IV, Ludhiana, Punjab 141010 15 Garment Park, Sector 37, Gurugram, Haryana 122004 GSTIN: 03AAACF5544R1ZW GSTIN: 06AAAAA1234E1ZP Contact: Gurpreet Singh (9000055566) Delivery Location: Cutting & Processing Plant Payment Terms: 60 Days Letter of Credit (LC) Freight Terms: Ex-Mill Ludhiana . . . Color fastness testing report required per OEKO- Transporter: GATI Transport Special Remark: TEX Standard 100. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) YRN-COT-30 -| = 0, 1 Combed Cotton Yarn 30s Count Ring Spun 18-09-2026 52052210 KGS 12,000 280.00 0.0% 3,360,000.00 THR-POLY-50 2 High Tenacity Polyester Sewing Thread 18-09-2026 54011000 BOX 500 450.00 5.0% 213,750.00 Spools Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 3,573,750.00 IGST 3,573,750.00 12% 428,850.00 Total GST Tax: 428,850.00 Total Tax: 428,850.00 Rounding Adjustment: 0.00 Grand Total (INR): 4,002,600.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Lumen Fashion & Apparel Exports Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\n15 Garment Park, Sector 37, Gurugram, Haryana 122004, India GSTIN: 06AAAAA1234E1ZP | Tel: +91 124 4556677 Email: sourcing@lumen-fashion.example PO Number: LFT/PO/9901/0078 PO Date: 03/09/2026 PO Type: Export Order Procurement Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Spinwell Yarns & Threads Co. Lumen Fashion & Apparel Exports Focal Point Phase IV, Ludhiana, Punjab 141010 15 Garment Park, Sector 37, Gurugram, Haryana 122004 GSTIN: 03AAACF5544R1ZW GSTIN: 06AAAAA1234E1ZP Contact: Gurpreet Singh (9000055566) Delivery Location: Cutting & Processing Plant Payment Terms: 60 Days Letter of Credit (LC) Freight Terms: Ex-Mill Ludhiana . . . Color fastness testing report required per OEKO- Transporter: GATI Transport Special Remark: TEX Standard 100. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) YRN-COT-30 -| = 0, 1 Combed Cotton Yarn 30s Count Ring Spun 18-09-2026 52052210 KGS 12,000 280.00 0.0% 3,360,000.00 THR-POLY-50 2 High Tenacity Polyester Sewing Thread 18-09-2026 54011000 BOX 500 450.00 5.0% 213,750.00 Spools Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 3,573,750.00 IGST 3,573,750.00 12% 428,850.00 Total GST Tax: 428,850.00 Total Tax: 428,850.00 Rounding Adjustment: 0.00 Grand Total (INR): 4,002,600.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Lumen Fashion & Apparel Exports Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "LFT/PO/9901/0078",
+        "poDate": "03/09/2026",
+        "supplierName": "Spinwell Yarns & Threads Co.",
+        "buyerName": "Lumen Fashion & Apparel Exports",
+        "currency": "INR",
+        "paymentTerms": "60 Days Letter of Credit (LC)",
+        "deliveryDate": "18-09-2026",
+        "subtotal": 3573750,
+        "taxAmount": 428850,
+        "totalAmount": 4002600
+      },
+      "lineItems": [
+        {
+          "itemCode": "YRN-COT-30",
+          "description": "Combed Cotton Yarn 30s Count Ring Spun",
+          "quantity": 12000,
+          "unitPrice": 280,
+          "lineAmount": 3360000,
+          "uom": "KGS"
+        },
+        {
+          "itemCode": "THR-POLY-50",
+          "description": "High Tenacity Polyester Sewing Thread Spools",
+          "quantity": 500,
+          "unitPrice": 450,
+          "lineAmount": 213750,
+          "uom": "BOX"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "messy",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-08",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a932ca3f64b1c3ec95816e0",
+    "document_text": "sand dune\ndistribution\nShipping address:\nSand Dune FZE\n+971 4 000 1111\nPurchase Order #P99018\nPurchase Representative:\nNaveed Ali Farhan\nAccount:\nInkJetFZCO\nCODE\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n[InkJet FZCO] InkJet Middle East FZCO\n+971 4 000 2222\nYour Order Reference:\nMANUAL\nOrder Date:\n17/06/2026 15:11:11\nCurrency:\nUSD\nDESCRIPTION\nTAXES\nQTY\nUNIT\nPRICE\nAMOUNT\nIJ-C11CL40407 InkJet EcoTank L6390 Wi-Fi A4 Duplex All-in-One Ink\nPrinter\nIJ-C11CL43406 InkJet EcoTank L6370 Wi-Fi A4 Duplex All-in-One Ink\nIJ-C11CJ88404DA\nIJ-C11CK38403DA\nPrinter\nInkJet EcoTank L6490 A4 Ink Tank Printer\nInkJet L18050 A3+ Photo Ink Tank Printer\nIJ-C11CL41412 InkJet EcoTank L4360 A4 Wi-Fi Duplex All-in-One Ink\nIJ-C11CH96403DA\nTank Printer\nInkJet EcoTank ITS L14150 Printer\nIJ-C11CJ65409 InkJet EcoTank L5290 A4 Wi-Fi All-in-One Ink Tank\nPrinter\nIJ-C11CK94402 InkJet EcoTank L8100 Photo Printer\nIJ-C11CL61403 InkJet EcoTank L3310 A4 All-in-One Ink Tank Printer\n40.00 299.000000 11,960.00 USD\nUnits\n40.00 268.000000 10,720.00 USD\nUnits\n50.00 305.000000 15,250.00 USD\nUnits\n50.00 452.100000 22,605.00 USD\nUnits\n50.00 213.000000 10,650.00 USD\nUnits\n100.00 380.000000 38,000.00 USD\nUnits\n100.00 207.000000 20,700.00 USD\nUnits\n100.00 358.620000 35,862.00 USD\nUnits\n500.00 126.000000 63,000.00 USD\nUnits\nTotal\n228,747.00 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 1/1\nAudit History\nHistory of approvals appended after the invoice.\nKTA Job Id\nUser\nTask\nComments\nDate Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\nsand dune\ndistribution\nShipping address:\nSand Dune FZE\n+971 4 000 1111\nPurchase Order #P99018\nPurchase Representative:\nNaveed Ali Farhan\nAccount:\nInkJetFZCO\nCODE\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n[InkJet FZCO] InkJet Middle East FZCO\n+971 4 000 2222\nYour Order Reference:\nMANUAL\nOrder Date:\n17/06/2026 15:11:11\nCurrency:\nUSD\nDESCRIPTION\nTAXES\nQTY\nUNIT\nPRICE\nAMOUNT\nIJ-C11CL40407 InkJet EcoTank L6390 Wi-Fi A4 Duplex All-in-One Ink\nPrinter\nIJ-C11CL43406 InkJet EcoTank L6370 Wi-Fi A4 Duplex All-in-One Ink\nIJ-C11CJ88404DA\nIJ-C11CK38403DA\nPrinter\nInkJet EcoTank L6490 A4 Ink Tank Printer\nInkJet L18050 A3+ Photo Ink Tank Printer\nIJ-C11CL41412 InkJet EcoTank L4360 A4 Wi-Fi Duplex All-in-One Ink\nIJ-C11CH96403DA\nTank Printer\nInkJet EcoTank ITS L14150 Printer\nIJ-C11CJ65409 InkJet EcoTank L5290 A4 Wi-Fi All-in-One Ink Tank\nPrinter\nIJ-C11CK94402 InkJet EcoTank L8100 Photo Printer\nIJ-C11CL61403 InkJet EcoTank L3310 A4 All-in-One Ink Tank Printer\n40.00 299.000000 11,960.00 USD\nUnits\n40.00 268.000000 10,720.00 USD\nUnits\n50.00 305.000000 15,250.00 USD\nUnits\n50.00 452.100000 22,605.00 USD\nUnits\n50.00 213.000000 10,650.00 USD\nUnits\n100.00 380.000000 38,000.00 USD\nUnits\n100.00 207.000000 20,700.00 USD\nUnits\n100.00 358.620000 35,862.00 USD\nUnits\n500.00 126.000000 63,000.00 USD\nUnits\nTotal\n228,747.00 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 1/1\nAudit History\nHistory of approvals appended after the invoice.\nKTA Job Id\nUser\nTask\nComments\nDate Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "P99018",
+        "poDate": "17/06/2026",
+        "supplierName": "InkJet Middle East FZCO",
+        "buyerName": "Sand Dune Distribution FZE",
+        "currency": "USD",
+        "paymentTerms": null,
+        "deliveryDate": null,
+        "subtotal": 228747,
+        "taxAmount": 0,
+        "totalAmount": 228747
+      },
+      "lineItems": [
+        {
+          "itemCode": "IJ-C11CL40407",
+          "description": "InkJet EcoTank L6390 Wi-Fi A4 Duplex All-in-One Ink Printer",
+          "quantity": 40,
+          "unitPrice": 299,
+          "lineAmount": 11960,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CL43406",
+          "description": "InkJet EcoTank L6370 Wi-Fi A4 Duplex All-in-One Ink Printer",
+          "quantity": 40,
+          "unitPrice": 268,
+          "lineAmount": 10720,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CJ88404DA",
+          "description": "InkJet EcoTank L6490 A4 Ink Tank Printer",
+          "quantity": 50,
+          "unitPrice": 305,
+          "lineAmount": 15250,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CK38403DA",
+          "description": "InkJet L18050 A3+ Photo Ink Tank Printer",
+          "quantity": 50,
+          "unitPrice": 452.1,
+          "lineAmount": 22605,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CL41412",
+          "description": "InkJet EcoTank L4360 A4 Wi-Fi Duplex All-in-One Ink Tank Printer",
+          "quantity": 50,
+          "unitPrice": 213,
+          "lineAmount": 10650,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CH96403DA",
+          "description": "InkJet EcoTank ITS L14150 Printer",
+          "quantity": 100,
+          "unitPrice": 380,
+          "lineAmount": 38000,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CJ65409",
+          "description": "InkJet EcoTank L5290 A4 Wi-Fi All-in-One Ink Tank Printer",
+          "quantity": 100,
+          "unitPrice": 207,
+          "lineAmount": 20700,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CK94402",
+          "description": "InkJet EcoTank L8100 Photo Printer",
+          "quantity": 100,
+          "unitPrice": 358.62,
+          "lineAmount": 35862,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "IJ-C11CL61403",
+          "description": "InkJet EcoTank L3310 A4 All-in-One Ink Tank Printer",
+          "quantity": 500,
+          "unitPrice": 126,
+          "lineAmount": 63000,
+          "uom": "Units"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "messy",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-09",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": false,
+    "derived_from": "6a9a6a47704d6d9dd1242dd2",
+    "document_text": "sand dune\ndistribution\nShipping address:\nSand Dune FZE\n+971 4 000 1111\nPurchase Order #P99019\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n[PERIPHERAL$] PERIPHERALCO\n0031-(0)00-000000\nPurchase Representative:\nAmina Najaf Ali\nYour Order Reference:\n26893361/26900073\nOrder Date:\n25/06/2026 19:11:23\nAccount:\nPERIPHERAL$\nCurrency:\nUSD\nCODE\nDESCRIPTION\nTAXES\nQTY\nUNIT PRICE\nAMOUNT\n910-\nPresenter - PeripheralCo Wireless Presenter R400\n001356\nExempted\nTax\n168.00\nUnits\n17.000000\n2,856.00 USD\n910-\nMouse - PERIPHERALCO Corded Mouse M90\nExempted\n001793\nTax\n2,100.00\nUnits\n2.250000\n4,725.00 USD\n910-\nMouse - PERIPHERALCO Wireless Mouse M235 - Colt Matte\nExempted\n002201\nTax\n80.00\nUnits\n9.410000\n752.80 USD\n910-\n002235\nMouse - PERIPHERALCO Wireless Mouse M185 - Swift-Grey\nExempted\nTax\n2,200.00\nUnits\n6.300000 13,860.00 USD\n910-\n002236\nMouse - PERIPHERALCO Wireless Mouse M185 - Blue\nExempted\nTax\n500.00\nUnits\n6.300000 3,150.00 USD\n910-\n002237\nMouse - PERIPHERALCO Wireless Mouse M185 - RED\nExempted\nTax\n400.00\nUnits\n6.300000\n2,520.00 USD\n910-\n004424\nMouse - PERIPHERALCO WIRELESS MOUSE M171 - BLACK\nExempted\nTax\n3,200.00\nUnits\n6.000000 19,200.00 USD\n910-\n004640\nMouse - PERIPHERALCO Wireless Mouse M171 - BLUE\nExempted\nTax\n700.00\nUnits\n6.000000 4,200.00 USD\n910-\n004641\nMouse - PERIPHERALCO Wireless Mouse M171 - RED\nExempted\nTax\n910-\nM720 Triathlon Mouse-N/A-2.4GHZ/BT-N/A-EMEA-\n004791 CLAMSHELL M720\nExempted\nTax\n400.00\nUnits\n10.00\nUnits\n6.000000 2,400.00 USD\n30.280000\n302.80 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 1/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n910-\n004861\nPresenter - PeripheralCo Spotlight™ - SLATE\nExempted\n24.00\n86.820000\n2,083.68 USD\nTax\nUnits\n910-\n004878\nPeripheralCo M220 SILENT - CHARCOAL OFL - 2.4GHZ - EMEA\nExempted\nTax\n910-\n004909\nPeripheralCo M330 SILENT PLUS - BLACK - 2.4GHZ - EMEA\nExempted\nTax\n560.00\nUnits\n200.00\nUnits\n7.000000 3,920.00 USD\n11.310000\n2,262.00 USD\n910- PeripheralCo® MX Vertical Advanced Ergonomic Mouse -\n005448 GRAPHITE - 2.4GHZ/BT - N/A - EMEA\nExempted\nTax\n4.00\nUnits\n78.080000\n312.32 USD\n910- Mouse - PERIPHERALCO Full-size wireless mouse M190-\n005905 CHARCOAL\nExempted\nTax\n400.00\nUnits\n8.360000\n3,344.00 USD\n910-\nMouse - PERIPHERALCO Full-size wireless mouse M190 - MID\n005906 GREY\nExempted\n300.00\n8.360000\n2,508.00 USD\nTax\nUnits\n910-\nPERIPHERALCO M650L Signature Bluetooth Mouse - GRAPHITE-Exempted\n006239\nLEFT\nTax\n20.00\nUnits\n21.950000\n439.00 USD\n910-\nPERIPHERALCO Mouse M100 - BLACK - USB - N/A - EMEA -\n006652 AKOYA HANGTAB BOX M100\nExempted\n400.00\n3.550000 1,420.00 USD\nTax\nUnits\n910-\nPERIPHERALCO M171 Wireless Mouse - ROSE\nExempted\n006865\nTax\n50.00\nUnits\n6.000000\n300.00 USD\n910-\nPERIPHERALCO M171 Wireless Mouse - BLUE GREY\nExempted\n006866\nTax\n500.00\nUnits\n6.000000\n3,000.00 USD\n910-\nPERIPHERALCO M171 Wireless Mouse - WHITE\nExempted\n006867\nTax\n100.00\nUnits\n6.000000\n600.00 USD\n910- PERIPHERALCO M350S Pebble 2 Bluetooth Mouse - TONAL\n007015 GRAPHITE - DONGLELESS\nExempted\nTax\n300.00\nUnits\n16.200000\n4,860.00 USD\n910-\nPERIPHERALCO M240 Bluetooth Mouse - GRAPHITE - SILENT\nExempted\n007119\nTax\n240.00\nUnits\n10.000000\n2,400.00 USD\n910- PeripheralCo MX Master 3S Performance Wireless Mouse -\n007501 GRAPHITE - EMEA28i-935\nExempted\nTax\n24.00\nUnits\n68.000000\n1,632.00 USD\n910-\nMX Master 4 - GRAPHITE - EMEA28i-935\n007562\nExempted\nTax\n36.00\nUnits\n83.000000\n2,988.00 USD\n920-\n002508\nKeyboard - PERIPHERALCO Wired Keyboard K120 (KB-Sequoia)\nExempted\nTax\n1,600.00\n5.250000 8,400.00 USD\nUnits\n920- COMBO-PERIPHERALCO Wired Keyboard & Mouse Combo\n002562 MK120\nExempted\nTax\n600.00\nUnits\n7.500000 4,500.00 USD\n920-\nCOMBO - PERIPHERALCO Wireless Keyboard & Mouse Combo\n003989 MK330\nExempted\nTax\n344.00\nUnits\n21.740000\n7,478.56 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 2/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n920-\n004509 MK270\n920-\nCOMBO - PERIPHERALCO Wireless Keyboard & Mouse Combo\nExempted 1,200.00\nTax\n13.500000 16,200.00 USD\nUnits\nCOMBO-PERIPHERALCO Wireless Keyboard & Mouse Combo\nExempted\n006489 MK345\nTax\n120.00\nUnits\n19.000000\n2,280.00 USD\n920-\nPERIPHERALCO® WIRELESS TOUCH KEYBOARD K400 PLUS -\nExempted\n100.00\n17.000000\n1,700.00 USD\n007145 DARK - US INTL - 2.4GHZ - INTNL\nTax\nUnits\n920-\nCOMBO - PERIPHERALCO Wireless Keyboard & Mouse Combo Exempted\n007931 MK235\n688.00\n11.000000\n7,568.00 USD\nTax\nUnits\n920-\nMK540 ADVANCED Wireless Keyboard and Mouse Combo-Exempted\n008685 N/A - US INTL\nTax\n88.00\nUnits\n30.430000\n2,677.84 USD\n920-\nPERIPHERALCO Slim Wireless Keyboard and Mouse Combo\n009204 MK470 - GRAPHITE\nExempted\nTax\n920-\nPERIPHERALCO MK295 Silent Wireless Combo-GRAPHITE-US\nExempted\n009800\n920-\nINTL-2.4GHZ-INTNL\nTax\nPERIPHERALCO MX Keys S Bluetooth Illuminated Keyboard -\n011587 GRAPHITE - US INTL\nExempted\nTax\n184.00\nUnits\n600.00\nUnits\n28.00\nUnits\n39.350000\n7,240.40 USD\n20.450000 12,270.00 USD\n83.600000 2,340.80 USD\n920-\n011614\nPERIPHERALCO MX Keys S Bluetooth Combo - GRAPHITE - US\nINTL\nExempted\nTax\n920-\nPERIPHERALCO Pebble 2 Bluetooth Keyboard Combo - TONAL\n012239 GRAPHITE - US INTL\n920-\nExempted\nTax\n20.00\nUnits\n72.00\nUnits\n157.750000\n3,155.00 USD\n41.800000\n3,009.60 USD\nPERIPHERALCO Pebble 2 Bluetooth Keyboard Combo - TONAL\n012240 WHITE-US INTL\nExempted\nTax\n8.00 41.800000\n334.40 USD\nUnits\n920-\nPERIPHERALCO Pebble 2 Bluetooth Keyboard Combo - TONAL\nExempted\n8.00\n41.800000\n334.40 USD\n012241 ROSE - US INTL\nTax\nUnits\n920-\nWave Keys and Lift Combo - GRAPHITE - US INT'L - INTNL-\n013635 973\nExempted\n12.00\n75.000000\n900.00 USD\nTax\nUnits\n939-\nMount - TV MOUNT for MeetUp\nExempted\n6.00\n71.590000\n429.54 USD\n001498\nTax\nUnits\n939-\n001802\nPERIPHERALCO STRONG USB 3.1 CABLE - GRAPHITE-USB-\n25M\nExempted\nTax\n2.00\nUnits\n503.130000\n1,006.26 USD\n939-\nPERIPHERALCO TAP WITH CAT5E KIT - WW\nExempted\n001950\nTax\n8.00 782.800000\nUnits\n6,262.40 USD\n941-\nPERIPHERALCO® G29 DRIVING FORCE RACING WHEEL FOR\n000113 PS4/3 PC - USB - PLUGG - EMEA\nExempted\nTax\n20.00\nUnits\n188.100000\n3,762.00 USD\n952-\nPERIPHERALCO TV MOUNT for video bar - WW\nExempted\n4.00\n151.800000\n607.20 USD\n000041\nTax\nUnits\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 3/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n952-\nPERIPHERALCO WALL MOUNT for Video Bars - WW\n000044\nExempted\nTax\n4.00\n78.830000\n315.32 USD\nUnits\n952-\nPERIPHERALCO Tap Scheduler - GRAPHITE-USB-WW-TOUCH Exempted\n000091 SCREEN\n6.00 677.190000 4,063.14 USD\nTax\nUnits\n960-\nConference Cam-PERIPHERALCO Conference Cam BCC950\nExempted\n000867\nTax\n24.00\nUnits\n180.180000\n4,324.32 USD\n960-\nWEBCAM - PERIPHERALCO HD Webcam C930e\nExempted\n000972\nTax\n60.00\nUnits\n83.770000\n5,026.20 USD\n960-\nConference Cam - PeripheralCo Conference Cam Connect - USB\nExempted\n001034\nTax\n4.00\nUnits\n244.060000\n976.24 USD\n960-\nWEBCAM - PeripheralCo® HD PRO WEBCAM C920 - USB\nExempted\n001055\nTax\n960-\n001057\nConference Cam - PERIPHERALCO GROUP - USB\nExempted\nTax\n160.00\nUnits\n24.00\nUnits\n45.000000\n7,200.00 USD\n463.530000 11,124.72 USD\n960-\nWEBCAM - PeripheralCo® HD Webcam C270 - USB\nExempted\n001063\nTax\n1,000.00\nUnits\n11.500000 11,500.00 USD\n960-\nWEBCAM - PeripheralCo® C922 Pro Stream\n001088\nExempted\nTax\n96.00\nUnits\n52.000000\n4,992.00 USD\n960-\nPeripheralCo - Meet Up - USB\nExempted\n001102\nTax\n6.00\nUnits\n403.040000\n2,418.24 USD\n960-\nRally Camera - BLACK - USB - PLUGG - EMEA\nExempted\n4.00 843.060000\n3,372.24 USD\n001227\nTax\nUnits\n960-\n001242\nPeripheralCo Rally Plus Ultra-HD Conference Cam - BLACK - USB Exempted\nTax\n960-\nWEBCAM - PeripheralCo® HD PRO WEBCAM C920s - USB\nExempted\n001252\nTax\n960-\n001312\nPERIPHERALCO RALLY BAR ALL IN ONE VIDEO BAR\nExempted\nTax\n10.00 2,108.560000 21,085.60 USD\nUnits\n152.00 62.700000 9,530.40 USD\nUnits\n6.00 3,044.130000 18,264.78 USD\nUnits\n960-\nPeripheralCo WEBCAM-Rally Bar Huddle-GRAPHITE-USB-\n001577 PLUGG-WW-9006-HONG KONG/UK/SEA\nExempted\nTax\n6.00 1,454.720000 8,728.32 USD\nUnits\n960- PERIPHERALCO Brio 100 Full HD Webcam - GRAPHITE-USB-C\n001585\nExempted\nTax\n48.00\nUnits\n23.860000\n1,145.28 USD\n960-\n001681\nPeripheralCo MeetUp 2 - GRAPHITE - (Do Not Use) WW-9006\nExempted\nTax\n8.00\nUnits\n740.610000 5,924.88 USD\n981-\n000100\nPC Headset 960 USB\nExempted\nTax\n80.00\nUnits\n17.770000\n1,421.60 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 4/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n981-\n000406\nHeadphones - PERIPHERALCO USB HEADSET H390\nExempted 2,400.00\nTax\n15.000000 36,000.00 USD\nUnits\n981-\n000475\nHeadphones - PERIPHERALCO USB HEADSET H340\nExempted 2,000.00\n11.500000 23,000.00 USD\nTax\nUnits\n981-\n000480\nHeadphones - PERIPHERALCO USB HEADSET H540\nExempted\nTax\n192.00\nUnits\n27.170000\n5,216.64 USD\n981-\n000519\nHeadphones - PERIPHERALCO USB HEADSET STE H650E\nExempted\nTax\n96.00\nUnits\n48.210000\n4,628.16 USD\n981-\n000575\nHeadphones - PERIPHERALCO USB HEADSET H570E\nExempted\nTax\n420.00\nUnits\n19.910000\n8,362.20 USD\n981-\nHeadphones - PERIPHERALCO Stereo Headset H151 - Black (3.5\n000589 MM JACK)\n981-\nExempted\nTax\n1,288.00\nUnits\n10.450000 13,459.60 USD\nHeadphones - PERIPHERALCO Stereo Headset H111 - Black (3.5\nExempted\n000593 MM JACK)\nTax\n981-\n001407\nPERIPHERALCO HEADSET - Zone 300 - MIDNIGHT BLACK - BT-\nEMEA28-935\nExempted\nTax\n1,600.00\nUnits\n168.00\nUnits\n4.960000\n7,936.00 USD\n55.420000 9,310.56 USD\n981-\n001576\nH390 USB-C Computer Headset - MIDNIGHT BLACK -\nEMEA28i-935\nExempted\nTax\n976.00\nUnits\n15.000000 14,640.00 USD\nUntaxed Amount\n422,458.44 USD\nVAT Exempted\n0.00 USD\nTotal\n422,458.44 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 5/5\nAudit History\nHistory of approvals appended after the invoice.\nKTA Job Id\nUser\nTask\nComments\nDate Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\nsand dune\ndistribution\nShipping address:\nSand Dune FZE\n+971 4 000 1111\nPurchase Order #P99019\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n[PERIPHERAL$] PERIPHERALCO\n0031-(0)00-000000\nPurchase Representative:\nAmina Najaf Ali\nYour Order Reference:\n26893361/26900073\nOrder Date:\n25/06/2026 19:11:23\nAccount:\nPERIPHERAL$\nCurrency:\nUSD\nCODE\nDESCRIPTION\nTAXES\nQTY\nUNIT PRICE\nAMOUNT\n910-\nPresenter - PeripheralCo Wireless Presenter R400\n001356\nExempted\nTax\n168.00\nUnits\n17.000000\n2,856.00 USD\n910-\nMouse - PERIPHERALCO Corded Mouse M90\nExempted\n001793\nTax\n2,100.00\nUnits\n2.250000\n4,725.00 USD\n910-\nMouse - PERIPHERALCO Wireless Mouse M235 - Colt Matte\nExempted\n002201\nTax\n80.00\nUnits\n9.410000\n752.80 USD\n910-\n002235\nMouse - PERIPHERALCO Wireless Mouse M185 - Swift-Grey\nExempted\nTax\n2,200.00\nUnits\n6.300000 13,860.00 USD\n910-\n002236\nMouse - PERIPHERALCO Wireless Mouse M185 - Blue\nExempted\nTax\n500.00\nUnits\n6.300000 3,150.00 USD\n910-\n002237\nMouse - PERIPHERALCO Wireless Mouse M185 - RED\nExempted\nTax\n400.00\nUnits\n6.300000\n2,520.00 USD\n910-\n004424\nMouse - PERIPHERALCO WIRELESS MOUSE M171 - BLACK\nExempted\nTax\n3,200.00\nUnits\n6.000000 19,200.00 USD\n910-\n004640\nMouse - PERIPHERALCO Wireless Mouse M171 - BLUE\nExempted\nTax\n700.00\nUnits\n6.000000 4,200.00 USD\n910-\n004641\nMouse - PERIPHERALCO Wireless Mouse M171 - RED\nExempted\nTax\n910-\nM720 Triathlon Mouse-N/A-2.4GHZ/BT-N/A-EMEA-\n004791 CLAMSHELL M720\nExempted\nTax\n400.00\nUnits\n10.00\nUnits\n6.000000 2,400.00 USD\n30.280000\n302.80 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 1/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n910-\n004861\nPresenter - PeripheralCo Spotlight™ - SLATE\nExempted\n24.00\n86.820000\n2,083.68 USD\nTax\nUnits\n910-\n004878\nPeripheralCo M220 SILENT - CHARCOAL OFL - 2.4GHZ - EMEA\nExempted\nTax\n910-\n004909\nPeripheralCo M330 SILENT PLUS - BLACK - 2.4GHZ - EMEA\nExempted\nTax\n560.00\nUnits\n200.00\nUnits\n7.000000 3,920.00 USD\n11.310000\n2,262.00 USD\n910- PeripheralCo® MX Vertical Advanced Ergonomic Mouse -\n005448 GRAPHITE - 2.4GHZ/BT - N/A - EMEA\nExempted\nTax\n4.00\nUnits\n78.080000\n312.32 USD\n910- Mouse - PERIPHERALCO Full-size wireless mouse M190-\n005905 CHARCOAL\nExempted\nTax\n400.00\nUnits\n8.360000\n3,344.00 USD\n910-\nMouse - PERIPHERALCO Full-size wireless mouse M190 - MID\n005906 GREY\nExempted\n300.00\n8.360000\n2,508.00 USD\nTax\nUnits\n910-\nPERIPHERALCO M650L Signature Bluetooth Mouse - GRAPHITE-Exempted\n006239\nLEFT\nTax\n20.00\nUnits\n21.950000\n439.00 USD\n910-\nPERIPHERALCO Mouse M100 - BLACK - USB - N/A - EMEA -\n006652 AKOYA HANGTAB BOX M100\nExempted\n400.00\n3.550000 1,420.00 USD\nTax\nUnits\n910-\nPERIPHERALCO M171 Wireless Mouse - ROSE\nExempted\n006865\nTax\n50.00\nUnits\n6.000000\n300.00 USD\n910-\nPERIPHERALCO M171 Wireless Mouse - BLUE GREY\nExempted\n006866\nTax\n500.00\nUnits\n6.000000\n3,000.00 USD\n910-\nPERIPHERALCO M171 Wireless Mouse - WHITE\nExempted\n006867\nTax\n100.00\nUnits\n6.000000\n600.00 USD\n910- PERIPHERALCO M350S Pebble 2 Bluetooth Mouse - TONAL\n007015 GRAPHITE - DONGLELESS\nExempted\nTax\n300.00\nUnits\n16.200000\n4,860.00 USD\n910-\nPERIPHERALCO M240 Bluetooth Mouse - GRAPHITE - SILENT\nExempted\n007119\nTax\n240.00\nUnits\n10.000000\n2,400.00 USD\n910- PeripheralCo MX Master 3S Performance Wireless Mouse -\n007501 GRAPHITE - EMEA28i-935\nExempted\nTax\n24.00\nUnits\n68.000000\n1,632.00 USD\n910-\nMX Master 4 - GRAPHITE - EMEA28i-935\n007562\nExempted\nTax\n36.00\nUnits\n83.000000\n2,988.00 USD\n920-\n002508\nKeyboard - PERIPHERALCO Wired Keyboard K120 (KB-Sequoia)\nExempted\nTax\n1,600.00\n5.250000 8,400.00 USD\nUnits\n920- COMBO-PERIPHERALCO Wired Keyboard & Mouse Combo\n002562 MK120\nExempted\nTax\n600.00\nUnits\n7.500000 4,500.00 USD\n920-\nCOMBO - PERIPHERALCO Wireless Keyboard & Mouse Combo\n003989 MK330\nExempted\nTax\n344.00\nUnits\n21.740000\n7,478.56 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 2/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n920-\n004509 MK270\n920-\nCOMBO - PERIPHERALCO Wireless Keyboard & Mouse Combo\nExempted 1,200.00\nTax\n13.500000 16,200.00 USD\nUnits\nCOMBO-PERIPHERALCO Wireless Keyboard & Mouse Combo\nExempted\n006489 MK345\nTax\n120.00\nUnits\n19.000000\n2,280.00 USD\n920-\nPERIPHERALCO® WIRELESS TOUCH KEYBOARD K400 PLUS -\nExempted\n100.00\n17.000000\n1,700.00 USD\n007145 DARK - US INTL - 2.4GHZ - INTNL\nTax\nUnits\n920-\nCOMBO - PERIPHERALCO Wireless Keyboard & Mouse Combo Exempted\n007931 MK235\n688.00\n11.000000\n7,568.00 USD\nTax\nUnits\n920-\nMK540 ADVANCED Wireless Keyboard and Mouse Combo-Exempted\n008685 N/A - US INTL\nTax\n88.00\nUnits\n30.430000\n2,677.84 USD\n920-\nPERIPHERALCO Slim Wireless Keyboard and Mouse Combo\n009204 MK470 - GRAPHITE\nExempted\nTax\n920-\nPERIPHERALCO MK295 Silent Wireless Combo-GRAPHITE-US\nExempted\n009800\n920-\nINTL-2.4GHZ-INTNL\nTax\nPERIPHERALCO MX Keys S Bluetooth Illuminated Keyboard -\n011587 GRAPHITE - US INTL\nExempted\nTax\n184.00\nUnits\n600.00\nUnits\n28.00\nUnits\n39.350000\n7,240.40 USD\n20.450000 12,270.00 USD\n83.600000 2,340.80 USD\n920-\n011614\nPERIPHERALCO MX Keys S Bluetooth Combo - GRAPHITE - US\nINTL\nExempted\nTax\n920-\nPERIPHERALCO Pebble 2 Bluetooth Keyboard Combo - TONAL\n012239 GRAPHITE - US INTL\n920-\nExempted\nTax\n20.00\nUnits\n72.00\nUnits\n157.750000\n3,155.00 USD\n41.800000\n3,009.60 USD\nPERIPHERALCO Pebble 2 Bluetooth Keyboard Combo - TONAL\n012240 WHITE-US INTL\nExempted\nTax\n8.00 41.800000\n334.40 USD\nUnits\n920-\nPERIPHERALCO Pebble 2 Bluetooth Keyboard Combo - TONAL\nExempted\n8.00\n41.800000\n334.40 USD\n012241 ROSE - US INTL\nTax\nUnits\n920-\nWave Keys and Lift Combo - GRAPHITE - US INT'L - INTNL-\n013635 973\nExempted\n12.00\n75.000000\n900.00 USD\nTax\nUnits\n939-\nMount - TV MOUNT for MeetUp\nExempted\n6.00\n71.590000\n429.54 USD\n001498\nTax\nUnits\n939-\n001802\nPERIPHERALCO STRONG USB 3.1 CABLE - GRAPHITE-USB-\n25M\nExempted\nTax\n2.00\nUnits\n503.130000\n1,006.26 USD\n939-\nPERIPHERALCO TAP WITH CAT5E KIT - WW\nExempted\n001950\nTax\n8.00 782.800000\nUnits\n6,262.40 USD\n941-\nPERIPHERALCO® G29 DRIVING FORCE RACING WHEEL FOR\n000113 PS4/3 PC - USB - PLUGG - EMEA\nExempted\nTax\n20.00\nUnits\n188.100000\n3,762.00 USD\n952-\nPERIPHERALCO TV MOUNT for video bar - WW\nExempted\n4.00\n151.800000\n607.20 USD\n000041\nTax\nUnits\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 3/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n952-\nPERIPHERALCO WALL MOUNT for Video Bars - WW\n000044\nExempted\nTax\n4.00\n78.830000\n315.32 USD\nUnits\n952-\nPERIPHERALCO Tap Scheduler - GRAPHITE-USB-WW-TOUCH Exempted\n000091 SCREEN\n6.00 677.190000 4,063.14 USD\nTax\nUnits\n960-\nConference Cam-PERIPHERALCO Conference Cam BCC950\nExempted\n000867\nTax\n24.00\nUnits\n180.180000\n4,324.32 USD\n960-\nWEBCAM - PERIPHERALCO HD Webcam C930e\nExempted\n000972\nTax\n60.00\nUnits\n83.770000\n5,026.20 USD\n960-\nConference Cam - PeripheralCo Conference Cam Connect - USB\nExempted\n001034\nTax\n4.00\nUnits\n244.060000\n976.24 USD\n960-\nWEBCAM - PeripheralCo® HD PRO WEBCAM C920 - USB\nExempted\n001055\nTax\n960-\n001057\nConference Cam - PERIPHERALCO GROUP - USB\nExempted\nTax\n160.00\nUnits\n24.00\nUnits\n45.000000\n7,200.00 USD\n463.530000 11,124.72 USD\n960-\nWEBCAM - PeripheralCo® HD Webcam C270 - USB\nExempted\n001063\nTax\n1,000.00\nUnits\n11.500000 11,500.00 USD\n960-\nWEBCAM - PeripheralCo® C922 Pro Stream\n001088\nExempted\nTax\n96.00\nUnits\n52.000000\n4,992.00 USD\n960-\nPeripheralCo - Meet Up - USB\nExempted\n001102\nTax\n6.00\nUnits\n403.040000\n2,418.24 USD\n960-\nRally Camera - BLACK - USB - PLUGG - EMEA\nExempted\n4.00 843.060000\n3,372.24 USD\n001227\nTax\nUnits\n960-\n001242\nPeripheralCo Rally Plus Ultra-HD Conference Cam - BLACK - USB Exempted\nTax\n960-\nWEBCAM - PeripheralCo® HD PRO WEBCAM C920s - USB\nExempted\n001252\nTax\n960-\n001312\nPERIPHERALCO RALLY BAR ALL IN ONE VIDEO BAR\nExempted\nTax\n10.00 2,108.560000 21,085.60 USD\nUnits\n152.00 62.700000 9,530.40 USD\nUnits\n6.00 3,044.130000 18,264.78 USD\nUnits\n960-\nPeripheralCo WEBCAM-Rally Bar Huddle-GRAPHITE-USB-\n001577 PLUGG-WW-9006-HONG KONG/UK/SEA\nExempted\nTax\n6.00 1,454.720000 8,728.32 USD\nUnits\n960- PERIPHERALCO Brio 100 Full HD Webcam - GRAPHITE-USB-C\n001585\nExempted\nTax\n48.00\nUnits\n23.860000\n1,145.28 USD\n960-\n001681\nPeripheralCo MeetUp 2 - GRAPHITE - (Do Not Use) WW-9006\nExempted\nTax\n8.00\nUnits\n740.610000 5,924.88 USD\n981-\n000100\nPC Headset 960 USB\nExempted\nTax\n80.00\nUnits\n17.770000\n1,421.60 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 4/5\nsand dune\ndistribution\nSand Dune Distribution FZE,\nJebel Ali Free Zone,\nLB02130, PO Box 262159,\nDubai, United Arab Emirates.\n981-\n000406\nHeadphones - PERIPHERALCO USB HEADSET H390\nExempted 2,400.00\nTax\n15.000000 36,000.00 USD\nUnits\n981-\n000475\nHeadphones - PERIPHERALCO USB HEADSET H340\nExempted 2,000.00\n11.500000 23,000.00 USD\nTax\nUnits\n981-\n000480\nHeadphones - PERIPHERALCO USB HEADSET H540\nExempted\nTax\n192.00\nUnits\n27.170000\n5,216.64 USD\n981-\n000519\nHeadphones - PERIPHERALCO USB HEADSET STE H650E\nExempted\nTax\n96.00\nUnits\n48.210000\n4,628.16 USD\n981-\n000575\nHeadphones - PERIPHERALCO USB HEADSET H570E\nExempted\nTax\n420.00\nUnits\n19.910000\n8,362.20 USD\n981-\nHeadphones - PERIPHERALCO Stereo Headset H151 - Black (3.5\n000589 MM JACK)\n981-\nExempted\nTax\n1,288.00\nUnits\n10.450000 13,459.60 USD\nHeadphones - PERIPHERALCO Stereo Headset H111 - Black (3.5\nExempted\n000593 MM JACK)\nTax\n981-\n001407\nPERIPHERALCO HEADSET - Zone 300 - MIDNIGHT BLACK - BT-\nEMEA28-935\nExempted\nTax\n1,600.00\nUnits\n168.00\nUnits\n4.960000\n7,936.00 USD\n55.420000 9,310.56 USD\n981-\n001576\nH390 USB-C Computer Headset - MIDNIGHT BLACK -\nEMEA28i-935\nExempted\nTax\n976.00\nUnits\n15.000000 14,640.00 USD\nUntaxed Amount\n422,458.44 USD\nVAT Exempted\n0.00 USD\nTotal\n422,458.44 USD\n+971 400 01111 | dxbsales@sanddune-distribution.example | http://www.sanddune-distribution.example\nThis is a system generated document and does not need to be signed and stamped\nPage: 5/5\nAudit History\nHistory of approvals appended after the invoice.\nKTA Job Id\nUser\nTask\nComments\nDate Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "P99019",
+        "poDate": "25/06/2026",
+        "supplierName": "PERIPHERALCO",
+        "buyerName": "Sand Dune Distribution FZE",
+        "currency": "USD",
+        "paymentTerms": null,
+        "deliveryDate": null,
+        "subtotal": 422458.44,
+        "taxAmount": 0,
+        "totalAmount": 422458.44
+      },
+      "lineItems": [
+        {
+          "itemCode": "910-001356",
+          "description": "Presenter - PeripheralCo Wireless Presenter R400",
+          "quantity": 168,
+          "unitPrice": 17,
+          "lineAmount": 2856,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-001793",
+          "description": "Mouse - PERIPHERALCO Corded Mouse M90",
+          "quantity": 2100,
+          "unitPrice": 2.25,
+          "lineAmount": 4725,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-002201",
+          "description": "Mouse - PERIPHERALCO Wireless Mouse M235 - Colt Matte",
+          "quantity": 80,
+          "unitPrice": 9.41,
+          "lineAmount": 752.8,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-002235",
+          "description": "Mouse - PERIPHERALCO Wireless Mouse M185 - Swift-Grey",
+          "quantity": 2200,
+          "unitPrice": 6.3,
+          "lineAmount": 13860,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-002236",
+          "description": "Mouse - PERIPHERALCO Wireless Mouse M185 - Blue",
+          "quantity": 500,
+          "unitPrice": 6.3,
+          "lineAmount": 3150,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-002237",
+          "description": "Mouse - PERIPHERALCO Wireless Mouse M185 - RED",
+          "quantity": 400,
+          "unitPrice": 6.3,
+          "lineAmount": 2520,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-004424",
+          "description": "Mouse - PERIPHERALCO WIRELESS MOUSE M171 - BLACK",
+          "quantity": 3200,
+          "unitPrice": 6,
+          "lineAmount": 19200,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-004640",
+          "description": "Mouse - PERIPHERALCO Wireless Mouse M171 - BLUE",
+          "quantity": 700,
+          "unitPrice": 6,
+          "lineAmount": 4200,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-004641",
+          "description": "Mouse - PERIPHERALCO Wireless Mouse M171 - RED",
+          "quantity": 400,
+          "unitPrice": 6,
+          "lineAmount": 2400,
+          "uom": "Units"
+        },
+        {
+          "itemCode": "910-004791",
+          "description": "M720 Triathlon Mouse-N/A-2.4GHZ/BT-N/A-EMEA-CLAMSHELL M720",
+          "quantity": 10,
+          "unitPrice": 30.28,
+          "lineAmount": 302.8,
+          "uom": "Units"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "hard",
+    "lineItemsGoldScope": "page1_subset",
+    "ocr_engine": "google_document_ai"
+  },
+  {
+    "name": "po-real-10",
+    "doc_type": "purchase_order",
+    "scene_prompt": "purchase_order",
+    "source": "real-scrubbed",
+    "prompt_source": "fictional-eval-pin",
+    "adversarial": true,
+    "derived_from": "6a9a6264380fe823076cef90",
+    "document_text": "--- Page 1 ---\nGat No. 112/1, MIDC Chakan Phase 2, Pune, Maharashtra 410501, India GSTIN: 27AABCF8899D1ZE | Tel: +91 2135 678900 Email: purchase@vector-eng.example PO Number: VEAI/POI/26-27/0412 PO Date: 02/09/2026 PO Type: Contract Purchase Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Precision Fluid Seals Corp Vector Engineering & Automation A-8, Wagle Industrial Estate, Thane, Maharashtra 400604 Gat No. 112/1, MIDC Chakan Phase 2, Pune, Maharashtra 410501 GSTIN: 27AAACF1234F1ZM GSTIN: 27AABCF8899D1ZE Contact: Sanjay Patel (9000066677) Delivery Location: Assembly Unit - Plant 1 Payment Terms: 45 Days from Goods Receipt Freight Terms: Ex-Works Thane Transporter: TCI Freight Special Remark: Ensure heat treatment verification stamp on high- pressure valves. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) HYD-VAL-500 1 High Pressure Proportional Hydraulic Valve 15-09-2026 84812000 SET 25 18500.00 5.0% 439,375.00 350 Bar PUM-GEAR-20 d b 0, 2 Hydraulic Gear Pump 20 GPM Heavy Duty 15-09-2026 84136080 NOS 12 24000.00 0.0% 288,000.00 Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 727,375.00 CGST 727,375.00 9% 65,463.75 Total GST Tax: 130,927.50 Total Tax: 130,927.50 Grand Total (INR): 858,302.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Vector Engineering & Automation Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "prompt": "You are Flowgenix's structured extraction engine.\nRespond with a single valid JSON object that follows the instructions provided.\nUse double quotes for all keys and string values; ensure the JSON is syntactically valid.\nDo not include markdown, code fences, natural language commentary, or explanations outside the JSON.\nIf you are unable to extract structured data, respond with {\"error\":\"NO_DATA\",\"fields\":{},\"message\":\"Unable to extract structured data\"}.\nIMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.\n\nExtract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.\n\nTARGET FIELDS (return exactly this JSON shape — use null for missing values).\nEach line below is: outputKey (its human label) [aka: header variants that may appear in the document].\nMatch by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.\n- Return \"fields\" containing exactly these keys, nothing else:\n    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]\n    poDate (label: Purchase Order Date) <date>\n    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]\n    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]\n    currency (label: Currency) [aka: Currency Code]\n    paymentTerms (label: Payment Terms) [aka: Terms]\n    deliveryDate (label: Delivery Date) <date>\n    subtotal (label: Subtotal) <number>\n    taxAmount (label: Tax Amount) <number>\n    totalAmount (label: Total Amount) <number>\n- Return \"lineItems\" as an array of row objects, each containing exactly these keys, nothing else:\n    itemCode (label: Item Code) [aka: SKU, Part Number]\n    description (label: Description) [aka: Item Description, Product Name]\n    quantity (label: Quantity) <number>\n    unitPrice (label: Unit Price) <currency>\n    lineAmount (label: Line Amount) <currency>\n    uom (label: Unit of Measure) [aka: UOM, Unit]\n  Example row shape: { \"itemCode\": null, \"description\": null, \"quantity\": null, \"unitPrice\": null, \"lineAmount\": null, \"uom\": null }\n- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.\n- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).\n\nPO NUMBER EXTRACTION RULES:\n- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.\n- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).\n- Never use supplier name, buyer name, address, contact name, or company name as PO number.\n- If no valid numeric-like PO identifier is present, return poNumber as null.\n\nRemember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.\n\nDOCUMENT CONTENT:\n--- Page 1 ---\nGat No. 112/1, MIDC Chakan Phase 2, Pune, Maharashtra 410501, India GSTIN: 27AABCF8899D1ZE | Tel: +91 2135 678900 Email: purchase@vector-eng.example PO Number: VEAI/POI/26-27/0412 PO Date: 02/09/2026 PO Type: Contract Purchase Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Precision Fluid Seals Corp Vector Engineering & Automation A-8, Wagle Industrial Estate, Thane, Maharashtra 400604 Gat No. 112/1, MIDC Chakan Phase 2, Pune, Maharashtra 410501 GSTIN: 27AAACF1234F1ZM GSTIN: 27AABCF8899D1ZE Contact: Sanjay Patel (9000066677) Delivery Location: Assembly Unit - Plant 1 Payment Terms: 45 Days from Goods Receipt Freight Terms: Ex-Works Thane Transporter: TCI Freight Special Remark: Ensure heat treatment verification stamp on high- pressure valves. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) HYD-VAL-500 1 High Pressure Proportional Hydraulic Valve 15-09-2026 84812000 SET 25 18500.00 5.0% 439,375.00 350 Bar PUM-GEAR-20 d b 0, 2 Hydraulic Gear Pump 20 GPM Heavy Duty 15-09-2026 84136080 NOS 12 24000.00 0.0% 288,000.00 Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 727,375.00 CGST 727,375.00 9% 65,463.75 Total GST Tax: 130,927.50 Total Tax: 130,927.50 Grand Total (INR): 858,302.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Vector Engineering & Automation Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory\n--- Page 2 ---\nAudit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time\n",
+    "expected": {
+      "fields": {
+        "poNumber": "VEAI/POI/26-27/0412",
+        "poDate": "02/09/2026",
+        "supplierName": "Precision Fluid Seals Corp",
+        "buyerName": "Vector Engineering & Automation",
+        "currency": "INR",
+        "paymentTerms": "45 Days from Goods Receipt",
+        "deliveryDate": "15-09-2026",
+        "subtotal": 727375,
+        "taxAmount": 130927.5,
+        "totalAmount": 858302
+      },
+      "lineItems": [
+        {
+          "itemCode": "HYD-VAL-500",
+          "description": "High Pressure Proportional Hydraulic Valve 350 Bar",
+          "quantity": 25,
+          "unitPrice": 18500,
+          "lineAmount": 439375,
+          "uom": "SET"
+        },
+        {
+          "itemCode": "PUM-GEAR-20",
+          "description": "Hydraulic Gear Pump 20 GPM Heavy Duty",
+          "quantity": 12,
+          "unitPrice": 24000,
+          "lineAmount": 288000,
+          "uom": "NOS"
+        }
+      ]
+    },
+    "required_fields": [
+      "poNumber",
+      "poDate",
+      "lineItems"
+    ],
+    "bucket": "adversarial",
+    "ocr_engine": "google_document_ai"
+  }
+]

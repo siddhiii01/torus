@@ -1,0 +1,17 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/invoice (1).pdf",
+  "currency": "USD",
+  "adversarial": false,
+  "notes": "US invoice, 3 line items, explicit 'Sales Tax (0%): $0.00' (real zero -> total_tax '0.00', not null - see normalization.md). No 'Currency' label; amounts show only '$' -> currency golden '$' (meta.currency = USD for filtering). PO number present and equals po-04's (invoice (1).pdf and purchase_order (1).pdf are a matched buyer/vendor set). OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Scrubbed: vendor + buyer names/addresses, bank name, account + routing numbers.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items",
+    "purchase_order_number"
+  ]
+}

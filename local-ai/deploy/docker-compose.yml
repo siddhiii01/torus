@@ -1,0 +1,55 @@
+# LiteLLM + middleware. Ollama runs NATIVELY on the Mac (not here) so it gets
+# MLX/Metal GPU access — started via com.celeris.localai.plist.
+#
+#   docker compose -f deploy/docker-compose.yml up --build
+#
+# Reads ../. env (repo root) and ../middleware/.env.
+
+services:
+  litellm:
+    # PINNED — never :latest. Bump only via reviewed PR after reading the changelog
+    # (LiteLLM CVE history, PROJECT_LOG.md §2.2).
+    image: ghcr.io/berriai/litellm:main-v1.55.8
+    command: ["--config", "/app/config/litellm_config.yaml", "--port", "4000"]
+    ports:
+      - "4000:4000"
+    volumes:
+      - ../gateway/config:/app/config:ro
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      # LiteLLM config reads these as whole `os.environ/` values — compose the
+      # runtime prefix here, not in the yaml.
+      # `ollama_chat/` (Ollama's /api/chat) — NOT `ollama/` (/api/generate), whose
+      # JSON-mode response parser crashes with KeyError: 'name' on LiteLLM 1.55.8.
+      LITELLM_PRIMARY_MODEL: ollama_chat/${LOCAL_PRIMARY_MODEL:-llama3.2:3b}
+      LITELLM_FAST_MODEL: ollama_chat/${LOCAL_FAST_MODEL:-llama3.2:3b}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health/liveliness"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  middleware:
+    build: ../middleware
+    ports:
+      - "4100:4100"
+    env_file:
+      - ../middleware/.env
+    environment:
+      # override the .env paths for the container layout
+      PROFILES_DIR: /profiles
+      KEYS_FILE: /app/.secrets/keys.json
+      REQUEST_LOG_FILE: /app/logs/requests.log
+      LITELLM_BASE_URL: http://litellm:4000
+    volumes:
+      - ../profiles:/profiles:ro
+      - ../middleware/.secrets:/app/.secrets:ro
+      - ../middleware/logs:/app/logs
+    depends_on:
+      litellm:
+        condition: service_healthy
+    restart: unless-stopped

@@ -1,0 +1,132 @@
+NORTHBRIDGE
+engineering tomorrow >>>
+Northbridge Enterprises
+Plot No: GEN/24/2/7, Near Crystal Optics,
+MIDC Satpur, Nashik, Maharashtra 422007, India.
+Udyam-MH-23-0041526 | GSTIN: 27AGMPK5521C1ZD | IEC: AGMPK5521C
+Contact: +91 9812004455 | E-mail: purchase@northbridge.co.in | www.northbridge.co.in
+Consignor [Supplier's Details]
+SUNRISE ENTERPRISES
+Row House No5,
+Greenfield R/H, Near Sai Chowk,
+Shantinagar, Ring Road Nashik
+Nashik, Maharashtra, 422011 India
+GSTIN.: 27BKQPS482N1ZP
+Contact Name:
+Mobile No.:
+E-mail:
+Purchase Order
+Consignee [Receiver's Details]
+Northbridge Enterprises
+Plot No: GEN/24/2/7,
+Near Crystal Optics
+Satpur MIDC
+Nashik, Maharashtra, 422007, India
+GSTIN: 27AGMPK5521C1ZD
+Mobile No.: 9812004455
+E-mail: purchase@northbridge.co.in
+PO Details
+PO No.: PO/5140/0208
+PO Date: 17/06/2026
+PO Type: Standard PO
+Order Reference: PO/5140/0208
+Amendment Ref: PO/5140/0208/01
+Currency: INR
+Dear Sir/Madam,
+Please supply following goods/material in accordance with agreed terms and conditions or contract purchase agreement.
+Please mention our Item code & Purchase Order number on your tax invoice without which invoice will not be processed.
+Please send the material along with a valid Test Report.
+# Item Description
+Item No.: ELG/0041 | Supplier Part No.:
+Lumitron LED
+1 Item Name: LED LUMITRON (Red LED)
+Item Description: LX CRBP.02-JZLX-27-
+3A4A
+Item No.: ELG/0042 | Supplier Part No.:
+LUMITRON LED
+Delivery Date
+HSN Code UoM
+Quantity
+Rate/Unit
+Disc %
+Net Rate
+Amount
+17-06-2026
+85414020
+NOS 12,000.00
+62.8
+0
+62.8
+753600
+2 Item Name: LED LUMITRON (Green LED)
+Item Description: LW CRBP.02-KXLY-AD-
+Q525
+17-06-2026
+85414020
+NOS 4,800.00
+78.66
+3
+4
+5
+6
+78.66
+377568
+Packing & Forwarding Charges
+0
+Total Taxable Amount
+1131168
+GST Summary | Currency: INR
+HSN/SAC
+85414020
+Taxable Amt.
+1131168
+SGST % SGST Amt. CGST % CGST Amt. IGST % IGST Amt.
+9
+101805.12
+9
+101805.12
+Total Tax
+PO Summary | Currency INR
+Total Taxable Amount
+1131168
+203610.24
+S-GST
+101805.12
+C-GST
+101805.12
+I-GST
+Rounded off [+/-]
+-0.24
+Total >>
+1131168
+101805.12
+101805.12
+203610.24
+Total PO Amount
+1334778
+PO Terms
+Delivery Location
+Payment Terms
+Freight Terms
+Transporter
+PO Remark:
+Factory
+Payment in advance
+NA - Not Applicable
+Self
+For Northbridge Enterprises
+orthbridge
+Enterprise
+*
+Njohi
+*
+Authorized Signatory
+General Terms and Conditions
+1. Acceptance: This PO is a binding contract once accepted or when work begins. No changes are valid unless agreed in writing.
+2. Quality & Inspection: Goods must meet all specifications. We reserve the right to inspect and reject defective items at the Seller's expense.
+3. Delivery: Delivery must be completed by the date specified.
+4. Pricing: Prices are fixed as stated. No extra charges (packing, freight, etc.) are allowed unless pre-authorized.
+5. Payment: Standard terms are Net 60 days following receipt of a correct invoice and acceptance of goods.
+6. Warranty: Seller guarantees goods are new, defect-free, and fit for purpose for at least 12 months from delivery.
+7. Compliance: Seller must follow all applicable safety, labor, and environmental laws.
+8. Termination: The Buyer may cancel the order if the Seller fails to meet quality or delivery timelines.

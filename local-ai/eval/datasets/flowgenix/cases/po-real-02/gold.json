@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "PO/9901/1014",
+    "poDate": "14/08/2026",
+    "supplierName": "TIDALWAVE MARINE SUPPLY",
+    "buyerName": "Harborline Shipyard Services",
+    "currency": "INR",
+    "paymentTerms": "Net 60 Days",
+    "deliveryDate": null,
+    "subtotal": 1690725,
+    "taxAmount": 304330.5,
+    "totalAmount": 1995056
+  },
+  "lineItems": [
+    {
+      "itemCode": "MRN/1401",
+      "description": "Anchor Chain — 32mm Stud Link Chain, Grade U2",
+      "quantity": 450,
+      "unitPrice": 2570.5,
+      "lineAmount": 1156725,
+      "uom": "MTR"
+    },
+    {
+      "itemCode": "MRN/1402",
+      "description": "Rubber Fender — D-Type Fender, 200mm x 2000mm Length",
+      "quantity": 60,
+      "unitPrice": 8900,
+      "lineAmount": 534000,
+      "uom": "NOS"
+    }
+  ]
+}

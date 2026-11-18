@@ -1,0 +1,445 @@
+{
+  "version": 1,
+  "source_sheet": "56 accounts",
+  "header_row": 2,
+  "columns": [
+    {
+      "key": "bank_lan",
+      "excel_header": "Bank Lan",
+      "excel_col": 1,
+      "duplicate_of": null
+    },
+    {
+      "key": "system_lan",
+      "excel_header": "SYSTEM_LAN",
+      "excel_col": 2,
+      "duplicate_of": null
+    },
+    {
+      "key": "trust_name",
+      "excel_header": "TRUST_NAME",
+      "excel_col": 3,
+      "duplicate_of": null
+    },
+    {
+      "key": "existing_lan_no",
+      "excel_header": "EXISTING_LAN_No",
+      "excel_col": 4,
+      "duplicate_of": null
+    },
+    {
+      "key": "bank_lan_dup",
+      "excel_header": "Bank Lan",
+      "excel_col": 5,
+      "duplicate_of": "bank_lan"
+    },
+    {
+      "key": "customer_name",
+      "excel_header": "CUSTOMER_NAME",
+      "excel_col": 6,
+      "duplicate_of": null
+    },
+    {
+      "key": "person_name",
+      "excel_header": "Name (Borrwer,Co-applicant,Gurantor)",
+      "excel_col": 7,
+      "duplicate_of": null
+    },
+    {
+      "key": "id",
+      "excel_header": "ID",
+      "excel_col": 8,
+      "duplicate_of": null
+    },
+    {
+      "key": "constitution",
+      "excel_header": "Constitution ( Individual,Prop Firm, Partnership Firm, LLP,Corporate",
+      "excel_col": 9,
+      "duplicate_of": null
+    },
+    {
+      "key": "customer_type",
+      "excel_header": "Customer Type ( Coapplicant/Borrower /Partner/Promoter  Guarantor/ Co Gur",
+      "excel_col": 10,
+      "duplicate_of": null
+    },
+    {
+      "key": "tcmbr_code",
+      "excel_header": "TCMBR CODE",
+      "excel_col": 11,
+      "duplicate_of": null
+    },
+    {
+      "key": "gender",
+      "excel_header": "Gender",
+      "excel_col": 12,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_line1",
+      "excel_header": "Address_LINE1",
+      "excel_col": 13,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_line2",
+      "excel_header": "Address_LINE2",
+      "excel_col": 14,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_line3",
+      "excel_header": "Address_LINE3",
+      "excel_col": 15,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_state",
+      "excel_header": "Address_STATE",
+      "excel_col": 16,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_city",
+      "excel_header": "Address_City",
+      "excel_col": 17,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_pincode",
+      "excel_header": "Address_PINCode",
+      "excel_col": 18,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_type",
+      "excel_header": "Type Of Address (Residence/Office/Workplace)",
+      "excel_col": 19,
+      "duplicate_of": null
+    },
+    {
+      "key": "address_source",
+      "excel_header": "Address source",
+      "excel_col": 20,
+      "duplicate_of": null
+    },
+    {
+      "key": "mobile_no",
+      "excel_header": "Mobile No",
+      "excel_col": 21,
+      "duplicate_of": null
+    },
+    {
+      "key": "mobile_no_1",
+      "excel_header": "Mobile No 1",
+      "excel_col": 22,
+      "duplicate_of": null
+    },
+    {
+      "key": "mobile_no_2",
+      "excel_header": "Mobile No 2",
+      "excel_col": 23,
+      "duplicate_of": null
+    },
+    {
+      "key": "mobile_no_3",
+      "excel_header": "Mobile No 3",
+      "excel_col": 24,
+      "duplicate_of": null
+    },
+    {
+      "key": "mobile_no_4",
+      "excel_header": "Mobile No 4",
+      "excel_col": 25,
+      "duplicate_of": null
+    },
+    {
+      "key": "random_contact_no",
+      "excel_header": "Randam Contact No",
+      "excel_col": 26,
+      "duplicate_of": null
+    },
+    {
+      "key": "email_id",
+      "excel_header": "Email Id",
+      "excel_col": 27,
+      "duplicate_of": null
+    },
+    {
+      "key": "std_code",
+      "excel_header": "STDCode",
+      "excel_col": 28,
+      "duplicate_of": null
+    },
+    {
+      "key": "landline_no",
+      "excel_header": "LandlineNo",
+      "excel_col": 29,
+      "duplicate_of": null
+    },
+    {
+      "key": "cin",
+      "excel_header": "CIN ",
+      "excel_col": 30,
+      "duplicate_of": null
+    },
+    {
+      "key": "savings_account_no",
+      "excel_header": "Savings Account No",
+      "excel_col": 31,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_savings_acc_no",
+      "excel_header": "Source of Savings acc No.",
+      "excel_col": 32,
+      "duplicate_of": null
+    },
+    {
+      "key": "dl_no",
+      "excel_header": "DLNo",
+      "excel_col": 33,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_dl_kyc_id",
+      "excel_header": "Source of DL Kyc ID",
+      "excel_col": 34,
+      "duplicate_of": null
+    },
+    {
+      "key": "aadhaar_no",
+      "excel_header": "AadhaarNo",
+      "excel_col": 35,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_aadhaar_kyc_id",
+      "excel_header": "Source of Aadhaar Kyc ID",
+      "excel_col": 36,
+      "duplicate_of": null
+    },
+    {
+      "key": "pan",
+      "excel_header": "PAN",
+      "excel_col": 37,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_pan_kyc_id",
+      "excel_header": "Source of Pan Kyc ID",
+      "excel_col": 38,
+      "duplicate_of": null
+    },
+    {
+      "key": "passport",
+      "excel_header": "Passport",
+      "excel_col": 39,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_passport_kyc_id",
+      "excel_header": "Source of Passport Kyc ID",
+      "excel_col": 40,
+      "duplicate_of": null
+    },
+    {
+      "key": "voter_id",
+      "excel_header": "VoterId",
+      "excel_col": 41,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_voterid_kyc_id",
+      "excel_header": "Source of Voterid Kyc ID",
+      "excel_col": 42,
+      "duplicate_of": null
+    },
+    {
+      "key": "ration_card",
+      "excel_header": "Ration Card",
+      "excel_col": 43,
+      "duplicate_of": null
+    },
+    {
+      "key": "source_of_ration_card_kyc_id",
+      "excel_header": "Source of Ration card Kyc ID",
+      "excel_col": 44,
+      "duplicate_of": null
+    },
+    {
+      "key": "dob",
+      "excel_header": "DOB-Dateofincoprotion",
+      "excel_col": 45,
+      "duplicate_of": null
+    },
+    {
+      "key": "remark",
+      "excel_header": "Remark",
+      "excel_col": 46,
+      "duplicate_of": null
+    },
+    {
+      "key": "verification_remark",
+      "excel_header": "Verification remark/ verified with available documents ",
+      "excel_col": 47,
+      "duplicate_of": null
+    },
+    {
+      "key": "sanction_date",
+      "excel_header": "Sanction Date",
+      "excel_col": 48,
+      "duplicate_of": null
+    },
+    {
+      "key": "sanction_ticket",
+      "excel_header": "Sanction Ticket/Sanction Advice/ Sanction Letter/Arrangement Letter",
+      "excel_col": 49,
+      "duplicate_of": null
+    },
+    {
+      "key": "application_form",
+      "excel_header": "Application Form (Loan Facility Remark)",
+      "excel_col": 50,
+      "duplicate_of": null
+    },
+    {
+      "key": "dpn",
+      "excel_header": "DPN (Loan Facility Remark)",
+      "excel_col": 51,
+      "duplicate_of": null
+    },
+    {
+      "key": "agreement_of_loan",
+      "excel_header": "Agreement of Loan ",
+      "excel_col": 52,
+      "duplicate_of": null
+    },
+    {
+      "key": "nature_of_facility_docs",
+      "excel_header": "Nature of Facility As per Docs",
+      "excel_col": 53,
+      "duplicate_of": null
+    },
+    {
+      "key": "nature_of_facility_system",
+      "excel_header": "Nature of Facility As per System",
+      "excel_col": 54,
+      "duplicate_of": null
+    },
+    {
+      "key": "checker_remark",
+      "excel_header": "Checker Remark",
+      "excel_col": 55,
+      "duplicate_of": null
+    },
+    {
+      "key": "checking_date",
+      "excel_header": "Checking  date",
+      "excel_col": 56,
+      "duplicate_of": null
+    },
+    {
+      "key": "updation_remarks",
+      "excel_header": "Updation remarks",
+      "excel_col": 57,
+      "duplicate_of": null
+    },
+    {
+      "key": "checker_name",
+      "excel_header": "Checker Name",
+      "excel_col": 58,
+      "duplicate_of": null
+    },
+    {
+      "key": "checker_status",
+      "excel_header": "Checker Status",
+      "excel_col": 59,
+      "duplicate_of": null
+    },
+    {
+      "key": "roi",
+      "excel_header": "ROI",
+      "excel_col": 60,
+      "duplicate_of": null
+    },
+    {
+      "key": "page_no_of_roi",
+      "excel_header": "Page No of ROI",
+      "excel_col": 61,
+      "duplicate_of": null
+    },
+    {
+      "key": "page_count",
+      "excel_header": "Page Count of Document",
+      "excel_col": 62,
+      "duplicate_of": null
+    },
+    {
+      "key": "security_value_fmv",
+      "excel_header": "Security value of asset (FMV)",
+      "excel_col": 63,
+      "duplicate_of": null
+    },
+    {
+      "key": "security_value_distress",
+      "excel_header": "Security value of asset (Distress Value)",
+      "excel_col": 64,
+      "duplicate_of": null
+    },
+    {
+      "key": "realizable_value",
+      "excel_header": "Reliazable value of asset ",
+      "excel_col": 65,
+      "duplicate_of": null
+    },
+    {
+      "key": "security_value",
+      "excel_header": "Security Value",
+      "excel_col": 66,
+      "duplicate_of": null
+    },
+    {
+      "key": "business_type",
+      "excel_header": "Business Type",
+      "excel_col": 67,
+      "duplicate_of": null
+    },
+    {
+      "key": "business_industry_type",
+      "excel_header": "Business industry type",
+      "excel_col": 68,
+      "duplicate_of": null
+    },
+    {
+      "key": "business_category",
+      "excel_header": "Business category",
+      "excel_col": 69,
+      "duplicate_of": null
+    },
+    {
+      "key": "location_type",
+      "excel_header": "Location type",
+      "excel_col": 70,
+      "duplicate_of": null
+    },
+    {
+      "key": "type_of_relationship",
+      "excel_header": "Type of Relationship",
+      "excel_col": 71,
+      "duplicate_of": null
+    },
+    {
+      "key": "credit_type",
+      "excel_header": "Credit Type",
+      "excel_col": 72,
+      "duplicate_of": null
+    },
+    {
+      "key": "tangible_security_type",
+      "excel_header": "Tangible Security Type (Home / House , Land and building,agricultural land,machinary, hypo of stock,machinery)",
+      "excel_col": 73,
+      "duplicate_of": null
+    }
+  ]
+}

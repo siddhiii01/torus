@@ -1,0 +1,16 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/vendorinvoice.zip -> vertex_solutions_invoice.pdf",
+  "currency": "INR",
+  "adversarial": false,
+  "notes": "Indian invoice priced with the rupee SYMBOL. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI misreads the rupee glyph inconsistently as '*' and '¥' ('*48,000.00', '¥5,000.00'). currency golden = '₹' (ground truth); '*' / '¥' / 'INR' / null all get partial-to-full credit given the OCR corruption - this doubles as an OCR-robustness probe. Line uom tokens ('Hours','Project') are fused with the quantity. No GSTIN on the document. Scrubbed: vendor + buyer names, vendor street number.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items"
+  ]
+}

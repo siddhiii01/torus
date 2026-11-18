@@ -1,0 +1,80 @@
+You are Flowgenix's structured extraction engine.
+Respond with a single valid JSON object that follows the instructions provided.
+Use double quotes for all keys and string values; ensure the JSON is syntactically valid.
+Do not include markdown, code fences, natural language commentary, or explanations outside the JSON.
+If you are unable to extract structured data, respond with {"error":"NO_DATA","fields":{},"message":"Unable to extract structured data"}.
+IMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.
+
+Extract a vendor invoice into structured JSON.
+
+Header: invoice number, invoice date, due date, supplier name, buyer name, currency, payment terms, subtotal, tax amount, and grand total.
+
+Line table: return lineItems as an array of row objects (one object per billed line). Each row must contain item code, description, quantity, unit price, line tax, and line total. Do not flatten line columns onto the header (no line_1_description, no top-level itemCode).
+
+Rules:
+- Return values only. Use null when a field is not on the document.
+- Do not invent line rows. Skip blank table rows.
+
+TARGET FIELDS (return exactly this JSON shape — use null for missing values).
+Each line below is: outputKey (its human label) [aka: header variants that may appear in the document].
+Match by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.
+- Return "fields" containing exactly these keys, nothing else:
+    invoiceNumber (label: Invoice Number) [aka: Inv No, Bill No, Tax Invoice Number]
+    invoiceDate (label: Invoice Date) <date>
+    dueDate (label: Due Date) <date>
+    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]
+    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]
+    currency (label: Currency) [aka: Currency Code]
+    paymentTerms (label: Payment Terms) [aka: Terms]
+    subtotal (label: Subtotal) <number>
+    taxAmount (label: Tax Amount) <number>
+    totalAmount (label: Total Amount) <number>
+- Return "lineItems" as an array of row objects, each containing exactly these keys, nothing else:
+    itemCode (label: Item Code) [aka: SKU, Part Number]
+    description (label: Description) [aka: Item Description, Product Name]
+    quantity (label: Quantity) <number>
+    unitPrice (label: Unit Price) <currency>
+    taxAmount (label: Line Tax) [aka: Tax]
+    lineTotal (label: Line Total) [aka: Amount, Line Amount, Extended Price]
+  Example row shape: { "itemCode": null, "description": null, "quantity": null, "unitPrice": null, "taxAmount": null, "lineTotal": null }
+- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.
+- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).
+
+Remember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.
+
+DOCUMENT CONTENT:
+TAX INVOICE
+Tax Invoice Number
+INV-33019
+Date
+22/03/2026
+Due Date
+05/04/2026
+Vendor
+Maple Dock Packaging Ltd
+Bill To
+Riverbend Foods Pvt. Ltd.
+INR
+Net 21
+Items
+Description
+Qty
+Price
+Tax
+Amount
+Corrugated carton 12x12
+Stretch wrap 500m
+12
+4
+85.00
+210.00
+183.60
+151.20
+1020.00
+840.00
+Subtotal
+1860.00
+VAT
+334.80
+Grand Total
+2194.80

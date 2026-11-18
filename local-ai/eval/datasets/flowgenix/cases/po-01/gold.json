@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "PO-2026-4418",
+    "poDate": "12-Aug-2026",
+    "supplierName": "Cedarline Components Pvt. Ltd.",
+    "buyerName": "Harbor Mill Textiles LLP",
+    "currency": "INR",
+    "paymentTerms": "Net 30",
+    "deliveryDate": "01-Sep-2026",
+    "subtotal": 4664,
+    "taxAmount": 839.52,
+    "totalAmount": 5503.52
+  },
+  "lineItems": [
+    {
+      "itemCode": "CL-8821",
+      "description": "Cotton yarn 40s cone",
+      "quantity": 20,
+      "unitPrice": 145,
+      "lineAmount": 2900,
+      "uom": "KG"
+    },
+    {
+      "itemCode": "CL-9104",
+      "description": "Polyester sewing thread",
+      "quantity": 8,
+      "unitPrice": 220.5,
+      "lineAmount": 1764,
+      "uom": "BOX"
+    }
+  ]
+}

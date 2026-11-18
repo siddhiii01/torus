@@ -1,0 +1,52 @@
+Vantage Tech Solutions Inc.
+Suite 400, Beacon Avenue
+Metropolis, NY 10001
+billing@vantagetech.com
+ISSUED BY:
+Invoice Number: INV-2026-3012
+Date: August 14, 2026
+Due Date: September 13, 2026
+PO Number: PO-2026-8942
+BILLED TO:
+Vantage Tech Solutions Inc.
+Suite 400, Beacon Avenue
+Metropolis, NY 10001
+Northgate Corporation
+77 Meridian Drive
+Tech City, TC 90210
+Attn: Accounts Payable
+Item & Description
+Enterprise Cloud Server Node
+Model: ECS-2026-X (High Performance)
+INVOICE
+Qty
+Unit Price
+Total
+5
+$1,200.00
+$6,000.00
+Managed Database Subscriptions (Annual)
+Tier 3 Multi-Region Cluster Support
+2
+$2,450.00
+$4,900.00
+Secure VPN Enterprise Gateway Hardware
+Model: VGW-500
+10
+$350.00
+$3,500.00
+Subtotal:
+Shipping & Handling:
+$14,400.00
+$720.00
+Sales Tax (0%):
+$0.00
+Total Due:
+$15,120.00
+Payment Instructions:
+Please send payments via ACH/Wire Transfer to:
+Bank Name: Bayfront Commercial Bank
+Account Number: 9876540031
+Routing Number: 123456780
+Thank you for your business!
+Questions? Contact billing@vantagetech.com

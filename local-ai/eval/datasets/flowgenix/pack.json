@@ -1,0 +1,64 @@
+{
+  "packId": "flowgenix-eval-pin-standard-v1",
+  "source": "fictional-eval-pin",
+  "not_from_mongo": true,
+  "path": "standard-single-prompt",
+  "flags": {
+    "ENABLE_LEGACY_EXTRACTION": false,
+    "confidenceScoreScope": "GLOBAL",
+    "fieldConfidenceEnabled": false,
+    "fieldPlanMode": "dynamic-configured"
+  },
+  "prompts": [
+    {
+      "docType": "Purchase Order",
+      "name": "Eval pin — Purchase Order (standard)",
+      "promptText": "Extract a purchase order into structured JSON.\n\nHeader: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.\n\nLine table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.\n- Do not flatten line columns onto the header.\n- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.",
+      "fieldsToExtract": [
+        { "fieldKey": "poNumber", "label": "Purchase Order Number", "type": "string", "required": true, "aliases": ["PO No.", "PO Number", "Order No.", "Purchase Order Number"] },
+        { "fieldKey": "poDate", "label": "Purchase Order Date", "type": "date", "required": true, "aliases": ["PO Date", "Order Date"] },
+        { "fieldKey": "supplierName", "label": "Supplier Name", "type": "string", "required": false, "aliases": ["Vendor Name", "Seller"] },
+        { "fieldKey": "buyerName", "label": "Buyer Name", "type": "string", "required": false, "aliases": ["Customer Name", "Bill To"] },
+        { "fieldKey": "currency", "label": "Currency", "type": "string", "required": false, "aliases": ["Currency Code"] },
+        { "fieldKey": "paymentTerms", "label": "Payment Terms", "type": "string", "required": false, "aliases": ["Terms"] },
+        { "fieldKey": "deliveryDate", "label": "Delivery Date", "type": "date", "required": false, "aliases": ["Requested Delivery Date", "Ship Date"] },
+        { "fieldKey": "subtotal", "label": "Subtotal", "type": "number", "required": false, "aliases": ["Net Amount"] },
+        { "fieldKey": "taxAmount", "label": "Tax Amount", "type": "number", "required": false, "aliases": ["Sales Tax", "VAT"] },
+        { "fieldKey": "totalAmount", "label": "Total Amount", "type": "number", "required": false, "aliases": ["Grand Total", "Order Total"] }
+      ],
+      "tableFieldsToExtract": [
+        { "fieldKey": "itemCode", "label": "Item Code", "type": "string", "required": false, "aliases": ["SKU", "Part Number"] },
+        { "fieldKey": "description", "label": "Description", "type": "string", "required": false, "aliases": ["Item Description", "Product Name"] },
+        { "fieldKey": "quantity", "label": "Quantity", "type": "number", "required": true, "aliases": ["Qty"] },
+        { "fieldKey": "unitPrice", "label": "Unit Price", "type": "currency", "required": false, "aliases": ["Price", "Rate"] },
+        { "fieldKey": "lineAmount", "label": "Line Amount", "type": "currency", "required": false, "aliases": ["Line Total", "Amount"] },
+        { "fieldKey": "uom", "label": "Unit of Measure", "type": "string", "required": false, "aliases": ["UOM", "Unit"] }
+      ]
+    },
+    {
+      "docType": "Invoice",
+      "name": "Eval pin — Invoice (standard)",
+      "promptText": "Extract a vendor invoice into structured JSON.\n\nHeader: invoice number, invoice date, due date, supplier name, buyer name, currency, payment terms, subtotal, tax amount, and grand total.\n\nLine table: return lineItems as an array of row objects (one object per billed line). Each row must contain item code, description, quantity, unit price, line tax, and line total. Do not flatten line columns onto the header (no line_1_description, no top-level itemCode).\n\nRules:\n- Return values only. Use null when a field is not on the document.\n- Do not invent line rows. Skip blank table rows.",
+      "fieldsToExtract": [
+        { "fieldKey": "invoiceNumber", "label": "Invoice Number", "type": "string", "required": true, "aliases": ["Inv No", "Bill No", "Tax Invoice Number"] },
+        { "fieldKey": "invoiceDate", "label": "Invoice Date", "type": "date", "required": true, "aliases": ["Bill Date", "Date"] },
+        { "fieldKey": "dueDate", "label": "Due Date", "type": "date", "required": false, "aliases": ["Payment Due Date"] },
+        { "fieldKey": "supplierName", "label": "Supplier Name", "type": "string", "required": false, "aliases": ["Vendor Name", "Seller"] },
+        { "fieldKey": "buyerName", "label": "Buyer Name", "type": "string", "required": false, "aliases": ["Customer Name", "Bill To"] },
+        { "fieldKey": "currency", "label": "Currency", "type": "string", "required": false, "aliases": ["Currency Code"] },
+        { "fieldKey": "paymentTerms", "label": "Payment Terms", "type": "string", "required": false, "aliases": ["Terms"] },
+        { "fieldKey": "subtotal", "label": "Subtotal", "type": "number", "required": false, "aliases": ["Net Amount"] },
+        { "fieldKey": "taxAmount", "label": "Tax Amount", "type": "number", "required": false, "aliases": ["Sales Tax", "VAT", "Total Tax"] },
+        { "fieldKey": "totalAmount", "label": "Total Amount", "type": "number", "required": false, "aliases": ["Grand Total", "Amount Due", "Invoice Total"] }
+      ],
+      "tableFieldsToExtract": [
+        { "fieldKey": "itemCode", "label": "Item Code", "type": "string", "required": false, "aliases": ["SKU", "Part Number"] },
+        { "fieldKey": "description", "label": "Description", "type": "string", "required": false, "aliases": ["Item Description", "Product Name"] },
+        { "fieldKey": "quantity", "label": "Quantity", "type": "number", "required": true, "aliases": ["Qty"] },
+        { "fieldKey": "unitPrice", "label": "Unit Price", "type": "currency", "required": false, "aliases": ["Price", "Rate"] },
+        { "fieldKey": "taxAmount", "label": "Line Tax", "type": "currency", "required": false, "aliases": ["Tax", "Line Tax"] },
+        { "fieldKey": "lineTotal", "label": "Line Total", "type": "currency", "required": false, "aliases": ["Amount", "Line Amount", "Extended Price"] }
+      ]
+    }
+  ]
+}

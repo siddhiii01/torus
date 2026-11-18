@@ -1,0 +1,16 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/vendorinvoice.zip -> erp_vendor_invoice.pdf",
+  "currency": "INR",
+  "adversarial": false,
+  "notes": "Inter-state Indian invoice: IGST only (18%), no CGST/SGST. Per-line 'Taxes' column shows '18% IGST' text. Bank line present. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI duplicates one quantity ('20\\n20' for line 2) and puts 'Subtotal: 37,500.00' then the IGST amount above its own label - a model must not double-count. currency: no 'Currency:' label on the doc, only 'Amount (INR)' - golden 'INR' (null also acceptable). Scrubbed: seller/buyer names + addresses + seller GSTIN + bank name/account/IFSC; invoice-number format kept.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items"
+  ]
+}

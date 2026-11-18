@@ -1,0 +1,18 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": false,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Export-style PO; IGST 12%; special remark split across OCR lines; 5% disc on line 2.",
+  "bucket": "messy",
+  "uploadId": "6a9a6257380fe823076cef5e",
+  "originalFile": "PO_Aura_Fashion_Textiles.pdf"
+}

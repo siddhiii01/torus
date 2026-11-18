@@ -1,0 +1,17 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/vendorinvoice.zip -> US_Commercial_Vendor_Invoice.pdf",
+  "currency": "USD",
+  "adversarial": false,
+  "notes": "US commercial invoice, 6 SKU line items, discount + freight + sales tax, no GST fields. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI mangled two line quantities: the 27-inch Monitor row lost its qty entirely (source: 6) and the Barcode Scanner row reads '25' (source: 5). expected.json holds GROUND TRUTH (6 and 5) - a strong model reconciles via unit_price x qty = line_total ($219x6=$1,314; $189x5=$945); score a model that parrots '25'/null as wrong on that field. Scrubbed: vendor + buyer names/addresses, EIN, contact name, routing + account numbers, PO number, ship-to street. 555 phone kept.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items",
+    "purchase_order_number"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "policy": "Escalate crop readers only for failure classes digit_crop already surfaces. Keep layout for printed fields. Fill empties only; never clobber page-text. Same schema validators as ocr/digit_crop.py + ocr/pin_master.py.",
+  "keep_deterministic": [
+    "person_name",
+    "customer_name",
+    "gender",
+    "address_line1",
+    "address_line2"
+  ],
+  "pin_locality": {
+    "when": "valid_6digit_pin_recovered",
+    "excel_keys": ["address_city", "address_state"],
+    "source": "schemas/deb/pin_master.json",
+    "policy": "Derive city/state from India Post PIN master; skip city/state VLM crops. Canonical = master city/state (suburb vs city mismatch is expected)."
+  },
+  "digit_field_crops": {
+    "dob": {"excel_key": "dob", "when": "empty_or_no_agreement"},
+    "pin_h1": {"excel_key": "address_pincode", "when": "empty_or_no_agreement"},
+    "pin_w": {"excel_key": "address_pincode", "when": "empty_or_no_agreement"},
+    "h1_std": {"excel_key": "std_code", "when": "empty_or_no_agreement"},
+    "w_std": {"excel_key": "std_code", "when": "empty_or_no_agreement"},
+    "h1_landline": {"excel_key": "landline_no", "when": "empty_or_no_agreement"},
+    "w_landline": {"excel_key": "landline_no", "when": "empty_or_no_agreement"},
+    "h1_mobile": {"excel_key": "mobile_no", "when": "empty_or_no_agreement"},
+    "w_mobile": {"excel_key": "mobile_no", "when": "empty_or_no_agreement"}
+  },
+  "text_field_crops": {
+    "h1_email": {"excel_key": "email_id", "when": "ocr_empty_or_glued", "gates": ["ink_density"]},
+    "h1_city": {
+      "excel_key": "address_city",
+      "when": "ocr_empty_and_pin_locality_miss",
+      "gates": ["ink_density", "strict_city_vocab"]
+    },
+    "w_city": {
+      "excel_key": "address_city",
+      "when": "ocr_empty_and_pin_locality_miss",
+      "gates": ["ink_density", "strict_city_vocab"]
+    },
+    "h1_state": {
+      "excel_key": "address_state",
+      "when": "ocr_empty_and_pin_locality_miss",
+      "gates": ["ink_density", "closed_state_list"]
+    },
+    "w_state": {
+      "excel_key": "address_state",
+      "when": "ocr_empty_and_pin_locality_miss",
+      "gates": ["ink_density", "closed_state_list"]
+    }
+  },
+  "section_crops": {
+    "h1_address_block": {
+      "excel_keys": ["address_line2", "address_line3", "address_city", "address_state"],
+      "when": "layout_assembly_empty",
+      "note": "Wider band than digit combs; use only when street/locality/city dump is empty."
+    }
+  },
+  "reader_ladder": [
+    "trocr_handwritten",
+    "trocr_printed",
+    "florence2_base"
+  ],
+  "notes": {
+    "hardware": "TrOCR/Florence-2 are the PLAN.md step-5 local path. Qwen2-VL stays last-resort / bigger machine.",
+    "city_state_path": "PIN recovered → lookup city/state → skip VLM. PIN missing → ink check → VLM → vocab gate. Dual-reader consensus is a later escalate, not the core fix.",
+    "bakeoff": "layout vs layout+digit_crop vs layout+digit_crop+crop_vlm_on_fn_only. Keep VLM only if micro-F1 rises without precision drop."
+  }
+}

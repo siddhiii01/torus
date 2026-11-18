@@ -1,0 +1,5 @@
+PO NUMBER EXTRACTION RULES:
+- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.
+- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).
+- Never use supplier name, buyer name, address, contact name, or company name as PO number.
+- If no valid numeric-like PO identifier is present, return poNumber as null.
