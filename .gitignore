@@ -31,6 +31,8 @@ samples/
 !data/deb/cases/*/source.pdf
 !data/deb/cases/*/meta.json
 !data/deb/cases/*/gold.json
+# Allow project plan PDFs in docs/ (written by us, no customer content)
+!docs/*.pdf
 # Allow Local AI project docs (not customer OCR inputs)
 !local-ai/docs/**/*.pdf
 !local-ai/docs/**/*.png
