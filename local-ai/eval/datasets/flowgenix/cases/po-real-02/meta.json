@@ -1,0 +1,18 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": false,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Amendment PO (Amendment Ref PO/9901/1014/02); IGST-only GST summary; jumbled table OCR.",
+  "bucket": "hard",
+  "uploadId": "6a9a670698b1d339262dafb6",
+  "originalFile": "PO_Sample_14_Bluewave_vs_Falcon.pdf"
+}

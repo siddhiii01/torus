@@ -1,0 +1,17 @@
+{
+  "doc_type": "purchase_order",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/fg-demo.zip -> 'PO26270244 (1).pdf'",
+  "currency": "INR",
+  "adversarial": false,
+  "notes": "Same PO family as po-01: one line item, 'Amendment Ref: -' (-> null per placeholder rule), supplier contact filled in (recipient_contact_mobile/_email populated), non-empty PO Remark ('Centre cut all rolls'), Payment Terms '45 Days', Freight 'EXW - Ex-Warehouse'. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Scrubbed: names, addresses, GSTINs, IEC, Udyam no., all mobiles + emails, website, PO numbers, the tape brand name. HSN 48114100 kept.",
+  "contains_real_data": false,
+  "required_fields": [
+    "purchase_order_number",
+    "purchase_order_date",
+    "currency",
+    "line_items",
+    "issuer_name",
+    "recipient_name"
+  ]
+}

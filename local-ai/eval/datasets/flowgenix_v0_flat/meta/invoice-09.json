@@ -1,0 +1,11 @@
+{
+  "doc_type": "purchase_order",
+  "fed_to_scene_as": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/purchase_order (1).pdf",
+  "currency": "USD",
+  "adversarial": true,
+  "notes": "ADVERSARIAL - wrong-document-type input. This is a PURCHASE ORDER routed through the INVOICE prompt (mis-classification simulation). Acceptable: (a) NO_DATA envelope, or (b) mostly-null invoice object with document_type 'PURCHASE ORDER', purchase_order_number 'PO-2026-8942', currency '$', line_items populated, invoice_number = null, invoice_date = null. Flowgenix downstream: no invoice_number + no invoice_date -> canonical vendorInvoice normalizer raises 'invoiceNumber is required'/'invoiceDate is required' -> upload marked failed. expected.json encodes reading (b) with confidence 0.4. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Same source PDF as po-04; scrubbed identically to invoice-05/po-04.",
+  "contains_real_data": false,
+  "required_fields": []
+}

@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "scored": [
+    {
+      "key": "person_name",
+      "match": "exact"
+    },
+    {
+      "key": "customer_name",
+      "match": "exact"
+    },
+    {
+      "key": "gender",
+      "match": "exact"
+    },
+    {
+      "key": "dob",
+      "match": "exact"
+    },
+    {
+      "key": "mobile_no",
+      "match": "exact"
+    },
+    {
+      "key": "mobile_no_1",
+      "match": "exact"
+    },
+    {
+      "key": "mobile_no_2",
+      "match": "exact"
+    },
+    {
+      "key": "mobile_no_3",
+      "match": "exact"
+    },
+    {
+      "key": "mobile_no_4",
+      "match": "exact"
+    },
+    {
+      "key": "random_contact_no",
+      "match": "exact"
+    },
+    {
+      "key": "email_id",
+      "match": "exact"
+    },
+    {
+      "key": "std_code",
+      "match": "exact"
+    },
+    {
+      "key": "landline_no",
+      "match": "exact"
+    },
+    {
+      "key": "address_line1",
+      "match": "fuzzy"
+    },
+    {
+      "key": "address_line2",
+      "match": "fuzzy"
+    },
+    {
+      "key": "address_line3",
+      "match": "fuzzy"
+    },
+    {
+      "key": "address_city",
+      "match": "exact"
+    },
+    {
+      "key": "address_state",
+      "match": "exact"
+    },
+    {
+      "key": "address_pincode",
+      "match": "exact"
+    },
+    {
+      "key": "address_type",
+      "match": "exact"
+    },
+    {
+      "key": "address_source",
+      "match": "exact"
+    },
+    {
+      "key": "dl_no",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_dl_kyc_id",
+      "match": "exact"
+    },
+    {
+      "key": "aadhaar_no",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_aadhaar_kyc_id",
+      "match": "exact"
+    },
+    {
+      "key": "pan",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_pan_kyc_id",
+      "match": "exact"
+    },
+    {
+      "key": "passport",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_passport_kyc_id",
+      "match": "exact"
+    },
+    {
+      "key": "voter_id",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_voterid_kyc_id",
+      "match": "exact"
+    },
+    {
+      "key": "ration_card",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_ration_card_kyc_id",
+      "match": "exact"
+    },
+    {
+      "key": "savings_account_no",
+      "match": "exact"
+    },
+    {
+      "key": "source_of_savings_acc_no",
+      "match": "exact"
+    },
+    {
+      "key": "cin",
+      "match": "exact"
+    },
+    {
+      "key": "business_type",
+      "match": "fuzzy"
+    },
+    {
+      "key": "business_industry_type",
+      "match": "exact"
+    },
+    {
+      "key": "business_category",
+      "match": "exact"
+    },
+    {
+      "key": "page_count",
+      "match": "exact"
+    },
+    {
+      "key": "application_form",
+      "match": "exact"
+    }
+  ],
+  "passthrough": [
+    "customer_type",
+    "constitution",
+    "bank_lan",
+    "system_lan",
+    "trust_name",
+    "existing_lan_no",
+    "id",
+    "tcmbr_code",
+    "remark",
+    "verification_remark",
+    "sanction_date",
+    "sanction_ticket",
+    "dpn",
+    "agreement_of_loan",
+    "nature_of_facility_docs",
+    "nature_of_facility_system",
+    "checker_remark",
+    "checking_date",
+    "updation_remarks",
+    "checker_name",
+    "checker_status",
+    "roi",
+    "page_no_of_roi",
+    "security_value_fmv",
+    "security_value_distress",
+    "realizable_value",
+    "security_value",
+    "location_type",
+    "type_of_relationship",
+    "credit_type",
+    "tangible_security_type"
+  ],
+  "notes": {
+    "scored": "Doc-extractable fields for bake-off ranking on aligned rows only.",
+    "passthrough": "Ops/system fields not scored in phase 1. customer_type/constitution deferred until checkbox/role OCR exists.",
+    "fuzzy": "Token-overlap match for long address/business strings; never OCR-substring presence."
+  }
+}

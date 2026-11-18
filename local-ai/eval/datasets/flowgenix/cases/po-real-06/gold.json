@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "HPC/PURI/2026/1105",
+    "poDate": "01/09/2026",
+    "supplierName": "Summit Fine Specialty Chemicals Ltd.",
+    "buyerName": "Helix Pharmachemicals Ltd.",
+    "currency": "INR",
+    "paymentTerms": "Advance Payment (100%)",
+    "deliveryDate": "10-09-2026",
+    "subtotal": 1623250,
+    "taxAmount": 292185,
+    "totalAmount": 1915435
+  },
+  "lineItems": [
+    {
+      "itemCode": "RAW-IPA-99",
+      "description": "Isopropyl Alcohol (IPA) Pharma Grade 99.9%",
+      "quantity": 8000,
+      "unitPrice": 115,
+      "lineAmount": 920000,
+      "uom": "KGS"
+    },
+    {
+      "itemCode": "CAT-PALL-05",
+      "description": "Palladium on Carbon Catalyst 5% Dry Basis",
+      "quantity": 50,
+      "unitPrice": 14500,
+      "lineAmount": 703250,
+      "uom": "KGS"
+    }
+  ]
+}

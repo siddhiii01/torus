@@ -1,0 +1,42 @@
+PURCHASE ORDER
+Vendor:
+Parkway Supplies Inc.
+210 Innovation Drive
+Silicon Valley, CA 94002
+PO Number: PO-2026-001
+Date: August 13, 2026
+Ship To: Building C Receiving
+Item Description
+Quantity
+Unit Price
+Total
+Mechanical Keyboard - Blue Switch
+1
+$120.00
+$120.00
+Ergonomic Mouse
+1
+$85.00
+$85.00
+Total: $205.00
+PURCHASE ORDER
+Vendor:
+Parkway Supplies Inc.
+210 Innovation Drive
+Silicon Valley, CA 94002
+PO. No: PO-2026-999
+Date: August 13, 2026
+Ship To: Building C Receiving
+Item Description
+Quantity
+Unit Price
+Total
+Mechanical Keyboard - Blue Switch
+1
+$120.00
+$120.00
+Ergonomic Mouse
+1
+$85.00
+$85.00
+Total: $205.00

@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "invoiceNumber": null,
+    "invoiceDate": null,
+    "dueDate": null,
+    "supplierName": "Lumitron Components",
+    "buyerName": "Northbridge Assembly",
+    "currency": "USD",
+    "paymentTerms": "Payment in advance",
+    "subtotal": 124.4,
+    "taxAmount": 0,
+    "totalAmount": 124.4
+  },
+  "lineItems": [
+    {
+      "itemCode": "ELG-0041",
+      "description": "Red LED, 3mm",
+      "quantity": 100,
+      "unitPrice": 0.62,
+      "taxAmount": null,
+      "lineTotal": 62
+    },
+    {
+      "itemCode": "ELG-0042",
+      "description": "Green LED, 3mm",
+      "quantity": 80,
+      "unitPrice": 0.78,
+      "taxAmount": null,
+      "lineTotal": 62.4
+    }
+  ]
+}

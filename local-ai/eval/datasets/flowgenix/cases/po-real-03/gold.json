@@ -1,0 +1,40 @@
+{
+  "fields": {
+    "poNumber": "PO-9901-003",
+    "poDate": "September 3, 2026",
+    "supplierName": "Vitalis Equipment Corp",
+    "buyerName": "Meridian Care Systems",
+    "currency": "USD",
+    "paymentTerms": null,
+    "deliveryDate": "September 18, 2026",
+    "subtotal": 38500,
+    "taxAmount": 3080,
+    "totalAmount": 41880
+  },
+  "lineItems": [
+    {
+      "itemCode": null,
+      "description": "Patient Vital Monitors",
+      "quantity": 5,
+      "unitPrice": 2800,
+      "lineAmount": 14000,
+      "uom": null
+    },
+    {
+      "itemCode": null,
+      "description": "Digital Ultrasound Machines",
+      "quantity": 1,
+      "unitPrice": 18500,
+      "lineAmount": 18500,
+      "uom": null
+    },
+    {
+      "itemCode": null,
+      "description": "Sterile Surgical Kit Sets",
+      "quantity": 50,
+      "unitPrice": 120,
+      "lineAmount": 6000,
+      "uom": null
+    }
+  ]
+}

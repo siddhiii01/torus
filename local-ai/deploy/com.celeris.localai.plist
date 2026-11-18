@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Keeps Ollama alive on the Mac: starts at boot, restarts on crash.
+  Satisfies the brief's "auto-start, health check, documented restart" requirement.
+
+  Install:
+    cp deploy/com.celeris.localai.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.celeris.localai.plist
+
+  Verify auto-restart:
+    pkill ollama         # should come back within a few seconds
+    curl -s http://localhost:11434/api/tags
+
+  Also set (once), matching the 64 GB machine:
+    launchctl setenv OLLAMA_NUM_PARALLEL 3
+    launchctl setenv OLLAMA_KV_CACHE_TYPE q8_0
+    launchctl setenv OLLAMA_MAX_LOADED_MODELS 1
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.celeris.localai.ollama</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/ollama</string>
+        <string>serve</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/ollama.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/ollama.err.log</string>
+</dict>
+</plist>

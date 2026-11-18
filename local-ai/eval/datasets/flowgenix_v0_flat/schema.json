@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://celeris.local/flowgenix/extraction.schema.json",
+  "title": "Flowgenix structured field-extraction output",
+  "description": "Scoring schema for the Celeris Local AI Server bake-off. NOT enforced at runtime by Flowgenix for this scene (see schema_notes.md). The harness should validate each case against $defs/invoiceExtraction or $defs/poExtraction according to cases/<name>/meta.json.doc_type; a NO_DATA / wrong-document-type response validates against $defs/noDataEnvelope. The permissive root below (anyOf, not oneOf: the shapes overlap because every field is optional) accepts any of the three.",
+  "anyOf": [
+    { "$ref": "#/$defs/invoiceExtraction" },
+    { "$ref": "#/$defs/poExtraction" },
+    { "$ref": "#/$defs/noDataEnvelope" }
+  ],
+  "$defs": {
+    "amount": {
+      "description": "Monetary value with no currency symbol. Invoice prompt permits a numeric string; PO prompt requires a plain number. Accept both, plus null.",
+      "type": ["number", "string", "null"]
+    },
+    "poAmount": {
+      "description": "PO prompt: 'plain numbers with no currency symbol or thousands separators'.",
+      "type": ["number", "null"]
+    },
+    "text": { "type": ["string", "null"] },
+    "confidence": {
+      "description": "Required by the openaiAdapter wrapper ('CRITICAL: You MUST include a confidence key'). Presence + range are scored; the value itself is NOT value-matched against goldens.",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+
+    "noDataEnvelope": {
+      "type": "object",
+      "required": ["error"],
+      "properties": {
+        "error": { "const": "NO_DATA" },
+        "fields": { "type": "object" },
+        "message": { "type": "string" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": true
+    },
+
+    "invoiceExtraction": {
+      "type": "object",
+      "description": "Output shape of prompt/flowgenix_invoice_prompt.txt. All fields nullable; a field absent from the document MUST be null (prompt rule). Keys the model may legitimately nest or rename are tolerated downstream (canonical/canonicalResolver.js) — hence additionalProperties:true — but the scorer checks the types of the keys it recognises.",
+      "properties": {
+        "invoice_number": { "$ref": "#/$defs/text" },
+        "invoice_date": { "$ref": "#/$defs/text" },
+        "document_type": { "$ref": "#/$defs/text" },
+        "seller_name": { "$ref": "#/$defs/text" },
+        "seller_address": { "$ref": "#/$defs/text" },
+        "seller_tax_id": { "$ref": "#/$defs/text" },
+        "seller_pan": { "$ref": "#/$defs/text" },
+        "buyer_name": { "$ref": "#/$defs/text" },
+        "buyer_address": { "$ref": "#/$defs/text" },
+        "buyer_tax_id": { "$ref": "#/$defs/text" },
+        "buyer_pan": { "$ref": "#/$defs/text" },
+        "place_of_supply": { "$ref": "#/$defs/text" },
+        "state": { "$ref": "#/$defs/text" },
+        "state_code": { "$ref": "#/$defs/text" },
+        "currency": { "$ref": "#/$defs/text" },
+        "payment_terms": { "$ref": "#/$defs/text" },
+        "due_date": { "$ref": "#/$defs/text" },
+        "purchase_order_number": { "$ref": "#/$defs/text" },
+        "purchase_order_date": { "$ref": "#/$defs/text" },
+        "reference_number": { "$ref": "#/$defs/text" },
+        "transport_mode": { "$ref": "#/$defs/text" },
+        "vehicle_number": { "$ref": "#/$defs/text" },
+        "eway_bill_number": { "$ref": "#/$defs/text" },
+        "irn_number": { "$ref": "#/$defs/text" },
+        "acknowledgement_number": { "$ref": "#/$defs/text" },
+        "acknowledgement_date": { "$ref": "#/$defs/text" },
+
+        "subtotal": { "$ref": "#/$defs/amount" },
+        "taxable_amount": { "$ref": "#/$defs/amount" },
+        "cgst_amount": { "$ref": "#/$defs/amount" },
+        "sgst_amount": { "$ref": "#/$defs/amount" },
+        "igst_amount": { "$ref": "#/$defs/amount" },
+        "cess_amount": { "$ref": "#/$defs/amount" },
+        "discount_amount": { "$ref": "#/$defs/amount" },
+        "round_off_amount": { "$ref": "#/$defs/amount" },
+        "total_tax": { "$ref": "#/$defs/amount" },
+        "total_amount": { "$ref": "#/$defs/amount" },
+
+        "line_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item_description": { "$ref": "#/$defs/text" },
+              "item_code": { "$ref": "#/$defs/text" },
+              "hsn_code": { "$ref": "#/$defs/text" },
+              "quantity": { "type": ["number", "string", "null"] },
+              "unit_of_measure": { "$ref": "#/$defs/text" },
+              "unit_price": { "$ref": "#/$defs/amount" },
+              "discount": { "$ref": "#/$defs/amount" },
+              "taxable_value": { "$ref": "#/$defs/amount" },
+              "cgst_rate": { "$ref": "#/$defs/amount" },
+              "cgst_amount": { "$ref": "#/$defs/amount" },
+              "sgst_rate": { "$ref": "#/$defs/amount" },
+              "sgst_amount": { "$ref": "#/$defs/amount" },
+              "igst_rate": { "$ref": "#/$defs/amount" },
+              "igst_amount": { "$ref": "#/$defs/amount" },
+              "cess_rate": { "$ref": "#/$defs/amount" },
+              "cess_amount": { "$ref": "#/$defs/amount" },
+              "line_total": { "$ref": "#/$defs/amount" }
+            },
+            "additionalProperties": true
+          }
+        },
+
+        "bank_name": { "$ref": "#/$defs/text" },
+        "account_number": { "$ref": "#/$defs/text" },
+        "ifsc_code": { "$ref": "#/$defs/text" },
+        "branch": { "$ref": "#/$defs/text" },
+        "remarks": { "$ref": "#/$defs/text" },
+
+        "confidence": { "$ref": "#/$defs/confidence" }
+      },
+      "additionalProperties": true
+    },
+
+    "poExtraction": {
+      "type": "object",
+      "description": "Output shape of prompt/flowgenix_po_prompt.txt — the inline SCHEMA block in that prompt, verbatim key set. All flat except line_items. Absent field => null; absent line_items => []. Amount fields are plain numbers.",
+      "properties": {
+        "document_type": { "$ref": "#/$defs/text" },
+        "purchase_order_number": { "$ref": "#/$defs/text" },
+        "purchase_order_date": { "$ref": "#/$defs/text" },
+        "po_type": { "$ref": "#/$defs/text" },
+        "order_reference": { "$ref": "#/$defs/text" },
+        "amendment_reference": { "$ref": "#/$defs/text" },
+
+        "issuer_name": { "$ref": "#/$defs/text" },
+        "issuer_address": { "$ref": "#/$defs/text" },
+        "issuer_tax_id": { "$ref": "#/$defs/text" },
+        "issuer_contact_mobile": { "$ref": "#/$defs/text" },
+        "issuer_contact_email": { "$ref": "#/$defs/text" },
+
+        "recipient_name": { "$ref": "#/$defs/text" },
+        "recipient_address": { "$ref": "#/$defs/text" },
+        "recipient_tax_id": { "$ref": "#/$defs/text" },
+        "recipient_contact_mobile": { "$ref": "#/$defs/text" },
+        "recipient_contact_email": { "$ref": "#/$defs/text" },
+
+        "delivery_location": { "$ref": "#/$defs/text" },
+        "freight_terms": { "$ref": "#/$defs/text" },
+
+        "currency": { "$ref": "#/$defs/text" },
+        "payment_terms": { "$ref": "#/$defs/text" },
+
+        "line_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sr_no": { "type": ["number", "string", "null"] },
+              "item_code": { "$ref": "#/$defs/text" },
+              "supplier_part_no": { "$ref": "#/$defs/text" },
+              "item_name": { "$ref": "#/$defs/text" },
+              "item_description": { "$ref": "#/$defs/text" },
+              "hsn_code": { "$ref": "#/$defs/text" },
+              "delivery_date": { "$ref": "#/$defs/text" },
+              "unit_of_measure": { "$ref": "#/$defs/text" },
+              "quantity": { "$ref": "#/$defs/poAmount" },
+              "unit_price": { "$ref": "#/$defs/poAmount" },
+              "discount_percent": { "$ref": "#/$defs/poAmount" },
+              "net_rate": { "$ref": "#/$defs/poAmount" },
+              "amount": { "$ref": "#/$defs/poAmount" }
+            },
+            "additionalProperties": true
+          }
+        },
+
+        "gst_hsn_sac_code": { "$ref": "#/$defs/text" },
+        "gst_taxable_amount": { "$ref": "#/$defs/poAmount" },
+        "gst_sgst_percent": { "$ref": "#/$defs/poAmount" },
+        "gst_sgst_amount": { "$ref": "#/$defs/poAmount" },
+        "gst_cgst_percent": { "$ref": "#/$defs/poAmount" },
+        "gst_cgst_amount": { "$ref": "#/$defs/poAmount" },
+        "gst_igst_percent": { "$ref": "#/$defs/poAmount" },
+        "gst_igst_amount": { "$ref": "#/$defs/poAmount" },
+        "gst_total_tax": { "$ref": "#/$defs/poAmount" },
+        "gst_summary_extra_rows_note": { "$ref": "#/$defs/text" },
+
+        "financial_taxable_amount": { "$ref": "#/$defs/poAmount" },
+        "financial_packing_forwarding_charges": { "$ref": "#/$defs/poAmount" },
+        "financial_sgst_total": { "$ref": "#/$defs/poAmount" },
+        "financial_cgst_total": { "$ref": "#/$defs/poAmount" },
+        "financial_igst_total": { "$ref": "#/$defs/poAmount" },
+        "financial_total_tax": { "$ref": "#/$defs/poAmount" },
+        "financial_rounded_off": { "$ref": "#/$defs/poAmount" },
+        "financial_total_amount": { "$ref": "#/$defs/poAmount" },
+
+        "confidence": { "$ref": "#/$defs/confidence" }
+      },
+      "additionalProperties": true
+    }
+  }
+}

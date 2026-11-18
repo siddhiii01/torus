@@ -1,0 +1,35 @@
+TAX INVOICE
+Tax Invoice Number
+INV-33019
+Date
+22/03/2026
+Due Date
+05/04/2026
+Vendor
+Maple Dock Packaging Ltd
+Bill To
+Riverbend Foods Pvt. Ltd.
+INR
+Net 21
+Items
+Description
+Qty
+Price
+Tax
+Amount
+Corrugated carton 12x12
+Stretch wrap 500m
+12
+4
+85.00
+210.00
+183.60
+151.20
+1020.00
+840.00
+Subtotal
+1860.00
+VAT
+334.80
+Grand Total
+2194.80

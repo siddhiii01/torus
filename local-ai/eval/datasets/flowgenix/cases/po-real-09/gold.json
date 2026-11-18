@@ -1,0 +1,96 @@
+{
+  "fields": {
+    "poNumber": "P99019",
+    "poDate": "25/06/2026",
+    "supplierName": "PERIPHERALCO",
+    "buyerName": "Sand Dune Distribution FZE",
+    "currency": "USD",
+    "paymentTerms": null,
+    "deliveryDate": null,
+    "subtotal": 422458.44,
+    "taxAmount": 0,
+    "totalAmount": 422458.44
+  },
+  "lineItems": [
+    {
+      "itemCode": "910-001356",
+      "description": "Presenter - PeripheralCo Wireless Presenter R400",
+      "quantity": 168,
+      "unitPrice": 17,
+      "lineAmount": 2856,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-001793",
+      "description": "Mouse - PERIPHERALCO Corded Mouse M90",
+      "quantity": 2100,
+      "unitPrice": 2.25,
+      "lineAmount": 4725,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-002201",
+      "description": "Mouse - PERIPHERALCO Wireless Mouse M235 - Colt Matte",
+      "quantity": 80,
+      "unitPrice": 9.41,
+      "lineAmount": 752.8,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-002235",
+      "description": "Mouse - PERIPHERALCO Wireless Mouse M185 - Swift-Grey",
+      "quantity": 2200,
+      "unitPrice": 6.3,
+      "lineAmount": 13860,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-002236",
+      "description": "Mouse - PERIPHERALCO Wireless Mouse M185 - Blue",
+      "quantity": 500,
+      "unitPrice": 6.3,
+      "lineAmount": 3150,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-002237",
+      "description": "Mouse - PERIPHERALCO Wireless Mouse M185 - RED",
+      "quantity": 400,
+      "unitPrice": 6.3,
+      "lineAmount": 2520,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-004424",
+      "description": "Mouse - PERIPHERALCO WIRELESS MOUSE M171 - BLACK",
+      "quantity": 3200,
+      "unitPrice": 6,
+      "lineAmount": 19200,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-004640",
+      "description": "Mouse - PERIPHERALCO Wireless Mouse M171 - BLUE",
+      "quantity": 700,
+      "unitPrice": 6,
+      "lineAmount": 4200,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-004641",
+      "description": "Mouse - PERIPHERALCO Wireless Mouse M171 - RED",
+      "quantity": 400,
+      "unitPrice": 6,
+      "lineAmount": 2400,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "910-004791",
+      "description": "M720 Triathlon Mouse-N/A-2.4GHZ/BT-N/A-EMEA-CLAMSHELL M720",
+      "quantity": 10,
+      "unitPrice": 30.28,
+      "lineAmount": 302.8,
+      "uom": "Units"
+    }
+  ]
+}

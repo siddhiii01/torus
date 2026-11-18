@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "invoiceNumber": "INV-33019",
+    "invoiceDate": "22/03/2026",
+    "dueDate": "05/04/2026",
+    "supplierName": "Maple Dock Packaging Ltd",
+    "buyerName": "Riverbend Foods Pvt. Ltd.",
+    "currency": "INR",
+    "paymentTerms": "Net 21",
+    "subtotal": 1860,
+    "taxAmount": 334.8,
+    "totalAmount": 2194.8
+  },
+  "lineItems": [
+    {
+      "itemCode": null,
+      "description": "Corrugated carton 12x12",
+      "quantity": 12,
+      "unitPrice": 85,
+      "taxAmount": 183.6,
+      "lineTotal": 1020
+    },
+    {
+      "itemCode": null,
+      "description": "Stretch wrap 500m",
+      "quantity": 4,
+      "unitPrice": 210,
+      "taxAmount": 151.2,
+      "lineTotal": 840
+    }
+  ]
+}

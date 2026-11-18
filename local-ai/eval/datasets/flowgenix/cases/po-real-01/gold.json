@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "PO/9901/1015",
+    "poDate": "17/08/2026",
+    "supplierName": "CEDARWOOD HARDWARE SUPPLY",
+    "buyerName": "Oakridge Modular Interiors",
+    "currency": "INR",
+    "paymentTerms": "45 Days",
+    "deliveryDate": null,
+    "subtotal": 1699800,
+    "taxAmount": 305964,
+    "totalAmount": 2005764
+  },
+  "lineItems": [
+    {
+      "itemCode": "HDW/1501",
+      "description": "Soft Close Hinge — 35mm Cup, Stainless Steel, Soft Close",
+      "quantity": 15000,
+      "unitPrice": 40.8,
+      "lineAmount": 612000,
+      "uom": "NOS"
+    },
+    {
+      "itemCode": "HDW/1502",
+      "description": "Telescopic Drawer Slide — 450mm, Full Extension, Soft Close",
+      "quantity": 6000,
+      "unitPrice": 181.3,
+      "lineAmount": 1087800,
+      "uom": "PAIR"
+    }
+  ]
+}

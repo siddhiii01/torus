@@ -1,0 +1,24 @@
+{
+  "name": "celeris-local-ai-middleware",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Thin service in front of LiteLLM: per-product identity, optional profile/RAG, output validation, content-free structured logging.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "dev": "node --env-file-if-exists=.env --watch src/index.js",
+    "test": "node --test",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "express": "^4.21.0",
+    "pino": "^9.5.0",
+    "undici": "^6.21.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.13.0"
+  }
+}

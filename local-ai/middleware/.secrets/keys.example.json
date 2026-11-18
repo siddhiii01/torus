@@ -1,0 +1,11 @@
+{
+  "_comment": "Copy to keys.json (git-ignored). Generate entries with: node src/tools/mint-key.js <productId> <env>. Only sha256 hashes live here, never raw keys.",
+  "keys": [
+    {
+      "productId": "flowgenix",
+      "env": "dev",
+      "sha256": "REPLACE_WITH_SHA256_FROM_mint-key",
+      "label": "flowgenix dev"
+    }
+  ]
+}

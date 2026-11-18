@@ -1,0 +1,16 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/fg-demo.zip -> 'Invoice_TFS-2026-0892 (1).pdf'",
+  "currency": "USD",
+  "adversarial": false,
+  "notes": "US services invoice, 7 line items, 2-page source. No printed invoice-number field - the only invoice-number token is 'Memo: INV-2026-0892' in the payment block (invoice_number golden = INV-2026-0892; null also acceptable). Early-payment discount is a negative line -> discount_amount = -630. 'Sales Tax (0.00%) $0.00' is a real zero. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Document AI duplicates quantities ('24\\n24', '40\\n40'), drops words ('you\\nfor\\nyour business!'), emits stray 'LO'/'EIN' - reconcile against unit_price x qty. Scrubbed: vendor + buyer names/addresses, phone, EIN, customer id, PO number, bank name + routing + SWIFT, MSA ref, staff name.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items",
+    "purchase_order_number"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": false,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Clean SAMPLE layout with 2 line items; GST split S/C; Document AI jumbled table header tokens.",
+  "bucket": "clean",
+  "uploadId": "6a9a670d98b1d339262dafc5",
+  "originalFile": "PO_Sample_15_Amberwood_vs_Greenfield.pdf"
+}

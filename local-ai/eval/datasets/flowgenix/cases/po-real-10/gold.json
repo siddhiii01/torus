@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "VEAI/POI/26-27/0412",
+    "poDate": "02/09/2026",
+    "supplierName": "Precision Fluid Seals Corp",
+    "buyerName": "Vector Engineering & Automation",
+    "currency": "INR",
+    "paymentTerms": "45 Days from Goods Receipt",
+    "deliveryDate": "15-09-2026",
+    "subtotal": 727375,
+    "taxAmount": 130927.5,
+    "totalAmount": 858302
+  },
+  "lineItems": [
+    {
+      "itemCode": "HYD-VAL-500",
+      "description": "High Pressure Proportional Hydraulic Valve 350 Bar",
+      "quantity": 25,
+      "unitPrice": 18500,
+      "lineAmount": 439375,
+      "uom": "SET"
+    },
+    {
+      "itemCode": "PUM-GEAR-20",
+      "description": "Hydraulic Gear Pump 20 GPM Heavy Duty",
+      "quantity": 12,
+      "unitPrice": 24000,
+      "lineAmount": 288000,
+      "uom": "NOS"
+    }
+  ]
+}

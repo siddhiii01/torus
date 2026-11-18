@@ -1,0 +1,49 @@
+TAX INVOICE
+Vendor/Supplier:
+Orbitz Stationery Traders Pvt. Ltd.
+Plot 27, Vashi Udyog Marg
+Pune, Maharashtra - 411052
+GSTIN: 27AAQPN4417R1Z3
+Customer/Buyer:
+CleerFlow Manufacturing Pvt. Ltd.
+Unit 09, Sunrise Compound
+Mumbai, Maharashtra - 400071
+GSTIN: 27AABCK9920M1Z4
+Invoice Number: INV-2026-04510
+Invoice Date : 04-Jul-2026
+Due Date
+Currency
+: 19-Jul-2026
+: INR
+Items
+Description
+Qty
+Unit Price (INR)
+Line Total (INR)
+10
+250.00
+2,500.00
+3
+1,850.00
+5,550.00
+5
+480.00
+2,400.00
+A4 Copier Paper (500 Sheets)
+Black Toner Cartridge
+Desktop File Organizer
+Subtotal
+GST (18%)
+Grand Total
+INR
+10,450.00
+INR
+1,881.00
+INR
+12,331.00
+Amount in Words:
+Indian Rupees Twelve Thousand Three Hundred Thirty-One Only.
+Payment Terms:
+Net 15 Days
+Authorized Signatory
+For Orbitz Stationery Traders Pvt. Ltd.

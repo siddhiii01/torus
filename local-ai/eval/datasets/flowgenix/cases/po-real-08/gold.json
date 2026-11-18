@@ -1,0 +1,88 @@
+{
+  "fields": {
+    "poNumber": "P99018",
+    "poDate": "17/06/2026",
+    "supplierName": "InkJet Middle East FZCO",
+    "buyerName": "Sand Dune Distribution FZE",
+    "currency": "USD",
+    "paymentTerms": null,
+    "deliveryDate": null,
+    "subtotal": 228747,
+    "taxAmount": 0,
+    "totalAmount": 228747
+  },
+  "lineItems": [
+    {
+      "itemCode": "IJ-C11CL40407",
+      "description": "InkJet EcoTank L6390 Wi-Fi A4 Duplex All-in-One Ink Printer",
+      "quantity": 40,
+      "unitPrice": 299,
+      "lineAmount": 11960,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CL43406",
+      "description": "InkJet EcoTank L6370 Wi-Fi A4 Duplex All-in-One Ink Printer",
+      "quantity": 40,
+      "unitPrice": 268,
+      "lineAmount": 10720,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CJ88404DA",
+      "description": "InkJet EcoTank L6490 A4 Ink Tank Printer",
+      "quantity": 50,
+      "unitPrice": 305,
+      "lineAmount": 15250,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CK38403DA",
+      "description": "InkJet L18050 A3+ Photo Ink Tank Printer",
+      "quantity": 50,
+      "unitPrice": 452.1,
+      "lineAmount": 22605,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CL41412",
+      "description": "InkJet EcoTank L4360 A4 Wi-Fi Duplex All-in-One Ink Tank Printer",
+      "quantity": 50,
+      "unitPrice": 213,
+      "lineAmount": 10650,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CH96403DA",
+      "description": "InkJet EcoTank ITS L14150 Printer",
+      "quantity": 100,
+      "unitPrice": 380,
+      "lineAmount": 38000,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CJ65409",
+      "description": "InkJet EcoTank L5290 A4 Wi-Fi All-in-One Ink Tank Printer",
+      "quantity": 100,
+      "unitPrice": 207,
+      "lineAmount": 20700,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CK94402",
+      "description": "InkJet EcoTank L8100 Photo Printer",
+      "quantity": 100,
+      "unitPrice": 358.62,
+      "lineAmount": 35862,
+      "uom": "Units"
+    },
+    {
+      "itemCode": "IJ-C11CL61403",
+      "description": "InkJet EcoTank L3310 A4 All-in-One Ink Tank Printer",
+      "quantity": 500,
+      "unitPrice": 126,
+      "lineAmount": 63000,
+      "uom": "Units"
+    }
+  ]
+}

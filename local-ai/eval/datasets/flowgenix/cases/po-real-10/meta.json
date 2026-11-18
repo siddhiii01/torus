@@ -1,0 +1,19 @@
+{
+  "docType": "Purchase Order",
+  "ocr_engine": "google_document_ai",
+  "source": "real-scrubbed",
+  "contains_real_data": false,
+  "adversarial": true,
+  "required_fields": [
+    "poNumber",
+    "poDate",
+    "lineItems"
+  ],
+  "prompt_pack": "fictional-eval-pin",
+  "assemble": "A+B+C_po+D+F+DOCUMENT_CONTENT",
+  "notes": "Adversarial: OCR is clearly a PO, but upload.docType was Unclassified at dump time. CGST split; OCR noise on line 2.",
+  "bucket": "adversarial",
+  "uploadDocTypeAtDump": "Unclassified",
+  "uploadId": "6a9a6264380fe823076cef90",
+  "originalFile": "PO_Orbit_Engineering.pdf"
+}

@@ -1,0 +1,72 @@
+Heartland Industrial Supply LLC
+7220 Commerce Blvd, Columbus, OH 43219
+Phone: (614) 555-0184
+Email: ap@heartlandindsupply.com
+Website: www.heartlandindsupply.com
+EIN: 31-9903452
+Invoice #
+INV-2026-10458
+Invoice Date
+07/11/2026
+Due Date
+08/10/2026
+Terms
+Net 30
+PO #
+PO-661820
+Currency
+USD
+Bill To
+Sable Ridge Manufacturing Inc.
+1450 Corporate Ridge Pkwy
+Charlotte, NC 28210
+Contact: Marcus Reed
+Ship To
+Receiving Dock
+1600 Fabrication Way
+Charlotte, NC 28210
+SKU
+Description
+Qty Unit Price Line Total
+IND-4501
+NET-2210
+Industrial Torque Wrench Set
+4
+$285.00
+$1,140.00
+24-Port Gigabit Managed Switch
+3
+$415.00 $1,245.00
+OFF-7788 27-inch Business Monitor
+$219.00 $1,314.00
+IT-3305
+USB-C Docking Station
+8
+$148.00 $1,184.00
+MFG-9912 Linear Motion Bearing Kit
+20
+IT-8421
+Industrial Barcode Scanner
+25
+$42.50 $850.00
+$189.00
+$945.00
+Subtotal
+$6,678.00
+Discount
+-$178.00
+Freight
+$145.00
+Sales Tax
+$526.50
+Total Amount Due
+$7,171.50
+Payment Instructions
+ACH/Wire: First National Bank
+Routing: 044000037
+Account: 9283741177
+Remittance Address
+Heartland Industrial Supply LLC, Accounts Receivable, PO Box 4128, Columbus, OH 43216
+Notes: Please reference invoice number on all payments. Inspect goods within 10 business days
+and report discrepancies promptly.
+Heartland Industrial Supply LLC | www.heartlandindsupply.com | (614) 555-0184

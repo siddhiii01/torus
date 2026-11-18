@@ -1,0 +1,36 @@
+INVOICE
+Invoice #: INV-2026-0714-001
+Date: July 14, 2026
+From:
+Zenith Solutions Provider
+412 Commerce St, Suite 101
+Mumbai, MH 400001
+Bill To:
+BluePeak Enterprises
+45 Innovation Hub
+Pune, MH 411001
+Payment Terms: Net 15
+Due Date: July 29, 2026
+Description
+Quantity
+Unit Price
+Total
+Professional Web Development Services
+40 Hours
+1,200.00
+*48,000.00
+UI/UX Design Consultation
+Cloud Hosting Setup
+10 Hours
+*1,500.00
+15,000.00
+1 Project
+¥5,000.00
+*5,000.00
+Subtotal:
+*68,000.00
+GST (18%):
+*12,240.00
+Total Due:
+*80,240.00
+Thank you for choosing Zenith Solutions. Please make payments via bank transfer.

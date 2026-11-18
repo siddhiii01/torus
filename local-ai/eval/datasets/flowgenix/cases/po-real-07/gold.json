@@ -1,0 +1,32 @@
+{
+  "fields": {
+    "poNumber": "LFT/PO/9901/0078",
+    "poDate": "03/09/2026",
+    "supplierName": "Spinwell Yarns & Threads Co.",
+    "buyerName": "Lumen Fashion & Apparel Exports",
+    "currency": "INR",
+    "paymentTerms": "60 Days Letter of Credit (LC)",
+    "deliveryDate": "18-09-2026",
+    "subtotal": 3573750,
+    "taxAmount": 428850,
+    "totalAmount": 4002600
+  },
+  "lineItems": [
+    {
+      "itemCode": "YRN-COT-30",
+      "description": "Combed Cotton Yarn 30s Count Ring Spun",
+      "quantity": 12000,
+      "unitPrice": 280,
+      "lineAmount": 3360000,
+      "uom": "KGS"
+    },
+    {
+      "itemCode": "THR-POLY-50",
+      "description": "High Tenacity Polyester Sewing Thread Spools",
+      "quantity": 500,
+      "unitPrice": 450,
+      "lineAmount": 213750,
+      "uom": "BOX"
+    }
+  ]
+}

@@ -1,7 +1,9 @@
-# Python environment and caches
+# --- Python / OCR ---
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
+.deepeval/
 
 # Generated reports. They contain real file names from customer data.
 reports/
@@ -21,3 +23,52 @@ samples/
 *.xlsx
 *.csv
 !requirements.txt
+# Allow the 3 DEB bakeoff cases (source PDFs + gold/meta)
+!data/
+!data/deb/
+!data/deb/cases/
+!data/deb/cases/*/
+!data/deb/cases/*/source.pdf
+!data/deb/cases/*/meta.json
+!data/deb/cases/*/gold.json
+# Allow Local AI project docs (not customer OCR inputs)
+!local-ai/docs/**/*.pdf
+!local-ai/docs/**/*.png
+!local-ai/docs/**/*.jpg
+!local-ai/docs/**/*.jpeg
+
+# --- Local AI (Node / Docker / Ollama stack under local-ai/) ---
+# secrets & env
+.env
+.env.*
+!.env.example
+**/.secrets/*
+!**/.secrets/*.example.json
+*.pem
+*.key
+
+# node
+node_modules/
+npm-debug.log*
+.eslintcache
+
+# eval / promptfoo
+local-ai/eval/promptfoo/results/
+.promptfoo/
+promptfoo-errors.log
+
+# logs & runtime
+**/logs/
+*.log
+!local-ai/deploy/*.log
+
+# baseline / dump artifacts that may contain real doc content
+**/baselines/
+**/dumps/
+**/fixtures/real/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

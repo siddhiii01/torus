@@ -1,0 +1,52 @@
+Northgate Corporation
+77 Meridian Drive
+Tech City, TC 90210
+procurement@northgatecorp.com
+VENDOR (SUPPLIER):
+PURCHASE ORDER
+PO Number: PO-2026-8942
+Date: August 14, 2026
+Payment Terms: Net 30
+SHIP TO:
+Vantage Tech Solutions Inc.
+Suite 400, Beacon Avenue
+Metropolis, NY 10001
+Contact: orders@vantagetech.com
+Northgate Corp Fulfillment Center
+Warehouse Bay #4, Logistics Pkwy
+Tech City, TC 90210
+Attn: Receiving Dept
+Item & Description
+Enterprise Cloud Server Node
+Model: ECS-2026-X (High Performance)
+Qty
+Unit Price
+Total
+5
+$1,200.00
+$6,000.00
+Managed Database Subscriptions (Annual)
+Tier 3 Multi-Region Cluster Support
+2
+$2,450.00
+$4,900.00
+Secure VPN Enterprise Gateway Hardware
+Model: VGW-500
+10
+10
+$350.00
+$3,500.00
+Subtotal:
+Shipping & Handling (5%):
+Estimated Tax:
+Total Amount:
+Terms & Instructions:
+1. Please reference PO Number on all invoices and shipping manifests.
+2. Send all invoices electronically to accounts@northgatecorp.com.
+3. Goods subject to inspection upon arrival.
+Authorized Signature:
+Alicia Moreno, Director of Procurement
+$14,400.00
+$720.00
+$0.00
+$15,120.00

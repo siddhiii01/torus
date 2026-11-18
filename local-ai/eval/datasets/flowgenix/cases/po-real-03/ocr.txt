@@ -1,0 +1,4 @@
+--- Page 1 ---
+Meridian Care Systems PURCHASE ORDER 55 Care Center Blvd, Boston, MA 02115 PO #: PO-9901-003 Email: purchasing@meridian-care.example Date: September 3, 2026 Delivery Date: September 18, 2026 VENDOR SHIP TO Vitalis Equipment Corp Meridian Care Systems 88 Science Park, Cambridge, MA 02142 55 Care Center Blvd, Boston, MA 02115 ITEM DESCRIPTION QTY UNIT PRICE TOTAL Patient Vital Monitors 5 $2800.00 $14000.00 Digital Ultrasound Machines 1 $18500.00 $18500.00 Sterile Surgical Kit Sets 50 $120.00 $6000.00 Subtotal: $38500.00 Tax: $3080.00 Shipping: $300.00 Total: $41880.00 Notes / Instructions: Requires temperature-controlled transport. Thank you for your business! Please send invoices to purchasing@meridian-care.example.
+--- Page 2 ---
+Audit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time

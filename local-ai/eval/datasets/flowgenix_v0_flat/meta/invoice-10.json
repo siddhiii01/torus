@@ -1,0 +1,10 @@
+{
+  "doc_type": "invoice",
+  "source": "synthetic",
+  "derived_from": "Downloads/fg-docs/vendorinvoice.zip -> vendor_invoice.pdf (real Document AI OCR, then hand-degraded)",
+  "currency": "USD",
+  "adversarial": true,
+  "notes": "ADVERSARIAL - garbled / low-confidence OCR. Base is the REAL Document AI text for vendor_invoice.pdf; character confusions were then injected the way OCR fails on a poor scan: O<->0, l<->1<->I, m->rn, S->5, '.00'->'.O0'. ~70% recoverable. expected.json holds the CORRECT de-garbled values; score with partial credit - a model that recovers invoice_number, date, 2-3 line items and the total is doing well; one that copies garbled glyphs ('1NV-2026-88O1', '$5,575.O0') is failing. Company names already scrubbed vs source.",
+  "contains_real_data": false,
+  "required_fields": []
+}

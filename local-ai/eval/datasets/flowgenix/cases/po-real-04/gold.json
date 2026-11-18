@@ -1,0 +1,40 @@
+{
+  "fields": {
+    "poNumber": "PO-9901-001",
+    "poDate": "September 1, 2026",
+    "supplierName": "Orbit Supplies Co.",
+    "buyerName": "Summit Innovations Ltd.",
+    "currency": "USD",
+    "paymentTerms": null,
+    "deliveryDate": "September 15, 2026",
+    "subtotal": 19750,
+    "taxAmount": 1580,
+    "totalAmount": 21530
+  },
+  "lineItems": [
+    {
+      "itemCode": null,
+      "description": "Enterprise Laptops - High Performance",
+      "quantity": 10,
+      "unitPrice": 1200,
+      "lineAmount": 12000,
+      "uom": null
+    },
+    {
+      "itemCode": null,
+      "description": "27-inch 4K Monitors",
+      "quantity": 15,
+      "unitPrice": 350,
+      "lineAmount": 5250,
+      "uom": null
+    },
+    {
+      "itemCode": null,
+      "description": "Ergonomic Office Chairs",
+      "quantity": 10,
+      "unitPrice": 250,
+      "lineAmount": 2500,
+      "uom": null
+    }
+  ]
+}

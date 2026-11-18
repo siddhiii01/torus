@@ -1,0 +1,20 @@
+PURCHASE ORDER
+PO Number: PO-2026-4418
+PO Date: 12-Aug-2026
+Requested Delivery Date: 01-Sep-2026
+
+Supplier / Vendor:
+Cedarline Components Pvt. Ltd.
+Buyer / Bill To:
+Harbor Mill Textiles LLP
+
+Currency: INR
+Payment Terms: Net 30
+
+Item Code    Description              Qty    UOM    Unit Price    Amount
+CL-8821      Cotton yarn 40s cone     20     KG     145.00        2900.00
+CL-9104      Polyester sewing thread  8      BOX    220.50        1764.00
+
+Net Amount: 4664.00
+Sales Tax: 839.52
+Grand Total: 5503.52

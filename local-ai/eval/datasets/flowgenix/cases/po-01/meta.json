@@ -1,0 +1,10 @@
+{
+  "docType": "Purchase Order",
+  "source": "fictional-eval-pin",
+  "prompt_source": "synthetic_assembly",
+  "adversarial": false,
+  "derived_from": "fictional",
+  "contains_real_data": false,
+  "notes": "Clean two-line PO. Seed case.",
+  "required_fields": ["poNumber", "poDate", "lineItems"]
+}

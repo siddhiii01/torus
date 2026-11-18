@@ -1,0 +1,16 @@
+{
+  "doc_type": "invoice",
+  "source": "fixture",
+  "derived_from": "Downloads/fg-docs/TAX INVOICE fail.pdf (super-admin demo doc)",
+  "currency": "INR",
+  "adversarial": true,
+  "notes": "ADVERSARIAL - missing required field. Same invoice as invoice-01 but the SELLER GSTIN line is absent. Correct: seller_tax_id = null (do not hallucinate or copy the buyer GSTIN). Extraction still succeeds downstream. OCR text is REAL Google Document AI output: backend/ocr_service_srs.py path (tenant.googleVision = 'google document ai'), processor projects/245717740623/locations/us/processors/e922a61928328d27, captured 2026-09-02. document.txt is result.document.text, .strip()ed, verbatim - NO '--- Page N ---' markers, Document AI's own reading order (which frequently splits a table's description column away from its number columns). Scrubbed identically to invoice-01.",
+  "contains_real_data": false,
+  "required_fields": [
+    "invoice_number",
+    "invoice_date",
+    "currency",
+    "total_amount",
+    "line_items"
+  ]
+}

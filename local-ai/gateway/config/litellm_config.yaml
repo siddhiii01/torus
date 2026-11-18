@@ -1,0 +1,49 @@
+# LiteLLM proxy config for the Celeris Local AI Server.
+#
+# One job: route a logical model name to the local Ollama model, queue concurrent
+# requests, account tokens, and return 429/503 on overload. No product-specific logic
+# here — that is the middleware's job.
+#
+# The image tag is pinned in deploy/docker-compose.yml (never :latest — LiteLLM has
+# had CVEs; upgrades are deliberate, reviewed PRs).
+
+model_list:
+  # LiteLLM resolves any value of the form `os.environ/NAME` from the container env.
+  # `${NAME}` is NOT expanded by LiteLLM — so the `ollama/` prefix is composed into
+  # LITELLM_PRIMARY_MODEL / LITELLM_FAST_MODEL in deploy/docker-compose.yml.
+  #
+  # Primary quality model — the bake-off winner. Until the bake-off runs, this points
+  # at a small stand-in so the whole path is testable pre-hardware.
+  - model_name: celeris-local-primary
+    litellm_params:
+      model: os.environ/LITELLM_PRIMARY_MODEL       # e.g. "ollama_chat/llama3.2:3b"
+      api_base: os.environ/OLLAMA_BASE_URL          # e.g. http://host.docker.internal:11434
+      # keep_alive: 30m                             # optional: hold the model resident
+
+  # Small / fast model — cheap iteration, high concurrency, low-memory fallback.
+  - model_name: celeris-local-fast
+    litellm_params:
+      model: os.environ/LITELLM_FAST_MODEL          # e.g. "ollama_chat/llama3.2:3b"
+      api_base: os.environ/OLLAMA_BASE_URL
+
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 1
+  # Match the real limit of the 64 GB machine. Tune after load testing.
+  max_parallel_requests: 3
+  # Requests beyond the cap queue; a full queue returns 429.
+  # allowed_fails / cooldown left at defaults for the MVP.
+
+litellm_settings:
+  # No raw prompt/response content in LiteLLM logs. Non-negotiable.
+  turn_off_message_logging: true
+  drop_params: true                                 # ignore unknown OpenAI params, don't 400
+  request_timeout: 115                              # seconds; hard ceiling, middleware sets the real budget
+  set_verbose: false
+
+general_settings:
+  # The middleware authenticates with this one upstream key. Product keys are the
+  # middleware's concern, not LiteLLM's.
+  master_key: os.environ/LITELLM_MASTER_KEY
+  # Health endpoint LiteLLM exposes for the middleware's /health aggregation.
+  health_check: true

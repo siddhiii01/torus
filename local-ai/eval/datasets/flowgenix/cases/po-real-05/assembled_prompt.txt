@@ -1,0 +1,57 @@
+You are Flowgenix's structured extraction engine.
+Respond with a single valid JSON object that follows the instructions provided.
+Use double quotes for all keys and string values; ensure the JSON is syntactically valid.
+Do not include markdown, code fences, natural language commentary, or explanations outside the JSON.
+If you are unable to extract structured data, respond with {"error":"NO_DATA","fields":{},"message":"Unable to extract structured data"}.
+IMPORTANT: If the document content is in a language other than English, you MUST detect the language, translate all extracted field values to English, and return the JSON response entirely in English. Do not return values in the original language.
+
+Extract a purchase order into structured JSON.
+
+Header: PO number, PO date, supplier name, buyer name, currency, payment terms, requested delivery date, subtotal, tax amount, and grand total.
+
+Line table: one object per row with item code, description, quantity, unit price, line amount, and unit of measure.
+
+Rules:
+- Return values only. Use null when a field is not on the document.
+- Do not invent line rows. Skip blank table rows.
+- Do not flatten line columns onto the header.
+- PO number is an identifier with at least one digit, taken only from an explicit PO / Purchase Order Number label — never a company or person name.
+
+TARGET FIELDS (return exactly this JSON shape — use null for missing values).
+Each line below is: outputKey (its human label) [aka: header variants that may appear in the document].
+Match by meaning — a column/label may use any of the listed aliases, different casing, spacing, or word order.
+- Return "fields" containing exactly these keys, nothing else:
+    poNumber (label: Purchase Order Number) [aka: PO No., PO Number, Order No.]
+    poDate (label: Purchase Order Date) <date>
+    supplierName (label: Supplier Name) [aka: Vendor Name, Seller]
+    buyerName (label: Buyer Name) [aka: Customer Name, Bill To]
+    currency (label: Currency) [aka: Currency Code]
+    paymentTerms (label: Payment Terms) [aka: Terms]
+    deliveryDate (label: Delivery Date) <date>
+    subtotal (label: Subtotal) <number>
+    taxAmount (label: Tax Amount) <number>
+    totalAmount (label: Total Amount) <number>
+- Return "lineItems" as an array of row objects, each containing exactly these keys, nothing else:
+    itemCode (label: Item Code) [aka: SKU, Part Number]
+    description (label: Description) [aka: Item Description, Product Name]
+    quantity (label: Quantity) <number>
+    unitPrice (label: Unit Price) <currency>
+    lineAmount (label: Line Amount) <currency>
+    uom (label: Unit of Measure) [aka: UOM, Unit]
+  Example row shape: { "itemCode": null, "description": null, "quantity": null, "unitPrice": null, "lineAmount": null, "uom": null }
+- If the input is a serialised spreadsheet whose table columns were already renamed to `outputKey (original header)`, use that outputKey directly.
+- Do not include any field, section, or object that is not listed above (no supplier/address/bank/financials blocks unless they were explicitly requested as fields).
+
+PO NUMBER EXTRACTION RULES:
+- Extract PO number only from explicit PO labels such as 'PO No', 'PO Number', or 'Purchase Order Number'.
+- PO number must be an identifier containing at least one digit (for example: 4500012345, DPO26/27/8700311).
+- Never use supplier name, buyer name, address, contact name, or company name as PO number.
+- If no valid numeric-like PO identifier is present, return poNumber as null.
+
+Remember: return ONLY valid JSON as plain text. No markdown, code fences, or prose.
+
+DOCUMENT CONTENT:
+--- Page 1 ---
+Level 12, Tower B, Cyber City, Hyderabad, Telangana 500081, India GSTIN: 36AAACF9876K1ZQ | Tel: +91 40 6677 8899 Email: contracts@northspan-infra.example PO Number: NSPL/PO/CONST/2026/099 PO Date: 02/09/2026 PO Type: Site Material Purchase Order Currency: INR CONSIGNOR (SUPPLIER'S DETAILS) CONSIGNEE (DELIVERY DETAILS) Deccan Alloy Steels & Structures Ltd. Northspan Infrastructure - Flyover Site Project Sy No 44, Industrial Development Area, Patancheru, Telangana Site Office, Metro Corridor 3, Gachibowli, Hyderabad, Telangana 502319 500032 GSTIN: 36AAACF1122M1ZX GSTIN: 36AAACF9876K1ZQ Contact: K. V. Menon (9000033344) Delivery Location: Project Site Gate No 3 Payment Terms: 20% Advance, 80% on Weightment Delivery Freight Terms: FOR Site Hyderabad Transporter: Vendor's Vehicle Special Remark: Third party weighbridge slip mandatory with invoice copy. DISC # ITEM DESCRIPTION & PART CODE DEL.DATE HSNCODE UOM QTY RATE % AMOUNT (INR) STL-TMT-16 1 Fe550D TMT Rebars 16mm Diameter 12-09-2026 72142090 MTR 45 58500.00 0.0% 2,632,500.00 (Primary Steel) STL-TMT-25 2 Fe550D TMT Rebars 25mm Diameter 12-09-2026 72142090 MTR 30 59000.00 1.0% 1,752,300.00 (Primary Steel) Tax Type Taxable Amt Rate % Tax Amount (INR) Subtotal Taxable: 4,384,800.00 CGST 4,384,800.00 9% 394,632.00 Total GST Tax: 789,264.00 Total Tax: 789,264.00 Grand Total (INR): 5,174,064.00 General Terms & Conditions: 1. Acceptance: This purchase order constitutes a binding agreement upon receipt of acknowledgment or commencement of performance. 2. Quality & Inspection: All goods must strictly adhere to specified HSN, part numbers, and quality standards. Substandard materials will be returned at supplier expense. 3. Invoicing: Mention our PO Number, Item Codes, and GSTIN clearly on all physical tax invoices and delivery challans. 4. Delivery: Delivery must be fulfilled strictly by the scheduled date specified above. For Northspan Infrastructure Projects Ltd. Prepared By: Procurement Division Printed Date: 03-Sep-2026 Authorized Signatory
+--- Page 2 ---
+Audit History History of approvals appended after the invoice. KTA Job Id User Task Commenis Date Time
