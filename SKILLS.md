@@ -22,6 +22,7 @@ Use when the client template gains a column, or a column's meaning changes.
      look_in: [application_form, verification_report]   # page types
      cardinality: per_person            # per_pack | per_person | per_address
      critical: true                     # critical fields need 2 reader families to confirm
+     synonyms: ["Mobile", "Mob. No.", "Cell"]   # printed label variants (any language)
    ```
 2. If the type or validator does not exist, use S3 first.
 3. Regenerate the template from the client Excel if headers changed: `python -m torus.output.template sync <client.xlsx> <template_id>`. This only reads headers, never data.
@@ -85,9 +86,12 @@ Use when a human reports a wrong or missing value.
 
 ## S6. Run an evaluation and report it
 
-1. `python -m torus.eval run --set <dev|hidden> --report reports/eval/<date>.md`
-2. The report shows per column: accuracy, silent errors, `confirmed` / `likely` / `needs_review` / `not_found` rates; per page type: classification accuracy; plus timing.
-3. Compare with the last report on `main`: `python -m torus.eval diff`.
+1. `python -m torus.eval run --set <dev|hidden> --pred-dir <dir> --report reports/eval/<date>.md`
+2. The report shows per column: accuracy, silent errors, `confirmed` / `likely` / `needs_review` / `not_found` rates; per page type: precision/recall/F1, confusion matrix, and misclassifications by gold type (when `pages.json` + page preds exist); field location located-rate / mean IoU (when `locations.json` + location preds exist); plus timing. For classification-only: `python -m torus.eval classify --set <dev|hidden> --pred-dir <dir> --report reports/eval/<date>_classify.md`. For location-only (layout before reading): `python -m torus.eval locate --set <dev|hidden> --pred-dir <dir> --report reports/eval/<date>_locate.md`.
+3. Compare with the last report on `main`:
+   `python -m torus.eval diff reports/eval/baseline.json reports/eval/latest.json`
+   (exit 1 if silent errors rise or a column drops beyond `noise_margin` in
+   `config/pipeline.yaml`).
 4. Paste the summary table (no document text) into the PR.
 
 **Done when:** the table is in the PR and every regression is explained or fixed.

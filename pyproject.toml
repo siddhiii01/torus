@@ -1,0 +1,166 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "torus"
+version = "0.1.0"
+description = "Local document engine: any PDF or image → client Excel template columns."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "LicenseRef-Proprietary"
+authors = [{ name = "Torus" }]
+dependencies = [
+    # Core pipeline (no optional model stacks).
+    "numpy==2.5.2",
+    "opencv-python==5.0.0.93",
+    "openpyxl==3.1.5",
+    "pillow==12.3.0",
+    "pydantic==2.14.3",
+    "pymupdf==1.28.2",
+    "PyYAML==6.0.3",
+]
+
+[project.optional-dependencies]
+# Install the matching CUDA/CPU build of torch (and paddle) for your driver
+# before these extras when using a GPU. See docs/SETUP.md.
+paddle = [
+    "paddleocr==3.3.2",
+    "paddlepaddle==3.2.1",
+]
+doctr = [
+    "python-doctr==1.1.0",
+    "torch==2.14.1",
+    "torchvision==0.29.1",
+]
+vlm = [
+    "torch==2.14.1",
+    "transformers==4.57.6",
+]
+train = [
+    "accelerate==1.11.0",
+    "datasets==4.3.0",
+    "peft==0.17.1",
+]
+review = [
+    "streamlit==1.67.0",
+]
+service = [
+    "fastapi==0.138.0",
+    "uvicorn==0.35.0",
+]
+dev = [
+    "httpx==0.28.1",
+    "mypy==1.18.2",
+    "pre-commit==4.3.0",
+    "pytest==8.4.2",
+    "ruff==0.14.3",
+    "types-PyYAML==6.0.12.20250915",
+]
+
+[project.scripts]
+torus = "torus.cli:main"
+
+[project.urls]
+Documentation = "docs/SETUP.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+torus = ["py.typed"]
+
+# --- Tooling (P0.2) ---------------------------------------------------------
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+src = ["src", "tests"]
+extend-exclude = [
+    "legacy",
+    "local-ai",
+    "data",
+    "schemas",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "SIM", # flake8-simplify
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["torus"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.12"
+mypy_path = "src"
+packages = ["torus"]
+warn_unused_configs = true
+warn_return_any = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+no_implicit_optional = true
+check_untyped_defs = true
+show_error_codes = true
+pretty = true
+exclude = [
+    "^legacy/",
+    "^local-ai/",
+]
+
+# Strict on the modules named in AGENTS.md §4.
+[[tool.mypy.overrides]]
+module = [
+    "torus.core",
+    "torus.core.*",
+    "torus.config",
+    "torus.config.*",
+    "torus.consensus",
+    "torus.consensus.*",
+    "torus.validate",
+    "torus.validate.*",
+    "torus.mapping",
+    "torus.mapping.*",
+]
+strict = true
+
+# Optional / heavy stacks are imported lazily inside readers; stub later when wired.
+[[tool.mypy.overrides]]
+module = [
+    "cv2",
+    "fitz",
+    "paddleocr.*",
+    "paddle.*",
+    "torch.*",
+    "transformers.*",
+    "doctr.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+]
+markers = [
+    "model: requires installed optional model stacks and/or weights (skipped in default CI)",
+    "slow: long-running; skip in fast local loops",
+]
+filterwarnings = [
+    "error",
+]

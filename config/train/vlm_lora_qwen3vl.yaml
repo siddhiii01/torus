@@ -1,0 +1,24 @@
+# LoRA on Qwen3-VL field-crop reader (reader: qwen3_vl_4b; size set by base_model).
+name: vlm_lora_qwen3vl
+reader: qwen3_vl_4b
+method: lora
+dataset_kind: field_vlm
+base_model: Qwen3-VL-4B
+base_model_source: model_dir
+framework: torch
+install_extra: train
+seed: 0
+epochs: 3
+batch_size: 2
+learning_rate: 0.0002
+weight_decay: 0.0
+max_target_length: 128
+min_vram_gb: 16
+min_ram_gb: 32
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+output_subdir: vlm_lora_qwen3vl
+notes: Train with bf16 and the full-precision base; serve the merged or adapter weights via the local server.

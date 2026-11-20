@@ -1,0 +1,24 @@
+# LoRA on the document VLM (reader: paddleocr_vl). Field crops -> target value.
+name: vlm_lora_doc
+reader: paddleocr_vl
+method: lora
+dataset_kind: field_vlm
+base_model: PaddleOCR-VL
+base_model_source: model_dir
+framework: torch
+install_extra: train
+seed: 0
+epochs: 3
+batch_size: 2
+learning_rate: 0.0002
+weight_decay: 0.0
+max_target_length: 128
+min_vram_gb: 16
+min_ram_gb: 32
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj]
+output_subdir: vlm_lora_doc
+notes: Confirm target module names against the downloaded model before running.

@@ -1,0 +1,19 @@
+# TrOCR handwritten line/field crops (reader: trocr_handwritten).
+name: trocr
+reader: trocr_handwritten
+method: full
+dataset_kind: line
+base_model: microsoft/trocr-base-handwritten
+base_model_source: hf_cache
+framework: torch
+install_extra: train
+seed: 0
+epochs: 5
+batch_size: 8
+learning_rate: 0.00003
+weight_decay: 0.01
+max_target_length: 64
+min_vram_gb: 8
+min_ram_gb: 16
+output_subdir: trocr
+notes: Weights load offline (see docs/SETUP.md). Full fine-tune needs more VRAM than inference.

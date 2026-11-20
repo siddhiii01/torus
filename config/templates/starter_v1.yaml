@@ -1,0 +1,61 @@
+# Minimal starter template for config-loader tests and early pipeline wiring.
+# Full interim client column set: config/templates/deb_v1.yaml (P0.10); Excel import in P8.1.
+id: starter_v1
+version: 1
+description: Synthetic starter template with a few representative field specs.
+
+row_key:
+  primary:
+    - sources: [person_name]
+      normalize: person
+  fuzzy_threshold: 0.8
+
+fields:
+  - key: person_name
+    excel_header: "Name"
+    description: Full name of the person on this row.
+    type: name
+    charset: letters
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    synonyms: ["Full Name", "Applicant Name", "Customer Name"]
+
+  - key: mobile_no
+    excel_header: "Mobile No"
+    description: Primary 10-digit mobile number of this person.
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    synonyms: ["Mobile", "Mob. No.", "Mob No", "Cell", "Cell Phone", "Contact No"]
+
+  - key: address_pincode
+    excel_header: "PIN"
+    description: 6-digit postal PIN for the address on this row.
+    type: pin
+    charset: digits
+    length: 6
+    validators: [indian_pin]
+    look_in: [application_form, verification_report]
+    cardinality: per_address
+    critical: true
+    match: normalised
+    synonyms: ["PIN Code", "Pincode", "Postal Code", "Zip"]
+
+  - key: notes
+    excel_header: "Notes"
+    description: Free-text notes; not critical.
+    type: text
+    charset: any
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_pack
+    critical: false
+    match: fuzzy

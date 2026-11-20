@@ -1,0 +1,62 @@
+# Pre-commit hooks for Torus (P0.2).
+# Install once after `pip install -e ".[dev]"`:
+#   pre-commit install
+# Run on demand:
+#   pre-commit run --all-files
+
+# Do not pin default_language_version: developers may only have 3.12+.
+# CI installs Python 3.12 explicitly in .github/workflows/ci.yml.
+
+# Note: `data/` is intentionally NOT excluded. The block-sensitive-data hook
+# must see staged paths under data/. Only data/README.md should ever be staged.
+exclude: |
+  (?x)^(
+    legacy/.*|
+    local-ai/.*|
+    schemas/.*
+  )$
+
+repos:
+  # Runs first: block real documents / answer keys under data paths (P0.8).
+  # Intentionally NOT covered by the top-level `exclude` for data/ — this hook
+  # must see those paths when someone stages them.
+  - repo: local
+    hooks:
+      - id: block-sensitive-data
+        name: block sensitive data artifacts
+        entry: python tools/block_sensitive_data.py
+        language: system
+        pass_filenames: true
+        # Match anything under data/samples/fixtures/real, plus common binaries
+        # that might be force-added elsewhere under those trees.
+        files: (?i)(^(data|samples)/|\.pdf$|\.jpe?g$|\.png$|\.tiff?$|\.xlsx?$|\.xlsm$|\.csv$|/fixtures/real/|gold\.json$|expected\.json$|meta\.json$)
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.3
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # Isolated env (not language: system) so the hook works without an activated venv.
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        args: [src, "--config-file=pyproject.toml"]
+        pass_filenames: false
+        additional_dependencies:
+          - pydantic==2.14.3
+          - types-PyYAML==6.0.12.20250915

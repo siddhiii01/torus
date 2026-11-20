@@ -1,0 +1,39 @@
+# GPU image (NVIDIA). Build from the repo root:
+#   docker build -f deploy/Dockerfile.gpu -t torus:gpu .
+# Install the torch/paddle build that matches the host driver through EXTRAS and
+# TORCH_INDEX_URL (see docs/SETUP.md). Run with `--gpus all` or compose devices.
+FROM nvidia/cuda:12.6.2-cudnn-runtime-ubuntu24.04 AS build
+ARG EXTRAS=service,vlm
+ARG TORCH_INDEX_URL=https://download.pytorch.org/whl/cu126
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 python3-pip python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN python3 -m venv /opt/venv \
+    && /opt/venv/bin/pip install --no-cache-dir --extra-index-url "${TORCH_INDEX_URL}" ".[${EXTRAS}]"
+
+FROM nvidia/cuda:12.6.2-cudnn-runtime-ubuntu24.04
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3 libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --uid 10001 --create-home --shell /usr/sbin/nologin torus \
+    && mkdir -p /data /models /var/lib/torus/bundles \
+    && chown torus /data /models /var/lib/torus/bundles
+COPY --from=build /opt/venv /opt/venv
+COPY config /app/config
+COPY resources /app/resources
+COPY deploy/entrypoint.sh /usr/local/bin/torus-entrypoint
+RUN chmod 0755 /usr/local/bin/torus-entrypoint
+ENV PATH=/opt/venv/bin:$PATH \
+    TORUS_DATA_DIR=/data \
+    TORUS_MODEL_DIR=/models \
+    TORUS_CONFIG_DIR=/app/config \
+    TORUS_BUNDLE_ROOT=/var/lib/torus/bundles \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+USER torus
+WORKDIR /app
+ENTRYPOINT ["torus-entrypoint"]
+CMD ["serve", "--host", "0.0.0.0", "--port", "8080"]

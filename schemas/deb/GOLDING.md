@@ -4,7 +4,8 @@ Goal: validate Excel draft rows against the scanned pack, then freeze **gold v0*
 
 ## Per case
 
-1. Open `data/deb/cases/<slug>/source.pdf` and `gold.json`.
+1. Open `$TORUS_DATA_DIR/legacy/deb/cases/<slug>/source.pdf` and `gold.json`
+   (cases were moved out of the repo in P0.8; see `docs/SETUP.md`).
 2. Confirm person identity (name / DOB / gender) against the application form.
 3. For each gold row, confirm:
    - `address_type` (H1 / H2 / W / …)

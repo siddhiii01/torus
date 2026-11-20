@@ -60,6 +60,8 @@ Phases 0–1 come first, in order. After that, phases 2–7 can be worked on in 
 
 Each phase lists **tasks** (agent-sized, one PR each), **acceptance criteria** (what tests and evaluation must show) and a **human check** (what a developer looks at).
 
+To dispatch agents, copy the shared preamble and the matching task brief from `docs/AGENT_PROMPTS.md` (one task ID per agent).
+
 ---
 
 ## Phase 0: Foundation

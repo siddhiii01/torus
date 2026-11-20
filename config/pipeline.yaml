@@ -1,0 +1,220 @@
+# Pipeline thresholds. Confidence cut-offs are placeholders until calibration
+# (Phase 6) fits them on the evaluation set.
+dpi: 300
+
+# Ingest: render dpi above; embedded-text usability (P2.1).
+ingest:
+  embedded_text_min_chars: 25
+  embedded_text_max_nonprintable_ratio: 0.02
+  embedded_text_max_order_violation_ratio: 0.25
+  embedded_text_reject_cid_garbage: true
+
+# Page clean-up (Phase 2).
+preprocess:
+  orientation:
+    enabled: true
+  deskew:
+    enabled: true
+    min_angle_deg: 0.4
+    max_angle_deg: 15.0
+  perspective:
+    enabled: true
+    min_quad_area_ratio: 0.18
+    max_quad_area_ratio: 0.96
+  crop:
+    enabled: true
+    margin_px: 8
+    min_content_ratio: 0.05
+    max_trim_ratio: 0.35
+  # Fax-like / faded repair (P2.4). Steps run denoise → contrast → thicken.
+  quality_repair:
+    enabled: true
+    denoise:
+      enabled: true
+      h: 8.0
+      template_window_size: 7
+      search_window_size: 21
+    contrast_norm:
+      enabled: true
+      clip_limit: 2.0
+      tile_grid_size: 8
+    stroke_thicken:
+      enabled: true
+      kernel_size: 2
+  # Blank / near-blank detection (P2.5). Pages are flagged, never dropped.
+  blank_detect:
+    enabled: true
+    max_ink_density: 0.004
+    min_text_components: 3
+    min_component_area: 12
+    max_component_area_ratio: 0.02
+    min_component_height_ratio: 0.004
+    max_component_height_ratio: 0.08
+    max_component_aspect: 6.0
+  # Page quality score for later confidence / routing (P2.6).
+  page_quality:
+    enabled: true
+    weight_blur: 1.0
+    weight_contrast: 1.0
+    weight_resolution: 1.0
+    blur_laplacian_ref: 40.0
+    contrast_ref: 18.0
+    target_min_side_px: 1600
+    low_quality_threshold: 0.4
+
+# Page-type classification (P3.2). strategy: vlm | trained | vote.
+# VLM calls only the local server in TORUS_LLM_URL. Trained weights live
+# under TORUS_MODEL_DIR (never in the repo). Missing models are skipped.
+classify:
+  enabled: true
+  strategy: vote
+  fallback_page_type: other
+  vlm:
+    enabled: true
+    model: null
+    endpoint_env: TORUS_LLM_URL
+    path: /api/chat
+    temperature: 0.0
+    timeout_s: 60.0
+    min_vram_gb: 4.0
+    min_ram_gb: 8.0
+  trained:
+    enabled: true
+    weights: null
+  vote:
+    agree_boost: 0.1
+    disagree_penalty: 0.15
+
+# Field mapper (P8.3): local Qwen3 LLM on the server in TORUS_LLM_URL. Off until
+# a model tag is set and the bake-off says it helps. Temperature is fixed at 0.
+mapping:
+  enabled: false
+  model: null
+  endpoint_env: TORUS_LLM_URL
+  path: /api/chat
+  temperature: 0.0
+  seed: 0
+  timeout_s: 120.0
+  min_vram_gb: 6.0
+  min_ram_gb: 8.0
+
+# Excel writer (P8.5). Works on a copy of the client template. Cells that already
+# hold anything are protected unless overwrite_existing is true; passthrough
+# columns are never written. Values are colour-coded by status; the evidence
+# sheet lists status, confidence and source page + box for every cell.
+output:
+  overwrite_existing: false
+  write_statuses: [confirmed, likely, needs_review]
+  data_start_row: null
+  evidence_sheet: torus_evidence
+  colors:
+    confirmed: "C6EFCE"
+    likely: "FFEB9C"
+    needs_review: "FFC7CE"
+    not_found: "D9D9D9"
+  reviewed_color: "BDD7EE"
+
+# Review metrics (P9.5). Gaps longer than this between two decisions are breaks.
+review:
+  max_gap_s: 120
+
+# Layout detection (P4.1). Classic OpenCV detectors are always available.
+# Neural layout models stay disabled until a dependency is human-approved.
+layout:
+  enabled: true
+  locate_iou: 0.3
+  classic:
+    enabled: true
+  model:
+    enabled: false
+    backend: null
+  # Label anchoring (P4.2): match printed labels to field specs, then search
+  # for the value relative to the label (right / same row / below).
+  anchor:
+    enabled: true
+    embedding_min: 0.72
+    row_y_overlap_min: 0.35
+    below_x_overlap_min: 0.2
+    max_right_gap: 0.45
+    max_below_gap: 0.25
+    prefer: [right, same_row, below]
+  # Comb / character boxes (P4.3): detect equal-pitch grids, inpaint rulings
+  # without cutting crossing strokes, split into per-character cells.
+  comb:
+    enabled: true
+    min_cells: 3
+    max_cells: 32
+    min_aspect: 1.6
+    max_pitch_cv: 0.22
+  # Checkboxes / radios (P4.4): detect controls, measure fill (empty / ticked /
+  # crossed), map to adjacent option labels. Sizes are relative to page.
+  checkbox:
+    enabled: true
+    min_side_ratio: 0.015
+    max_side_ratio: 0.35
+    empty_fill_max: 0.08
+    max_label_gap: 0.35
+  # Tables (P4.5): structure classic table cells into headers/rows; stitch
+  # tables that continue across consecutive pages by column alignment.
+  table:
+    enabled: true
+    header_rows: 1
+    min_cells: 4
+    min_columns: 2
+    min_rows: 2
+    col_align_tol: 0.04
+    page_edge_band: 0.22
+  # Stamps / signatures (P4.6): detect overlays, mask before reading
+  # underneath, record presence for signed yes/no columns.
+  stamp:
+    enabled: true
+    detect_stamps: true
+    detect_signatures: true
+    stamp_min_saturation: 55
+    protect_text_max_gray: 70
+    mask_dilate_px: 2
+    inpaint_radius: 3
+  # Form families (P4.7): auto-save repeated label layouts under
+  # config/families/<auto_id>.yaml. Hints only — never required.
+  families:
+    enabled: true
+    min_observations: 2
+    min_labels: 2
+    position_bin: 0.05
+    match_tolerance: 0.08
+    use_as_hint: [generated, reviewed]
+    auto_save: true
+
+confidence:
+  confirmed_min: 0.99
+  likely_min: 0.85
+
+voting:
+  # Critical fields need agreement from this many distinct reader families.
+  critical_min_families: 2
+  # Non-critical fields need at least this many successful readings.
+  noncritical_min_readers: 1
+  # Non-critical fields also need one reading at least this strong (raw score
+  # or mean per-character confidence) agreeing with the voted text.
+  strong_reading_min_score: 0.9
+  # ...and a validator pass. No configured validator = rule not met (conservative).
+  noncritical_require_validator: true
+
+# Escalation (P6.5): when agreement is not met, re-read the region with
+# stronger/slower readers, wider crops and alternate preprocessing, cheapest
+# tier first, re-voting after each. Unavailable readers are skipped. What is
+# still unresolved after the last tier goes to review.
+escalation:
+  enabled: true
+  max_extra_reads: 24
+  tiers:
+    - readers: [qwen3_vl_4b]
+      crop_margins: [0.1]
+    - readers: [qwen3_vl_8b, paddleocr_vl]
+      crop_margins: [0.1, 0.25]
+      variants: [contrast, thicken]
+
+regression:
+  # Absolute accuracy drop allowed per column before eval diff fails.
+  noise_margin: 0.02
+  silent_error_tolerance: 0

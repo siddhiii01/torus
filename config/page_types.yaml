@@ -1,0 +1,272 @@
+# Page types the classifier may assign. Field specs reference these ids via
+# look_in — unknown ids fail config load. Descriptions and cues feed the
+# zero-shot classifier (P3.2); keep them layout-generic, no customer names.
+page_types:
+  - id: application_form
+    description: >
+      First page (or sole page) of a filled application / account-opening /
+      facility form. Dense labelled fields, often with comb boxes, checkboxes,
+      applicant photo slot, and printed section headers. Distinct from a
+      continuation sheet or a standalone verification report.
+    examples:
+      - Multi-section loan or account application with handwritten or typed answers
+      - Printed form bearing an institution header and applicant details block
+    visual_cues:
+      - Dense grid of labelled input lines or character boxes
+      - Section headings and numbered clauses on a single portrait page
+      - Optional passport-photo rectangle and signature lines near the bottom
+      - Institution logo or letterhead at the top margin
+    text_cues:
+      - Words such as application, applicant, facility, declaration, particulars
+      - Field labels for name, address, mobile, date of birth, occupation
+      - Checkbox groups for product type or purpose of facility
+
+  - id: form_continuation
+    description: >
+      Later page of the same multi-page application form: same visual style and
+      column layout as the first page, but without the opening header block or
+      with "continued" / page-number cues. Not a different document type.
+    examples:
+      - Page 2+ of an application with matching comb rows and section numbers
+      - Schedule or annexure sheet that continues the same form family
+    visual_cues:
+      - Same column width, line spacing and comb style as an application page
+      - Missing full letterhead or truncated header compared with page one
+      - Page number or "contd" marker in a corner or footer
+    text_cues:
+      - Continued, continuation, page 2, sheet 2, annexure, schedule
+      - Section numbering that resumes mid-form rather than restarting at 1
+
+  - id: verification_report
+    description: >
+      Field or desk verification write-up: visit notes, confirmed particulars,
+      verifier remarks and stamps. Narrative or tabular findings rather than a
+      blank fill-in application.
+    examples:
+      - Residence or business visit report with verified-yes/no columns
+      - Desk KYC verification sheet with officer remarks and stamp
+    visual_cues:
+      - Tables of claimed vs verified values
+      - Official stamp, seal or wet signature of a verifier
+      - Sparse narrative paragraphs mixed with short labelled fields
+    text_cues:
+      - Verification, verified, visit, observations, remarks, findings
+      - Labels such as verified address, contactability, existence confirmed
+
+  - id: id_card
+    description: >
+      Photocopy or scan of a government or official photo identity document
+      (any issuer). Typical contents include a portrait photo, identity number,
+      name and often bilingual printed labels. Covers voter ID, national ID,
+      tax ID, driving licence, ration card, passport bio page, and similar
+      cards when present as a standalone copy in the pack.
+    examples:
+      - Colour or greyscale photocopy of a plastic ID card on a blank sheet
+      - Passport biodata page or driving-licence face copy filling most of the page
+      - National ID / tax ID / voter card / ration card face or reverse
+    visual_cues:
+      - Card-shaped rectangle with a face photograph on one side
+      - Machine-readable zone, barcode, QR code or holographic strip
+      - Emblem or national crest; often bilingual printed labels
+      - Card may appear twice (front and back) on one sheet
+    text_cues:
+      - Identity, identity card, enrolment, permanent account, tax identity, PAN
+      - Aadhaar, unique identity, UID, enrolment number
+      - Driving licence, DL number, passport, visa, ration card, voter, election
+      - Labels for name, date of birth, gender, address, father or spouse name
+      - Short alphanumeric identity numbers in fixed formats
+
+  - id: bank_statement
+    description: >
+      Account statement or passbook extract listing transactions, balances and
+      account identifiers over a date range. Tabular debit/credit layout, not
+      an application form.
+    examples:
+      - Multi-row transaction table with date, narration, amount and balance
+      - Passbook page scan with running balance column
+    visual_cues:
+      - Dense transaction table spanning most of the page
+      - Column headers for date, description, debit, credit, balance
+      - Account number and statement period near the top
+    text_cues:
+      - Statement, account statement, opening balance, closing balance
+      - Debit, credit, withdrawal, deposit, narration, IFSC, account number
+      - Statement period or from-to date range
+
+  - id: approval_memo
+    description: >
+      Internal approval, sanction or recommendation note: office memorandum
+      style with subject line, numbered points, recommending and approving
+      authorities, and signature blocks. Not a customer-facing form.
+    examples:
+      - Sanction note with recommended amount and conditions
+      - Internal memo routing a file for approval signatures
+    visual_cues:
+      - Letter or memo layout with wide margins and few input boxes
+      - Signature / designation blocks stacked at the bottom
+      - Optional "approved / not approved" checkbox or stamp area
+    text_cues:
+      - Memorandum, note, sanction, approval, recommendation, subject
+      - Proposed, recommended, accorded, conditions, competent authority
+      - File number or reference number near the header
+
+  - id: checklist
+    description: >
+      Document or process checklist: enumerated items with tick boxes or
+      yes/no columns used to confirm pack completeness. Sparse content besides
+      the list.
+    examples:
+      - Pre-disbursement document checklist with ticks beside each item
+      - KYC document list with received / pending columns
+    visual_cues:
+      - Vertical list of short lines each preceded by a checkbox or tick mark
+      - Two-column received/pending or yes/no markers
+      - Little continuous prose; mostly list items
+    text_cues:
+      - Checklist, check list, documents required, enclosed, pending, received
+      - Item numbers (1., 2., 3.) next to short document names
+
+  - id: brochure_terms
+    description: >
+      Printed product brochure, tariff sheet, terms and conditions, or similar
+      marketing / legal insert. Mostly fixed printed prose, few or no filled
+      handwritten fields.
+    examples:
+      - Multi-column terms and conditions leaflet included in the pack
+      - Product feature brochure with rate tables and fine print
+    visual_cues:
+      - Dense justified body text or multi-column layout
+      - Decorative headers, icons or rate call-out boxes
+      - Absence of handwriting, combs and applicant photo slots
+    text_cues:
+      - Terms and conditions, terms of use, schedule of charges, tariff
+      - Features, eligibility, disclaimer, governing law
+      - Page-of-page footers typical of printed booklets
+
+  - id: photo_signature
+    description: >
+      Page whose primary content is a photograph, wet signature specimen,
+      thumb impression or similar biometric/image capture, with little other
+      form content.
+    examples:
+      - Standalone applicant photograph glued or printed on an otherwise blank sheet
+      - Signature specimen card with name and date lines only
+    visual_cues:
+      - Large photo occupying most of the usable area
+      - Isolated signature or thumb-impression box with minimal surrounding text
+      - Mostly empty white space around the image or stroke
+    text_cues:
+      - Photograph, photo, signature, specimen signature, thumb impression
+      - Attested, across the photograph, recent passport size
+
+  - id: invoice
+    description: >
+      Commercial invoice or bill: an issuer block, a document reference and
+      date, a table of line items, and a totals area. A request for payment
+      rather than a filled application or a verification write-up.
+    examples:
+      - Tax invoice with line-item table and grand total at the bottom
+      - Pro-forma bill with a reference number, date and amount due
+    visual_cues:
+      - Header block with issuer details and a reference/date pair
+      - Ruled table of line items followed by a right-aligned totals block
+      - Optional stamp or signature near the bottom margin
+    text_cues:
+      - Words such as invoice, bill, amount due, subtotal, total, tax
+      - Column headings such as description, quantity, rate, amount
+      - Labels for invoice number, invoice date and payment terms
+
+  - id: blank
+    description: >
+      Blank or near-blank page: no usable printed or handwritten content, or
+      only noise/scan artefacts. Preprocess may already flag blank; this type
+      confirms the page carries no extractable fields.
+    examples:
+      - White or uniformly grey scanned sheet
+      - Page with only a faint shadow, staple mark or scanner streak
+    visual_cues:
+      - Near-uniform background with no text lines or form structure
+      - Ink speckles or dust only; no coherent layout
+    text_cues:
+      - No readable words (OCR empty or near-empty)
+      - Occasional isolated characters from noise that do not form labels
+
+  - id: other
+    description: >
+      Catch-all for pages that do not match a more specific type above (for
+      example ambiguous scans, unrelated correspondence, or unknown form
+      families). Prefer a specific type when cues clearly fit one.
+    examples:
+      - Unrelated letter or circular mixed into the pack
+      - Heavily damaged page whose type cannot be determined
+    visual_cues:
+      - Layout that matches none of the more specific types with confidence
+      - Mixed or conflicting cues from several types on one page
+    text_cues:
+      - Content that does not align with application, ID, statement or memo cues
+      - Use only when no higher-priority type is a reasonable match
+
+# Pack splitting (P3.3): group consecutive pages into logical documents.
+# Continuations attach to a prior type; merge_same keeps consecutive same-type
+# pages together. Types omitted from both start a new group on every change.
+pack_split:
+  blank_policy: attach_previous
+  blank_page_type: blank
+  continuations:
+    form_continuation:
+      - application_form
+      - form_continuation
+  merge_same:
+    - id_card
+    - bank_statement
+    - verification_report
+    - approval_memo
+    - checklist
+    - brochure_terms
+    - photo_signature
+
+# Multi-person detection (P3.4): assign pages to roles using structural cues
+# and pack order. Role labels only — never customer or place names.
+multi_person:
+  roles:
+    - id: borrower
+      text_cues:
+        - primary applicant
+        - main applicant
+        - sole applicant
+        - borrower
+        - applicant
+    - id: co_applicant
+      text_cues:
+        - co-applicant
+        - co applicant
+        - coapplicant
+        - joint applicant
+        - second applicant
+    - id: guarantor
+      text_cues:
+        - guarantor
+        - surety
+        - guarantee
+  default_role_order:
+    - borrower
+    - co_applicant
+    - guarantor
+  overflow_role: other_person
+  person_bearing_types:
+    - application_form
+    - form_continuation
+    - verification_report
+    - id_card
+    - bank_statement
+    - photo_signature
+  shared_types:
+    - checklist
+    - brochure_terms
+    - approval_memo
+    - invoice
+    - blank
+    - other
+  person_boundary_types:
+    - application_form
+  blank_page_type: blank

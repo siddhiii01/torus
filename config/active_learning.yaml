@@ -1,0 +1,7 @@
+# Review-queue ordering for the learning loop (P10.5). Ordering only: every
+# queued item is still reviewed.
+uncertainty_weight: 1.0
+column_error_weight: 0.5
+disagreement_weight: 0.5
+column_decay: 0.25
+prior_corrections: 1.0

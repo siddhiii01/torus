@@ -1,0 +1,51 @@
+# HTTP service, job queue and workers (Phase 11).
+# Paths here are relative to TORUS_DATA_DIR. The API token is never stored in
+# config: set TORUS_API_TOKEN in the environment.
+default_template_id: default
+
+paths:
+  inbox: inbox          # folder watcher input
+  uploads: uploads      # files received over HTTP
+  jobs: jobs            # per-job output (Excel, status)
+  db: service/jobs.sqlite3
+
+watcher:
+  enabled: true
+  poll_interval_s: 5.0
+  # A file is picked up only after its size and mtime stay unchanged this long.
+  stable_for_s: 2.0
+
+api:
+  max_upload_bytes: 209715200   # 200 MiB
+
+# Queue and workers (P11.2).
+queue:
+  lease_s: 600.0          # a running job not heartbeated within this is re-queued
+  heartbeat_s: 30.0
+  poll_interval_s: 1.0
+
+# Default per-stage policy; `stages.<name>` overrides individual fields.
+retry:
+  max_attempts: 3
+  backoff_s: 2.0
+  backoff_factor: 2.0
+  timeout_s: 600.0
+
+stages: {}
+  # ingest: {timeout_s: 120.0, max_attempts: 2}
+
+# Data retention and deletion (P11.5).
+retention:
+  job_days: 30
+
+# Monitoring (P11.4).
+monitoring:
+  window_s: 3600.0
+  spot_check_rate: 0.05
+
+# Model servers run as separate processes (loopback / internal hosts only).
+model_servers: []
+  # - name: vlm
+  #   command: ["python", "-m", "some.server", "--port", "8101"]
+  #   health_url: http://127.0.0.1:8101/health
+  #   startup_timeout_s: 120.0

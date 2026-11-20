@@ -1,0 +1,20 @@
+# Character-cell MLP (reader: char_cell). Inputs: dataset_kind char_cell.
+# NumPy trainer; start from the synth+EMNIST weights, continue on corrections.
+name: char_cell
+reader: char_cell
+method: full
+dataset_kind: char_cell
+base_model: char_cell/v1.npz
+base_model_source: model_dir
+framework: numpy
+install_extra: null
+seed: 0
+epochs: 30
+batch_size: 128
+learning_rate: 0.001
+weight_decay: 0.0001
+image_size: [28, 28]
+min_vram_gb: 0
+min_ram_gb: 1
+output_subdir: char_cell
+notes: Keep a replay mix of public glyphs so rare classes do not collapse.

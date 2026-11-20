@@ -1,0 +1,33 @@
+# CPU image: API, workers, tests. Build from the repo root:
+#   docker build -f deploy/Dockerfile.cpu -t torus:cpu .
+# Optional model stacks: --build-arg EXTRAS=service,paddle,doctr
+FROM python:3.12-slim AS build
+ARG EXTRAS=service
+WORKDIR /src
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir --prefix=/install ".[${EXTRAS}]"
+
+FROM python:3.12-slim
+# opencv needs these shared libraries at runtime.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --uid 10001 --create-home --shell /usr/sbin/nologin torus \
+    && mkdir -p /data /models /var/lib/torus/bundles \
+    && chown torus /data /models /var/lib/torus/bundles
+COPY --from=build /install /usr/local
+COPY config /app/config
+COPY resources /app/resources
+COPY deploy/entrypoint.sh /usr/local/bin/torus-entrypoint
+RUN chmod 0755 /usr/local/bin/torus-entrypoint
+ENV TORUS_DATA_DIR=/data \
+    TORUS_MODEL_DIR=/models \
+    TORUS_CONFIG_DIR=/app/config \
+    TORUS_BUNDLE_ROOT=/var/lib/torus/bundles \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+USER torus
+WORKDIR /app
+ENTRYPOINT ["torus-entrypoint"]
+CMD ["serve", "--host", "0.0.0.0", "--port", "8080"]

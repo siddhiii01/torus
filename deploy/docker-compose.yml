@@ -1,0 +1,48 @@
+# API + worker. Workers have no route to the internet (internal network);
+# only the API is reachable, and only on localhost unless you change the bind.
+#   docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d
+x-torus: &torus
+  image: ${TORUS_IMAGE:-torus:cpu}
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  volumes:
+    - torus-data:/data
+    - torus-bundles:/var/lib/torus/bundles
+    - torus-models:/models:ro
+
+services:
+  api:
+    <<: *torus
+    command: ["serve", "--host", "0.0.0.0", "--port", "8080"]
+    environment:
+      TORUS_API_TOKEN: ${TORUS_API_TOKEN:?set TORUS_API_TOKEN in deploy/.env}
+    ports: ["127.0.0.1:8080:8080"]
+    networks: [frontend, internal]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request as u; u.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  worker:
+    <<: *torus
+    command: ["worker", "--runner", "torus.service.pipeline_runner:build_runner"]
+    networks: [internal]   # internal: true, so no outbound traffic
+    deploy:
+      replicas: 1
+    restart: unless-stopped
+    # GPU: add `deploy.resources.reservations.devices` (driver: nvidia) and use
+    # TORUS_IMAGE=torus:gpu.
+
+networks:
+  frontend: {}
+  internal:
+    internal: true
+
+volumes:
+  torus-data: {}
+  torus-bundles: {}
+  torus-models: {}

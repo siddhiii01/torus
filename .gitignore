@@ -1,15 +1,26 @@
+# Machine-local reader enable flags (see docs/SETUP.md)
+config/local.yaml
+
 # --- Python / OCR ---
 .venv/
 __pycache__/
 *.pyc
+*.egg-info/
+.eggs/
+dist/
+build/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .deepeval/
 
 # Generated reports. They contain real file names from customer data.
 reports/
 
-# Never commit documents or OCR output
-data/
+# Never commit documents, OCR output, or answer keys.
+# Real data lives under TORUS_DATA_DIR (outside the repo). See docs/SETUP.md.
+data/**
+!data/README.md
 samples/
 *.pdf
 *.jpg
@@ -17,20 +28,15 @@ samples/
 *.png
 *.tif
 *.tiff
+*.bmp
+*.webp
 *.zip
 *.eml
 *.xls
 *.xlsx
+*.xlsm
 *.csv
 !requirements.txt
-# Allow the 3 DEB bakeoff cases (source PDFs + gold/meta)
-!data/
-!data/deb/
-!data/deb/cases/
-!data/deb/cases/*/
-!data/deb/cases/*/source.pdf
-!data/deb/cases/*/meta.json
-!data/deb/cases/*/gold.json
 # Allow project plan PDFs in docs/ (written by us, no customer content)
 !docs/*.pdf
 # Allow Local AI project docs (not customer OCR inputs)
@@ -68,6 +74,12 @@ promptfoo-errors.log
 **/baselines/
 **/dumps/
 **/fixtures/real/
+
+# Synthetic fixture debug dumps (generators are committed; images are not)
+tests/fixtures/synth/generated/
+tests/fixtures/synth/fonts/*.ttf
+tests/fixtures/synth/fonts/*.otf
+!tests/fixtures/synth/fonts/README.md
 
 # --- OS / editor ---
 .DS_Store

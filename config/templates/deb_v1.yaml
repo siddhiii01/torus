@@ -1,0 +1,1037 @@
+# Interim DEB client template converted from schemas/deb/
+# (excel_columns.json + field_groups.json). Sheet: "56 accounts".
+# Replaced by the real client Excel once shared (P8.1).
+# Row alignment key (P1.2): (person_key, address_type, address_source);
+# see schemas/deb/row_key.md.
+id: deb_v1
+version: 1
+description: >
+  Interim DEB template (73 columns from schemas/deb). Scored fields are
+  filled by the engine; passthrough columns are ops/system and must not be
+  extracted. Critical identity and contact fields require multi-reader
+  agreement.
+
+
+row_key:
+  primary:
+    - sources: [person_name, customer_name]
+      normalize: person
+    - sources: [address_type]
+      normalize: address_type
+    - sources: [address_source]
+      normalize: address_source
+      aliases:
+        applicationform:
+          - application form
+          - application_form
+          - Application form
+          - Application Form
+          - ApplicationForm
+          - Applicationform
+        voterid:
+          - voter id
+          - voter_id
+          - Voterid
+          - Voter id
+          - Voter ID
+          - VoterId
+        rationcard:
+          - ration card
+          - ration_card
+          - Rationcard
+          - Ration card
+          - Ration Card
+        aadhaarcard:
+          - aadhaar card
+          - aadhaar
+          - Aadhaarcard
+          - Aadhaar card
+          - Aadhaar
+        dl:
+          - driving licence
+          - driving license
+          - DL
+          - Driving Licence
+          - Driving License
+        agreement_of_guarantee:
+          - agreement of guarantee
+          - aggreement of guarantee
+          - aggrement of guarantee
+          - agreement of gurantee
+          - Agreement of Guarantee
+          - Aggreement of Guarantee
+          - Aggrement of Guarantee
+          - Agreement Of Gurantee
+        dpn:
+          - DPN
+        guarantor_form:
+          - guarantor's form
+          - guarantor form
+          - Guarantor's form
+          - Guarantor form
+  disambiguator:
+    sources: [address_line1]
+    normalize: text
+  fuzzy_threshold: 0.8
+
+fields:
+  - key: bank_lan
+    excel_header: "Bank Lan"
+    excel_col: 1
+    description: "Bank loan account number (LAN) for this pack."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: system_lan
+    excel_header: "SYSTEM_LAN"
+    excel_col: 2
+    description: "System loan account number for this pack."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: trust_name
+    excel_header: "TRUST_NAME"
+    excel_col: 3
+    description: "Trust or entity name associated with the account."
+    type: name
+    charset: letters
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: existing_lan_no
+    excel_header: "EXISTING_LAN_No"
+    excel_col: 4
+    description: "Existing LAN number if the account was migrated."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: bank_lan_dup
+    excel_header: "Bank Lan"
+    excel_col: 5
+    description: "Duplicate Bank Lan column (mirrors bank_lan)."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+    duplicate_of: bank_lan
+
+  - key: customer_name
+    excel_header: "CUSTOMER_NAME"
+    excel_col: 6
+    description: "Primary customer name for this person."
+    type: name
+    charset: letters
+    validators: []
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: person_name
+    excel_header: "Name (Borrwer,Co-applicant,Gurantor)"
+    excel_col: 7
+    description: "Name of the borrower, co-applicant, or guarantor on this row."
+    type: name
+    charset: letters
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: id
+    excel_header: "ID"
+    excel_col: 8
+    description: "Internal person or row identifier."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: []
+    cardinality: per_person
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: constitution
+    excel_header: "Constitution ( Individual,Prop Firm, Partnership Firm, LLP,Corporate"
+    excel_col: 9
+    description: "Legal constitution of the customer (individual, firm, LLP, corporate, etc.)."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_person
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: customer_type
+    excel_header: "Customer Type ( Coapplicant/Borrower /Partner/Promoter  Guarantor/ Co Gur"
+    excel_col: 10
+    description: "Role of this person relative to the account (borrower, co-applicant, guarantor, etc.)."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_person
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: tcmbr_code
+    excel_header: "TCMBR CODE"
+    excel_col: 11
+    description: "Internal TCMBR code for this person."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: []
+    cardinality: per_person
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: gender
+    excel_header: "Gender"
+    excel_col: 12
+    description: "Gender of this person."
+    type: enum
+    charset: letters
+    validators: []
+    look_in: [application_form, id_card]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: address_line1
+    excel_header: "Address_LINE1"
+    excel_col: 13
+    description: "First line of the address on this row."
+    type: address
+    charset: any
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: false
+    match: fuzzy
+    passthrough: false
+
+  - key: address_line2
+    excel_header: "Address_LINE2"
+    excel_col: 14
+    description: "Second line of the address on this row."
+    type: address
+    charset: any
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: false
+    match: fuzzy
+    passthrough: false
+
+  - key: address_line3
+    excel_header: "Address_LINE3"
+    excel_col: 15
+    description: "Third line of the address on this row."
+    type: address
+    charset: any
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: false
+    match: fuzzy
+    passthrough: false
+
+  - key: address_state
+    excel_header: "Address_STATE"
+    excel_col: 16
+    description: "State of the address on this row."
+    type: text
+    charset: letters
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: address_city
+    excel_header: "Address_City"
+    excel_col: 17
+    description: "City of the address on this row."
+    type: text
+    charset: letters
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: address_pincode
+    excel_header: "Address_PINCode"
+    excel_col: 18
+    description: "Six-digit postal PIN for the address on this row."
+    type: pin
+    charset: digits
+    length: 6
+    validators: [indian_pin]
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: address_type
+    excel_header: "Type Of Address (Residence/Office/Workplace)"
+    excel_col: 19
+    description: "Address type code used in row alignment (residence, office, workplace, etc.)."
+    type: enum
+    charset: alphanumeric
+    validators: []
+    look_in: [application_form, verification_report]
+    cardinality: per_address
+    critical: true
+    match: normalised
+    normalize: address_type
+    passthrough: false
+
+  - key: address_source
+    excel_header: "Address source"
+    excel_col: 20
+    description: "Document source of this address; part of the row alignment key."
+    type: enum
+    charset: any
+    validators: []
+    look_in: [application_form, verification_report, id_card]
+    cardinality: per_address
+    critical: true
+    match: normalised
+    normalize: address_source
+    passthrough: false
+
+  - key: mobile_no
+    excel_header: "Mobile No"
+    excel_col: 21
+    description: "Primary ten-digit mobile number of this person."
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: mobile_no_1
+    excel_header: "Mobile No 1"
+    excel_col: 22
+    description: "Additional mobile number 1 for this person."
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: mobile_no_2
+    excel_header: "Mobile No 2"
+    excel_col: 23
+    description: "Additional mobile number 2 for this person."
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: mobile_no_3
+    excel_header: "Mobile No 3"
+    excel_col: 24
+    description: "Additional mobile number 3 for this person."
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: mobile_no_4
+    excel_header: "Mobile No 4"
+    excel_col: 25
+    description: "Additional mobile number 4 for this person."
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: random_contact_no
+    excel_header: "Randam Contact No"
+    excel_col: 26
+    description: "Alternate or random contact number for this person."
+    type: phone_in
+    charset: digits
+    length: 10
+    validators: [indian_mobile]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: email_id
+    excel_header: "Email Id"
+    excel_col: 27
+    description: "Email address of this person."
+    type: email
+    charset: any
+    validators: [email]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: std_code
+    excel_header: "STDCode"
+    excel_col: 28
+    description: "STD / area code for the landline number."
+    type: text
+    charset: digits
+    validators: []
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: landline_no
+    excel_header: "LandlineNo"
+    excel_col: 29
+    description: "Landline number of this person (without STD code)."
+    type: phone_in
+    charset: digits
+    validators: [indian_landline]
+    look_in: [application_form, verification_report]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: cin
+    excel_header: "CIN "
+    excel_col: 30
+    description: "Corporate Identification Number when the customer is a company."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_pack
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: savings_account_no
+    excel_header: "Savings Account No"
+    excel_col: 31
+    description: "Savings bank account number linked to this person."
+    type: account
+    charset: digits
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: source_of_savings_acc_no
+    excel_header: "Source of Savings acc No."
+    excel_col: 32
+    description: "Document source cited for the savings account number."
+    type: text
+    charset: any
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: dl_no
+    excel_header: "DLNo"
+    excel_col: 33
+    description: "Driving licence number of this person."
+    type: text
+    charset: alphanumeric
+    validators: [driving_licence]
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: source_of_dl_kyc_id
+    excel_header: "Source of DL Kyc ID"
+    excel_col: 34
+    description: "Document source cited for the driving licence KYC id."
+    type: text
+    charset: any
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: aadhaar_no
+    excel_header: "AadhaarNo"
+    excel_col: 35
+    description: "Twelve-digit Aadhaar number of this person."
+    type: aadhaar
+    charset: digits
+    length: 12
+    validators: [aadhaar]
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: source_of_aadhaar_kyc_id
+    excel_header: "Source of Aadhaar Kyc ID"
+    excel_col: 36
+    description: "Document source cited for the Aadhaar KYC id."
+    type: text
+    charset: any
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: pan
+    excel_header: "PAN"
+    excel_col: 37
+    description: "Permanent Account Number (PAN) of this person."
+    type: pan
+    charset: alphanumeric
+    length: 10
+    validators: [pan]
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: source_of_pan_kyc_id
+    excel_header: "Source of Pan Kyc ID"
+    excel_col: 38
+    description: "Document source cited for the PAN KYC id."
+    type: text
+    charset: any
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: passport
+    excel_header: "Passport"
+    excel_col: 39
+    description: "Passport number of this person."
+    type: text
+    charset: alphanumeric
+    validators: [passport]
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: source_of_passport_kyc_id
+    excel_header: "Source of Passport Kyc ID"
+    excel_col: 40
+    description: "Document source cited for the passport KYC id."
+    type: text
+    charset: any
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: voter_id
+    excel_header: "VoterId"
+    excel_col: 41
+    description: "Voter ID (EPIC) number of this person."
+    type: epic
+    charset: alphanumeric
+    validators: [epic]
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: source_of_voterid_kyc_id
+    excel_header: "Source of Voterid Kyc ID"
+    excel_col: 42
+    description: "Document source cited for the voter ID KYC id."
+    type: text
+    charset: any
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: ration_card
+    excel_header: "Ration Card"
+    excel_col: 43
+    description: "Ration card number of this person."
+    type: text
+    charset: alphanumeric
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: source_of_ration_card_kyc_id
+    excel_header: "Source of Ration card Kyc ID"
+    excel_col: 44
+    description: "Document source cited for the ration card KYC id."
+    type: text
+    charset: any
+    validators: []
+    look_in: [id_card, application_form]
+    cardinality: per_person
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: dob
+    excel_header: "DOB-Dateofincoprotion"
+    excel_col: 45
+    description: "Date of birth or date of incorporation for this person or entity."
+    type: date
+    charset: digits
+    validators: []
+    look_in: [application_form, id_card]
+    cardinality: per_person
+    critical: true
+    match: normalised
+    passthrough: false
+
+  - key: remark
+    excel_header: "Remark"
+    excel_col: 46
+    description: "Free-text remark for this account."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: verification_remark
+    excel_header: "Verification remark/ verified with available documents "
+    excel_col: 47
+    description: "Verification remark based on available documents."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: sanction_date
+    excel_header: "Sanction Date"
+    excel_col: 48
+    description: "Sanction date for the facility."
+    type: date
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: sanction_ticket
+    excel_header: "Sanction Ticket/Sanction Advice/ Sanction Letter/Arrangement Letter"
+    excel_col: 49
+    description: "Sanction ticket, advice, letter, or arrangement letter reference."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: application_form
+    excel_header: "Application Form (Loan Facility Remark)"
+    excel_col: 50
+    description: "Loan facility remark drawn from the application form."
+    type: text
+    charset: any
+    validators: []
+    look_in: [application_form]
+    cardinality: per_pack
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: dpn
+    excel_header: "DPN (Loan Facility Remark)"
+    excel_col: 51
+    description: "Demand promissory note (DPN) loan facility remark."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: agreement_of_loan
+    excel_header: "Agreement of Loan "
+    excel_col: 52
+    description: "Agreement of loan remark or reference."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: nature_of_facility_docs
+    excel_header: "Nature of Facility As per Docs"
+    excel_col: 53
+    description: "Nature of facility as stated in the documents."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: nature_of_facility_system
+    excel_header: "Nature of Facility As per System"
+    excel_col: 54
+    description: "Nature of facility as recorded in the system."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: checker_remark
+    excel_header: "Checker Remark"
+    excel_col: 55
+    description: "Checker remark (ops column; not filled by the engine)."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: checking_date
+    excel_header: "Checking  date"
+    excel_col: 56
+    description: "Date the checker reviewed this row."
+    type: date
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: updation_remarks
+    excel_header: "Updation remarks"
+    excel_col: 57
+    description: "Updation remarks from ops."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: checker_name
+    excel_header: "Checker Name"
+    excel_col: 58
+    description: "Name of the checker who reviewed this row."
+    type: name
+    charset: letters
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: checker_status
+    excel_header: "Checker Status"
+    excel_col: 59
+    description: "Checker status for this row."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: roi
+    excel_header: "ROI"
+    excel_col: 60
+    description: "Rate of interest for the facility."
+    type: text
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: page_no_of_roi
+    excel_header: "Page No of ROI"
+    excel_col: 61
+    description: "Page number where the ROI appears."
+    type: text
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: page_count
+    excel_header: "Page Count of Document"
+    excel_col: 62
+    description: "Total page count of the source document pack."
+    type: text
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: security_value_fmv
+    excel_header: "Security value of asset (FMV)"
+    excel_col: 63
+    description: "Fair market value of the security asset."
+    type: amount
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: security_value_distress
+    excel_header: "Security value of asset (Distress Value)"
+    excel_col: 64
+    description: "Distress value of the security asset."
+    type: amount
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: realizable_value
+    excel_header: "Reliazable value of asset "
+    excel_col: 65
+    description: "Realizable value of the security asset."
+    type: amount
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: security_value
+    excel_header: "Security Value"
+    excel_col: 66
+    description: "Security value recorded for the account."
+    type: amount
+    charset: digits
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: business_type
+    excel_header: "Business Type"
+    excel_col: 67
+    description: "Type of business of the customer."
+    type: text
+    charset: any
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_pack
+    critical: false
+    match: fuzzy
+    passthrough: false
+
+  - key: business_industry_type
+    excel_header: "Business industry type"
+    excel_col: 68
+    description: "Industry type of the business."
+    type: text
+    charset: any
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_pack
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: business_category
+    excel_header: "Business category"
+    excel_col: 69
+    description: "Business category classification."
+    type: text
+    charset: any
+    validators: []
+    look_in: [application_form, other]
+    cardinality: per_pack
+    critical: false
+    match: normalised
+    passthrough: false
+
+  - key: location_type
+    excel_header: "Location type"
+    excel_col: 70
+    description: "Location type classification."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: type_of_relationship
+    excel_header: "Type of Relationship"
+    excel_col: 71
+    description: "Type of relationship with the lender."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: credit_type
+    excel_header: "Credit Type"
+    excel_col: 72
+    description: "Credit type for the facility."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true
+
+  - key: tangible_security_type
+    excel_header: "Tangible Security Type (Home / House , Land and building,agricultural land,machinary, hypo of stock,machinery)"
+    excel_col: 73
+    description: "Type of tangible security (home, land, machinery, hypothecation, etc.)."
+    type: enum
+    charset: any
+    validators: []
+    look_in: []
+    cardinality: per_pack
+    critical: false
+    match: exact
+    passthrough: true

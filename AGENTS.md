@@ -6,6 +6,7 @@ Related files:
 
 - `SKILLS.md`: step-by-step recipes for recurring tasks (add a reader, add an Excel column, add a validator, and so on). Use the matching recipe instead of improvising.
 - `docs/IMPLEMENTATION_PLAN.md`: the phase-by-phase plan. Work is picked from there.
+- `docs/AGENT_PROMPTS.md`: copy-paste briefs to dispatch one agent per task (or a phase coordinator). Use with the shared preamble in that file.
 - `docs/SETUP.md`: environment setup and **per-model hardware requirements**. Read it before enabling or downloading any model.
 
 If this file conflicts with an older document (for example `PLAN.md`, which describes the earlier procurement-OCR work), **this file and `docs/IMPLEMENTATION_PLAN.md` win**. In particular, there is **no restriction on model origin**. Models are chosen on measured results and licence alone.

@@ -1,0 +1,51 @@
+# New document family (P12.3): invoices. Synthetic example template; the real
+# client workbook is imported with `python -m torus.output.template sync` (S1).
+id: invoice_v1
+version: 1
+description: Invoice header and totals columns.
+
+row_key:
+  primary:
+    - sources: [invoice_no]
+      normalize: text
+  fuzzy_threshold: 0.8
+
+fields:
+  - key: invoice_no
+    excel_header: "Invoice No"
+    excel_col: 1
+    description: Invoice reference number printed near the top of the invoice.
+    type: text
+    charset: any
+    validators: []
+    look_in: [invoice]
+    cardinality: per_pack
+    critical: true
+    match: normalised
+    synonyms: ["Invoice Number", "Inv No", "Bill No", "Reference"]
+
+  - key: invoice_date
+    excel_header: "Invoice Date"
+    excel_col: 2
+    description: Date the invoice was issued.
+    type: date
+    charset: any
+    validators: []
+    look_in: [invoice]
+    cardinality: per_pack
+    critical: true
+    match: normalised
+    synonyms: ["Date", "Dated", "Bill Date"]
+
+  - key: total_amount
+    excel_header: "Total Amount"
+    excel_col: 3
+    description: Grand total payable, including tax.
+    type: amount
+    charset: any
+    validators: []
+    look_in: [invoice]
+    cardinality: per_pack
+    critical: true
+    match: normalised
+    synonyms: ["Grand Total", "Amount Due", "Total"]

@@ -1,0 +1,297 @@
+# Reader registry. All start disabled; enable per machine via config/local.yaml
+# (git-ignored) or by flipping enabled here after torus doctor says ready.
+# Hardware fields are checked by torus doctor (P0.6); missing readers are skipped.
+#
+# Framework knobs (P5.1): per-read timeout, batch size, reading cache capacity.
+timeout_s: 30.0
+batch_size: 8
+cache_max_entries: 1024
+
+readers:
+  - name: paddle_printed
+    family: paddle
+    enabled: false
+    min_vram_gb: 0
+    min_ram_gb: 4
+    device: cpu
+    model: null
+    version: null
+    module: torus.readers.paddle.printed
+    capabilities:
+      scripts: [latin, devanagari]
+      handwriting: false
+      printed: true
+      layout: true
+      per_char_confidence: false  # line score only (P5.2)
+
+  - name: doctr_printed
+    family: doctr
+    enabled: false
+    min_vram_gb: 2
+    min_ram_gb: 8
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.doctr.printed
+    capabilities:
+      scripts: [latin]
+      handwriting: false
+      printed: true
+      layout: false
+      per_char_confidence: false  # word score only (P5.2)
+
+  - name: tesseract_printed
+    family: tesseract
+    enabled: false
+    min_vram_gb: 0
+    min_ram_gb: 1
+    device: cpu
+    model: null  # language packs live in tessdata, not under TORUS_MODEL_DIR
+    version: null
+    module: torus.readers.tesseract.printed
+    capabilities:
+      scripts: [latin]
+      handwriting: false
+      printed: true
+      layout: false
+      per_char_confidence: true
+
+  # Handwriting line readers (P5.6): independent voters on handwritten crops.
+  # TrOCR needs the vlm extra, PARSeq the doctr extra. Weights are loaded
+  # offline: TrOCR from model (a path under TORUS_MODEL_DIR; null = HF cache in
+  # HF_HOME), PARSeq from DOCTR_CACHE_DIR. enabled: false until bake-off (P5.8).
+  - name: trocr_handwritten
+    family: handwriting
+    enabled: false
+    min_vram_gb: 2
+    min_ram_gb: 8
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.handwriting.trocr
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: false
+      layout: false
+      per_char_confidence: false  # sequence probability only
+
+  - name: parseq_handwritten
+    family: handwriting
+    enabled: false
+    min_vram_gb: 1
+    min_ram_gb: 4
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.handwriting.parseq
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: false
+      layout: false
+      per_char_confidence: false  # one score per crop
+
+  - name: stub_echo
+    family: stub
+    enabled: false
+    min_vram_gb: 0
+    min_ram_gb: 0
+    device: cpu
+    model: null
+    version: "0"
+    module: torus.readers.stub.echo
+    capabilities:
+      scripts: [latin]
+      handwriting: false
+      printed: true
+      layout: false
+      per_char_confidence: false
+
+  # Document-VLM family (P5.3). Solid path = local server (TORUS_LLM_URL).
+  # model: null so doctor does not look under TORUS_MODEL_DIR; each module
+  # supplies a default server tag. Override model in config/local.yaml.
+  # Stay enabled: false until bake-off (P5.8).
+  - name: paddleocr_vl
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 4
+    min_ram_gb: 8
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.paddleocr_vl
+    capabilities:
+      scripts: [latin, devanagari]
+      handwriting: true
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  - name: glm_ocr
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 2
+    min_ram_gb: 8
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.glm_ocr
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  - name: mineru
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 4
+    min_ram_gb: 8
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.mineru
+    capabilities:
+      scripts: [latin]
+      handwriting: false
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  - name: dots_ocr
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 6
+    min_ram_gb: 12
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.dots_ocr
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  - name: olmocr
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 16
+    min_ram_gb: 24
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.olmocr
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  - name: deepseek_ocr
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 8
+    min_ram_gb: 16
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.deepseek_ocr
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  - name: chandra
+    family: document_vlm
+    enabled: false
+    min_vram_gb: 12
+    min_ram_gb: 20
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.document_vlm.chandra
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: true
+      layout: true
+      per_char_confidence: false
+
+  # General VLM (P5.4): Qwen3-VL field-crop reader on the local server
+  # (TORUS_LLM_URL). Pick a size by enabling that entry. VRAM/RAM are the 4-bit
+  # figures from docs/SETUP.md. enabled: false until bake-off (P5.8).
+
+  - name: qwen3_vl_2b
+    family: general_vlm
+    enabled: false
+    min_vram_gb: 2
+    min_ram_gb: 8
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.general_vlm.qwen3_vl_2b
+    capabilities:
+      scripts: [latin, devanagari]
+      handwriting: true
+      printed: true
+      layout: false
+      per_char_confidence: false
+
+  - name: qwen3_vl_4b
+    family: general_vlm
+    enabled: false
+    min_vram_gb: 4
+    min_ram_gb: 12
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.general_vlm.qwen3_vl_4b
+    capabilities:
+      scripts: [latin, devanagari]
+      handwriting: true
+      printed: true
+      layout: false
+      per_char_confidence: false
+
+  - name: qwen3_vl_8b
+    family: general_vlm
+    enabled: false
+    min_vram_gb: 6
+    min_ram_gb: 16
+    device: auto
+    model: null
+    version: null
+    module: torus.readers.general_vlm.qwen3_vl_8b
+    capabilities:
+      scripts: [latin, devanagari]
+      handwriting: true
+      printed: true
+      layout: false
+      per_char_confidence: false
+
+  # Character-cell MLP (P5.5). One glyph per comb cell. NumPy inference;
+  # train with `python -m torus.readers.char_cell train --source synth|emnist
+  # --out char_cell/v1.npz` (weights under TORUS_MODEL_DIR). enabled: false
+  # until bake-off (P5.8).
+  - name: char_cell
+    family: char_cell
+    enabled: false
+    min_vram_gb: 0
+    min_ram_gb: 1
+    device: cpu
+    model: char_cell/v1.npz
+    version: "1"
+    module: torus.readers.char_cell.reader
+    capabilities:
+      scripts: [latin]
+      handwriting: true
+      printed: true
+      layout: false
+      per_char_confidence: true
