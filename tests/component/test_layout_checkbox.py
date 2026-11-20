@@ -201,3 +201,27 @@ def test_detect_layout_includes_checkbox_source() -> None:
     result = detect_layout(page, cfg)
     assert "checkbox" in result.sources
     assert any(r.kind == RegionKind.CHECKBOX for r in result.regions)
+
+
+def test_radio_detection_on_full_resolution_page_is_fast() -> None:
+    """Hough runs on a downscaled copy: a 300 dpi A4 page must stay quick."""
+    import time
+
+    from PIL import Image, ImageDraw
+
+    image = Image.new("RGB", (2480, 3508), "white")
+    draw = ImageDraw.Draw(image)
+    cx, cy, r = 600, 900, 24
+    draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline="black", width=4)
+
+    start = time.perf_counter()
+    detections = detect_checkboxes(image)
+    elapsed = time.perf_counter() - start
+
+    assert elapsed < 15.0
+    assert any(
+        d.pixel_bbox is not None
+        and d.pixel_bbox[0] <= cx <= d.pixel_bbox[2]
+        and d.pixel_bbox[1] <= cy <= d.pixel_bbox[3]
+        for d in detections
+    )

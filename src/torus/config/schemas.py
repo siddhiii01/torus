@@ -616,6 +616,8 @@ class LayoutClassicConfig(BaseModel):
     stamp_max_radius_ratio: float = Field(default=0.18, gt=0.0, le=0.5)
     stamp_min_area_ratio: float = Field(default=0.0015, ge=0.0, le=0.2)
     stamp_hough_param2: int = Field(default=35, ge=1)
+    # Stamp circle search runs on a mask whose long side is at most this many px.
+    stamp_hough_max_side: int = Field(default=800, ge=200)
 
     signature_min_area_ratio: float = Field(default=0.0002, ge=0.0, le=0.1)
     signature_max_area_ratio: float = Field(default=0.05, gt=0.0, le=0.5)
@@ -746,6 +748,9 @@ class LayoutCheckboxConfig(BaseModel):
     # Contour circularity floor for radio fallback (4πA/P²).
     min_circularity: float = Field(default=0.65, ge=0.0, le=1.0)
     hough_param2: int = Field(default=22, ge=1)
+    # Radio (circle) search runs on a copy whose long side is at most this many
+    # pixels; Hough cost grows steeply with image size and radius range.
+    hough_max_side: int = Field(default=1000, ge=200)
     ink_threshold: int = Field(default=140, ge=0, le=255)
     nms_iou: float = Field(default=0.4, ge=0.0, le=1.0)
     # Fill-state thresholds (fraction of interior dark pixels).

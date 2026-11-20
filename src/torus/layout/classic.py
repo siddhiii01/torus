@@ -433,20 +433,35 @@ def _detect_stamps(
 
     # Hough only on the chroma mask (not page edges) to avoid floods of hits.
     if np.count_nonzero(chroma) > 0:
-        min_r = max(8, int(cfg.stamp_min_radius_ratio * min(width, height)))
-        max_r = max(min_r + 1, int(cfg.stamp_max_radius_ratio * min(width, height)))
+        # Hough cost grows steeply with image size and radius range, so search a
+        # downscaled mask and map circles back to full resolution.
+        scale = min(1.0, cfg.stamp_hough_max_side / float(max(width, height)))
+        small = chroma
+        if scale < 1.0:
+            small = cast(
+                NDArray[np.uint8],
+                cv2.resize(
+                    chroma,
+                    (max(1, round(width * scale)), max(1, round(height * scale))),
+                    interpolation=cv2.INTER_AREA,
+                ),
+            )
+        min_dim = min(small.shape[:2])
+        min_r = max(4, int(cfg.stamp_min_radius_ratio * min_dim))
+        max_r = max(min_r + 1, int(cfg.stamp_max_radius_ratio * min_dim))
         circles = cv2.HoughCircles(
-            cv2.GaussianBlur(chroma, (9, 9), 0),
+            cv2.GaussianBlur(small, (5, 5), 0),
             cv2.HOUGH_GRADIENT,
             dp=1.2,
-            minDist=max(24, min_r * 2),
+            minDist=max(12, min_r * 2),
             param1=80,
             param2=cfg.stamp_hough_param2,
             minRadius=min_r,
             maxRadius=max_r,
         )
         if circles is not None:
-            for cx, cy, r in circles[0]:
+            for cx_s, cy_s, r_s in circles[0]:
+                cx, cy, r = cx_s / scale, cy_s / scale, r_s / scale
                 x0 = max(0, int(cx - r))
                 y0 = max(0, int(cy - r))
                 x1 = min(width, int(cx + r))

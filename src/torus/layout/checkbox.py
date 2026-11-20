@@ -319,14 +319,30 @@ def _hough_circle_boxes(
     max_side: int,
     cfg: LayoutCheckboxConfig,
 ) -> list[tuple[PixelBox, CheckboxShape]]:
-    min_r = max(5, min_side // 2)
-    max_r = max(min_r + 1, max_side // 2)
-    blurred = cast(GrayU8, cv2.GaussianBlur(gray, (5, 5), 0))
+    # Hough cost explodes on full-resolution scans, so search a downscaled copy
+    # and map circles back. Keep the smallest radius at >= 4 px after scaling.
+    scale = min(1.0, cfg.hough_max_side / max(width, height))
+    scale = max(scale, min(1.0, 4.0 / max(min_side / 2.0, 1.0)))
+    if scale < 1.0:
+        small = cast(
+            GrayU8,
+            cv2.resize(
+                gray,
+                (max(1, round(width * scale)), max(1, round(height * scale))),
+                interpolation=cv2.INTER_AREA,
+            ),
+        )
+    else:
+        small = gray
+        scale = 1.0
+    min_r = max(4 if scale < 1.0 else 5, int(min_side * scale) // 2)
+    max_r = max(min_r + 1, int(max_side * scale) // 2)
+    blurred = cast(GrayU8, cv2.GaussianBlur(small, (5, 5), 0))
     circles = cv2.HoughCircles(
         blurred,
         cv2.HOUGH_GRADIENT,
         dp=1.2,
-        minDist=float(max(min_side, 8)),
+        minDist=float(max(int(min_side * scale), 8)),
         param1=100,
         param2=cfg.hough_param2,
         minRadius=min_r,
@@ -336,9 +352,9 @@ def _hough_circle_boxes(
     if circles is None:
         return found
     for cx, cy, r in circles[0]:
-        r_i = int(round(float(r)))
-        cx_i = int(round(float(cx)))
-        cy_i = int(round(float(cy)))
+        r_i = int(round(float(r) / scale))
+        cx_i = int(round(float(cx) / scale))
+        cy_i = int(round(float(cy) / scale))
         x0 = max(0, cx_i - r_i)
         y0 = max(0, cy_i - r_i)
         x1 = min(width, cx_i + r_i + 1)

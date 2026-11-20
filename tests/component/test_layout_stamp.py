@@ -183,3 +183,27 @@ def test_no_fixed_coordinates_in_stamp_module() -> None:
     banned = ("x0 > 0.", "x0<", "page == 0", "page_index == 0")
     for token in banned:
         assert token not in text, f"stamp.py contains {token!r}"
+
+
+def test_stamp_detection_on_colourful_full_resolution_page_is_fast() -> None:
+    """Hough runs on a downscaled mask: heavy chroma on a 300 dpi page stays quick."""
+    import time
+
+    import numpy as np
+    from PIL import Image, ImageDraw
+
+    from torus.layout import detect_stamp_and_signature_regions
+
+    image = Image.new("RGB", (2480, 3508), "white")
+    draw = ImageDraw.Draw(image)
+    rng = np.random.default_rng(7)
+    for _ in range(400):
+        x, y = int(rng.integers(0, 2300)), int(rng.integers(0, 3300))
+        w, h = int(rng.integers(20, 160)), int(rng.integers(20, 160))
+        draw.rectangle((x, y, x + w, y + h), outline=(200, 30, 30), width=3)
+    cx, cy, r = 1200, 1700, 160
+    draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(30, 30, 200), width=8)
+
+    start = time.perf_counter()
+    detect_stamp_and_signature_regions(image)
+    assert time.perf_counter() - start < 30.0
