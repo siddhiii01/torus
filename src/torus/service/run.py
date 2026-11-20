@@ -12,7 +12,7 @@ Logs carry metadata only (hashes, counts, status codes), never document text.
 from __future__ import annotations
 
 import time
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol
@@ -295,13 +295,30 @@ def _attach_reasons(
     return fixed
 
 
-def process_file(path: Path, ctx: RunContext) -> ExtractionResult:
-    """Run one file through the whole pipeline."""
+def process_file(
+    path: Path,
+    ctx: RunContext,
+    *,
+    progress: Callable[[str], None] | None = None,
+) -> ExtractionResult:
+    """Run one file through the whole pipeline.
+
+    ``progress`` receives short metadata-only messages (stage and page counts,
+    never document text).
+    """
     started = time.perf_counter()
+
+    def say(message: str) -> None:
+        if progress is not None:
+            progress(message)
+
+    say(f"{path.name}: loading")
     cfg = ctx.config
     ing = ingest(path, pipeline=cfg.pipeline)
     document = ing.document
+    say(f"{path.name}: {len(document.pages)} pages, cleaning up")
     _preprocess(document, cfg)
+    say(f"{path.name}: classifying pages")
 
     texts = _embedded_texts(ing.embedded_text)
     classifier = ctx.classifier or build_page_classifier(
@@ -320,8 +337,14 @@ def process_file(path: Path, ctx: RunContext) -> ExtractionResult:
 
     reasons: dict[tuple[str, str], str] = {}
     observations: list[FieldObservation] = []
-    for page in document.pages:
+    total = len(document.pages)
+    for n, page in enumerate(document.pages, start=1):
+        page_started = time.perf_counter()
         observations.extend(_observe_page(page, ctx, document.id, reasons))
+        say(
+            f"{path.name}: page {n}/{total} done "
+            f"({time.perf_counter() - page_started:.0f}s)"
+        )
 
     plan = plan_rows(owners, observations, ctx.template)
     rows = LlmFieldMapper(ctx.llm_client).map_plan(plan, ctx.template)
@@ -348,13 +371,18 @@ def process_file(path: Path, ctx: RunContext) -> ExtractionResult:
     )
 
 
-def run_files(paths: Sequence[Path], ctx: RunContext) -> RunReport:
+def run_files(
+    paths: Sequence[Path],
+    ctx: RunContext,
+    *,
+    progress: Callable[[str], None] | None = None,
+) -> RunReport:
     """Process each file; one bad file is reported and does not stop the rest."""
     results: list[ExtractionResult] = []
     failed: list[str] = []
     for path in paths:
         try:
-            results.append(process_file(path, ctx))
+            results.append(process_file(path, ctx, progress=progress))
         except IngestError as exc:
             log.warning("run_file_failed", stage="run", status="ingest_error")
             failed.append(f"{path.name}: {exc}")

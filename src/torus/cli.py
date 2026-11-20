@@ -453,7 +453,9 @@ def _cmd_run(args: argparse.Namespace) -> int:
             llm_client=default_llm_client(config),
             calibrator=calibrator,
         )
-        report = run_files(inputs, ctx)
+        report = run_files(
+            inputs, ctx, progress=lambda m: print(m, file=sys.stderr, flush=True)
+        )
 
         template_xlsx = args.template_xlsx
         if template_xlsx is None:
