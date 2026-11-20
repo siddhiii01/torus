@@ -346,7 +346,7 @@ def sync_template(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m torus.output.template",
-        description="Template import: client Excel headers → config/templates.",
+        description="Template import: client Excel headers to config/templates.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
     sync = sub.add_parser("sync", help="Create or update a template from headers.")

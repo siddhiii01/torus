@@ -372,7 +372,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub.add_parser(
         "label",
-        help="Delegate to ``torus label`` (local PDF → expected.json).",
+        help="Delegate to ``torus label`` (local PDF to expected.json).",
     )
     return parser
 
