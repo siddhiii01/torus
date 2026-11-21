@@ -37,6 +37,8 @@ samples/
 *.xlsm
 *.csv
 !requirements.txt
+# Small public lookup tables the code needs at runtime (no customer content)
+!resources/lookups/*.csv
 # Allow project plan PDFs in docs/ (written by us, no customer content)
 !docs/*.pdf
 # Allow Local AI project docs (not customer OCR inputs)
